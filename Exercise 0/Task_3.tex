@@ -1,0 +1,213 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=red
+}
+
+% --- THEOREM ENVIRONMENTS ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{exercise}{Exercise}
+\theoremstyle{definition}
+\newtheorem*{solution}{Solution}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Closure Properties of a $\sigma$-Algebra}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step walkthrough for an exercise from the Discrete Probability Theory course. We will prove several key closure properties of a $\sigma$-algebra, relying only on its fundamental definition and De Morgan's laws. Each step is explained in detail, referencing the concepts as presented in the course script.
+\end{abstract}
+
+\section{The Exercise Statement}
+
+\begin{exercise}
+Suppose $\mathcal{A}$ is a $\sigma$-algebra over $\Omega \neq \emptyset$, let $A_0, A_1, A_2, \dots$ be a countable collection of sets in $\mathcal{A}$ and let $m \in \mathbb{N}$. Then the sets
+\[
+    \Omega, \quad A_0 \setminus A_1, \quad \bigcup_{i=0}^{m} A_i, \quad \bigcap_{i=0}^{m} A_i, \quad \bigcap_{i \in \mathbb{N}} A_i
+\]
+are also in $\mathcal{A}$. \\
+\textit{[Hint: Use de Morgan’s law for the intersection properties.]}
+\end{exercise}
+
+\section{Foundational Concepts}
+
+Before we begin, let's recall the core definition that our entire proof will be built upon. All our reasoning must trace back to these three fundamental properties.
+
+\begin{definition}[$\sigma$-algebra \textnormal{\cite[Def. 1.5]{script}}]
+\label{def:sigma_algebra}
+A collection of subsets $\mathcal{A} \subseteq \mathcal{P}(\Omega)$ is called a \textbf{$\sigma$-algebra} on $\Omega$ if it satisfies the following three axioms:
+\begin{enumerate}
+    \item[(i)] $\emptyset \in \mathcal{A}$ (The empty set is in $\mathcal{A}$).
+    \item[(ii)] For each $A \in \mathcal{A}$, we have $A^c \in \mathcal{A}$ (It is closed under complements).
+    \item[(iii)] For each sequence $(A_i)_{i \in \mathbb{N}}$ in $\mathcal{A}$, we have $\bigcup_{i \in \mathbb{N}} A_i \in \mathcal{A}$ (It is closed under countable unions).
+\end{enumerate}
+\end{definition}
+
+We will now prove each part of the exercise step-by-step. The numbering follows the solution provided in the exercise sheet.
+
+\section{Step-by-Step Proof}
+
+\begin{solution}
+We are given that $\mathcal{A}$ is a $\sigma$-algebra and $(A_i)_{i \in \mathbb{N}}$ is a collection of sets, where each $A_i \in \mathcal{A}$.
+
+\subsection*{Part (i): The whole set $\Omega$ is in $\mathcal{A}$}
+
+\paragraph{Claim:} $\Omega \in \mathcal{A}$.
+
+\paragraph{Reasoning:}
+This property follows directly from the first two axioms of a $\sigma$-algebra.
+\begin{enumerate}
+    \item From axiom (i), we know that the empty set is in $\mathcal{A}$:
+    \[ \emptyset \in \mathcal{A} \]
+    \item From axiom (ii), we know that if a set is in $\mathcal{A}$, its complement must also be in $\mathcal{A}$. Applying this to the empty set, we get:
+    \[ \emptyset^c \in \mathcal{A} \]
+    \item The complement of the empty set, $\emptyset^c$, is the set of all elements in $\Omega$ that are not in $\emptyset$. By definition, this is the entire sample space $\Omega$.
+    \[ \emptyset^c = \Omega \setminus \emptyset = \Omega \]
+    \item Therefore, we conclude that $\Omega \in \mathcal{A}$.
+\end{enumerate}
+
+\subsection*{Part (ii): The difference of two sets is in $\mathcal{A}$}
+
+\paragraph{Claim:} For any $A_0, A_1 \in \mathcal{A}$, the set difference $A_0 \setminus A_1$ is also in $\mathcal{A}$.
+
+\paragraph{Reasoning:}
+To prove this, we first express the set difference using operations we know $\mathcal{A}$ is closed under (or will prove it is closed under).
+\begin{enumerate}
+    \item The set difference $A_0 \setminus A_1$ can be written as the intersection of $A_0$ and the complement of $A_1$ (see Note \ref{note:set_difference} for an explanation):
+    \[ A_0 \setminus A_1 = A_0 \cap A_1^c \]
+    \item We are given that $A_0 \in \mathcal{A}$ and $A_1 \in \mathcal{A}$.
+    \item By axiom (ii) of a $\sigma$-algebra, since $A_1 \in \mathcal{A}$, its complement $A_1^c$ must also be in $\mathcal{A}$.
+    \item Now we need to show that the intersection of two sets in $\mathcal{A}$ (namely $A_0$ and $A_1^c$) is also in $\mathcal{A}$. This property, closure under finite intersection, is what we will prove in Part (iv). Assuming that result for a moment, we can conclude:
+    \[ A_0 \cap A_1^c \in \mathcal{A} \]
+    \item Thus, $A_0 \setminus A_1 \in \mathcal{A}$.
+\end{enumerate}
+
+\subsection*{Part (iii): The finite union of sets is in $\mathcal{A}$}
+
+\paragraph{Claim:} For any finite $m$, the union $\bigcup_{i=0}^{m} A_i$ is in $\mathcal{A}$.
+
+\paragraph{Reasoning:}
+The axioms guarantee closure under \textit{countable} unions. A finite union is just a special case of a countable union. We can show this formally by constructing a countable sequence of sets from our finite collection.
+\begin{enumerate}
+    \item We are given a finite collection of sets $A_0, A_1, \dots, A_m$, all in $\mathcal{A}$.
+    \item Let's define a new, \textit{infinite} sequence of sets $(B_i)_{i \in \mathbb{N}}$ as follows (see Note \ref{note:padding} for this technique):
+    \[ B_i := \begin{cases} A_i & \text{if } i \le m \\ \emptyset & \text{if } i > m \end{cases} \]
+    \item Is every set $B_i$ in our new sequence in $\mathcal{A}$? Yes. For $i \le m$, $B_i = A_i$, which is in $\mathcal{A}$ by our premise. For $i > m$, $B_i = \emptyset$, which is in $\mathcal{A}$ by axiom (i). So, $(B_i)_{i \in \mathbb{N}}$ is a countable collection of sets in $\mathcal{A}$.
+    \item Now, we can take the countable union of this new sequence. Since taking the union with an empty set doesn't add any elements ($A \cup \emptyset = A$), this union is equivalent to our original finite union:
+    \[ \bigcup_{i \in \mathbb{N}} B_i = A_0 \cup A_1 \cup \dots \cup A_m \cup \emptyset \cup \emptyset \cup \dots = \bigcup_{i=0}^{m} A_i \]
+    \item By axiom (iii) of a $\sigma$-algebra, the countable union of sets in $\mathcal{A}$ must be in $\mathcal{A}$. Therefore:
+    \[ \bigcup_{i \in \mathbb{N}} B_i \in \mathcal{A} \implies \bigcup_{i=0}^{m} A_i \in \mathcal{A} \]
+\end{enumerate}
+
+\subsection*{Part (iv): The finite intersection of sets is in $\mathcal{A}$}
+
+\paragraph{Claim:} For any finite $m$, the intersection $\bigcap_{i=0}^{m} A_i$ is in $\mathcal{A}$.
+
+\paragraph{Reasoning:}
+This proof cleverly combines the closure under complements (axiom ii), the closure under finite unions (which we just proved in Part iii), and De Morgan's Law \cite[Lemma 1.2]{script}.
+\begin{enumerate}
+    \item We are given the sets $A_0, A_1, \dots, A_m$, all in $\mathcal{A}$.
+    \item By axiom (ii), their complements are also in $\mathcal{A}$:
+    \[ A_0^c, A_1^c, \dots, A_m^c \in \mathcal{A} \]
+    \item From Part (iii), we know that $\mathcal{A}$ is closed under finite unions. So, the union of these complements must be in $\mathcal{A}$:
+    \[ \bigcup_{i=0}^{m} A_i^c \in \mathcal{A} \]
+    \item Now we use one of De Morgan's Laws (see Note \ref{note:demorgan}), which states that the complement of an intersection is the union of the complements:
+    \[ \bigcap_{i=0}^{m} A_i = \left( \bigcup_{i=0}^{m} A_i^c \right)^c \]
+    \item We already established that the set $\left( \bigcup_{i=0}^{m} A_i^c \right)$ is in $\mathcal{A}$. By axiom (ii), its complement must also be in $\mathcal{A}$.
+    \item Therefore, $\left( \bigcup_{i=0}^{m} A_i^c \right)^c \in \mathcal{A}$, which means $\bigcap_{i=0}^{m} A_i \in \mathcal{A}$.
+\end{enumerate}
+
+\subsection*{Part (v): The countable intersection of sets is in $\mathcal{A}$}
+
+\paragraph{Claim:} The countable intersection $\bigcap_{i \in \mathbb{N}} A_i$ is in $\mathcal{A}$.
+
+\paragraph{Reasoning:}
+The logic is identical to the finite case in Part (iv), but we use the axiom for countable unions directly instead of the derived property for finite unions.
+\begin{enumerate}
+    \item We are given a countable sequence of sets $(A_i)_{i \in \mathbb{N}}$, all in $\mathcal{A}$.
+    \item By axiom (ii), their complements form another countable sequence of sets in $\mathcal{A}$:
+    \[ (A_i^c)_{i \in \mathbb{N}} \text{ are all in } \mathcal{A} \]
+    \item By axiom (iii), the countable union of these complements is in $\mathcal{A}$:
+    \[ \bigcup_{i \in \mathbb{N}} A_i^c \in \mathcal{A} \]
+    \item We apply De Morgan's Law for countable sets (see Note \ref{note:demorgan}):
+    \[ \bigcap_{i \in \mathbb{N}} A_i = \left( \bigcup_{i \in \mathbb{N}} A_i^c \right)^c \]
+    \item Since $\left( \bigcup_{i \in \mathbb{N}} A_i^c \right)$ is in $\mathcal{A}$, its complement must also be in $\mathcal{A}$ by axiom (ii).
+    \item Therefore, $\bigcap_{i \in \mathbb{N}} A_i \in \mathcal{A}$.
+\end{enumerate}
+\end{solution}
+
+\section{Summary}
+By starting with the three basic axioms of a $\sigma$-algebra, we have successfully proven that it is also closed under several other important set operations:
+\begin{itemize}
+    \item Containing the whole space $\Omega$.
+    \item Finite and countable intersections.
+    \item Finite unions.
+    \item Set differences.
+\end{itemize}
+These closure properties are what make $\sigma$-algebras a robust foundation for probability theory, ensuring that if we can measure the probability of some basic events, we can also measure the probability of more complex events constructed from them.
+
+\newpage
+\section{Additional Explanations}
+
+\subsection*{[1] What is a $\sigma$-algebra?}
+\label{note:sigma_algebra_full}
+As stated in Definition \ref{def:sigma_algebra}, a $\sigma$-algebra $\mathcal{A}$ is a collection of subsets of $\Omega$ (called "events") for which we want to define probabilities. Think of it as the set of all "valid questions" we can ask about the outcome of a random experiment. For this collection to be mathematically sound, it must satisfy three rules:
+\begin{enumerate}
+    \item \textbf{The trivial event is included:} We must be able to ask about the probability of "nothing happening." So, the empty set $\emptyset$ must be in $\mathcal{A}$.
+    \item \textbf{If you can ask about an event, you can ask about its opposite:} If we can ask "what is the probability of event A?", we must also be able to ask "what is the probability of event A \textit{not} happening?". This means if $A \in \mathcal{A}$, its complement $A^c$ must also be in $\mathcal{A}$.
+    \item \textbf{If you can ask about a list of events, you can ask if at least one of them happens:} If we have a countable list of events $A_1, A_2, A_3, \dots$, we must be able to ask "what is the probability that at least one of these events happens?". This means the union $\bigcup_{i=1}^{\infty} A_i$ must also be in $\mathcal{A}$.
+\end{enumerate}
+
+\subsection*{[2] De Morgan's Laws}
+\label{note:demorgan}
+De Morgan's laws provide a crucial link between unions and intersections via complements. As stated in the script \cite[Lemma 1.2]{script}, for any collection of sets $\{A_i\}_{i \in I}$:
+\begin{align*}
+    \left( \bigcup_{i \in I} A_i \right)^c &= \bigcap_{i \in I} A_i^c \quad \text{(The complement of a union is the intersection of the complements)} \\
+    \left( \bigcap_{i \in I} A_i \right)^c &= \bigcup_{i \in I} A_i^c \quad \text{(The complement of an intersection is the union of the complements)}
+\end{align*}
+In our proofs, we used the second law to turn an intersection problem into a union problem, which we could then handle with the $\sigma$-algebra axioms.
+
+\subsection*{[3] Set Difference as an Intersection}
+\label{note:set_difference}
+The set difference $A \setminus B$ contains all elements that are in set $A$ but \textit{not} in set $B$. This can be stated as: "an element $x$ is in $A \setminus B$ if and only if ($x$ is in $A$) AND ($x$ is not in $B$)". The statement "$x$ is not in $B$" is equivalent to "$x$ is in the complement of $B$, $B^c$".
+Therefore, we can rewrite the condition as: "($x$ is in $A$) AND ($x$ is in $B^c$)". This is precisely the definition of the intersection $A \cap B^c$.
+\[ A \setminus B = \{ x \in \Omega \mid x \in A \text{ and } x \notin B \} = \{ x \in \Omega \mid x \in A \text{ and } x \in B^c \} = A \cap B^c \]
+
+\subsection*{[4] The "Padding" Technique for Finite Collections}
+\label{note:padding}
+The axioms of a $\sigma$-algebra are defined for \textit{countable} (infinite) sequences of sets. To prove properties for \textit{finite} collections, we use a simple but powerful trick: we turn the finite collection into an infinite one in a way that doesn't change the result of the operation (union or intersection).
+\begin{itemize}
+    \item \textbf{For Unions:} We "pad" the sequence with empty sets ($\emptyset$). Since $A \cup \emptyset = A$, adding empty sets doesn't change the final union.
+    \[ \bigcup_{i=0}^{m} A_i = A_0 \cup \dots \cup A_m \cup \emptyset \cup \emptyset \cup \dots = \bigcup_{i=0}^{\infty} B_i, \quad \text{where } B_i = \begin{cases} A_i & i \le m \\ \emptyset & i > m \end{cases} \]
+    \item \textbf{For Intersections:} We "pad" the sequence with the whole space ($\Omega$). Since $A \cap \Omega = A$, adding the whole space doesn't change the final intersection.
+    \[ \bigcap_{i=0}^{m} A_i = A_0 \cap \dots \cap A_m \cap \Omega \cap \Omega \cap \dots = \bigcap_{i=0}^{\infty} C_i, \quad \text{where } C_i = \begin{cases} A_i & i \le m \\ \Omega & i > m \end{cases} \]
+\end{itemize}
+This allows us to apply the axioms for countable collections to prove properties for finite ones.
+
+
+\begin{thebibliography}{9}
+    \bibitem{script}
+    Niki Kilbertus.
+    \textit{Discrete Probability Theory}.
+    Summersemester 2025, Technical University of Munich.
+\end{thebibliography}
+
+\end{document}

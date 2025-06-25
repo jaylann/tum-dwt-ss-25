@@ -1,0 +1,251 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{parskip}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+}
+
+% --- THEOREM-LIKE ENVIRONMENTS ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{exercise}{Exercise}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Properties of $\sigma$-algebras}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step walkthrough for an exercise on $\sigma$-algebras, based on the script "Discrete Probability Theory" (Summersemester 2025, N. Kilbertus). Each part of the exercise is analyzed, with justifications provided through proofs or counterexamples. Key concepts are explained in detail to ensure clarity.
+\end{abstract}
+
+\section{Introduction}
+
+Hello! Let's break down this exercise on $\sigma$-algebras. The goal is to determine if certain statements are true or false. To do this, we'll need to go back to the fundamental definition of a $\sigma$-algebra and check its properties one by one. This is a great way to solidify your understanding of the foundational structures of probability theory.
+
+First, let's recall the central definition from your script.
+
+\subsection{Core Concept: The \texorpdfstring{$\sigma$}{sigma}-algebra}
+
+Remember, a $\sigma$-algebra is the collection of "events" to which we can assign a probability. It's a crucial piece of the probability space triplet $(\Omega, \mathcal{A}, P)$. Not every collection of subsets of $\Omega$ will do; it needs to have a specific structure.
+
+According to \textbf{Definition 1.5 ($\sigma$-algebra)} in your script, a collection of subsets $\mathcal{A} \subseteq \mathcal{P}(\Omega)$ is a $\sigma$-algebra over a sample space $\Omega$ if it satisfies three properties:
+\begin{enumerate}
+    \item \textbf{Contains the empty set:} $\emptyset \in \mathcal{A}$. (Note: Since $\mathcal{A}$ must be closed under complements, this implies $\Omega \in \mathcal{A}$ as well).
+    \item \textbf{Closed under complementation:} For any set $A \in \mathcal{A}$, its complement $A^c = \Omega \setminus A$ must also be in $\mathcal{A}$.
+    \item \textbf{Closed under countable unions:} For any countable sequence of sets $A_1, A_2, \ldots$ in $\mathcal{A}$, their union $\bigcup_{i=1}^{\infty} A_i$ must also be in $\mathcal{A}$.
+\end{enumerate}
+We will now use these three rules to test each statement in the exercise. For a deeper dive into why these formal rules are necessary, see note \hyperlink{note1}{[1]} at the end.
+
+\section{Exercise Walkthrough}
+
+\subsection{Part (i): Is this set a \texorpdfstring{$\sigma$}{sigma}-algebra?}
+\textbf{Statement:} The set $\mathcal{A} = \{\emptyset, \{1,2\}, \{1,4\}, \{2,3\}, \{3,4\}, \{1,2,3,4\}\}$ is a $\sigma$-algebra over $\Omega = \{1,2,3,4\}$.
+
+\textbf{Verdict: False.}
+
+\textbf{Step-by-step reasoning:}
+To check if $\mathcal{A}$ is a $\sigma$-algebra, we must verify if it satisfies all three properties from Definition 1.5. If even one fails, it is not a $\sigma$-algebra.
+
+\begin{enumerate}
+    \item \textbf{Check for $\emptyset$:} The set $\mathcal{A}$ contains $\emptyset$. Also note that $\Omega = \{1,2,3,4\}$ is in $\mathcal{A}$. So, this property holds.
+
+    \item \textbf{Check closure under complementation:} Let's pick an element from $\mathcal{A}$ and check if its complement is also in $\mathcal{A}$.
+    Let's take $A = \{1,2\} \in \mathcal{A}$. Its complement is $A^c = \Omega \setminus \{1,2\} = \{3,4\}$. We see that $\{3,4\} \in \mathcal{A}$. This works.
+    Let's try another one: $B = \{1,4\} \in \mathcal{A}$. Its complement is $B^c = \Omega \setminus \{1,4\} = \{2,3\}$. We see that $\{2,3\} \in \mathcal{A}$. This also works.
+    So far, so good.
+
+    \item \textbf{Check closure under countable (or here, finite) unions:} Let's take two sets from $\mathcal{A}$ and see if their union is in $\mathcal{A}$.
+    Let's pick $A_1 = \{1,2\}$ and $A_2 = \{2,3\}$. Both are in $\mathcal{A}$.
+    Their union is $A_1 \cup A_2 = \{1,2,3\}$.
+    Now we check if $\{1,2,3\}$ is an element of our set collection $\mathcal{A}$. Looking at $\mathcal{A}$, we see:
+    \[ \mathcal{A} = \{\emptyset, \{1,2\}, \{1,4\}, \{2,3\}, \{3,4\}, \{1,2,3,4\}\} \]
+    The set $\{1,2,3\}$ is \textbf{not} in $\mathcal{A}$.
+\end{enumerate}
+
+\textbf{Conclusion:} Since $\mathcal{A}$ is not closed under unions, it fails the third property of a $\sigma$-algebra. Therefore, the statement is false.
+
+\subsection{Part (ii): Is the union of \texorpdfstring{$\sigma$}{sigma}-algebras a \texorpdfstring{$\sigma$}{sigma}-algebra?}
+\textbf{Statement:} If $\mathcal{A}_1, \mathcal{A}_2 \subseteq \mathcal{P}(\Omega)$ are $\sigma$-algebras over $\Omega$, then so is $\mathcal{A}_1 \cup \mathcal{A}_2$.
+
+\textbf{Verdict: False.}
+
+\textbf{Step-by-step reasoning:}
+This is a general statement. To prove it false, we only need to find one specific counterexample where it fails. The solution provides a good one, let's build it up from scratch.
+
+\begin{enumerate}
+    \item \textbf{Choose a simple sample space:} Let's use $\Omega = \{1,2,3,4\}$, just like before.
+
+    \item \textbf{Construct two valid $\sigma$-algebras, $\mathcal{A}_1$ and $\mathcal{A}_2$:}
+    We need to create two sets that each satisfy the three rules. A simple way to do this is to partition $\Omega$ in different ways.
+
+    For $\mathcal{A}_1$, let's partition $\Omega$ into $\{1,2\}$ and $\{3,4\}$. A $\sigma$-algebra must contain $\emptyset$, $\Omega$, and be closed under unions and complements. This gives us:
+    \[ \mathcal{A}_1 = \{\emptyset, \{1,2\}, \{3,4\}, \Omega\} \]
+    (You can quickly verify this is a valid $\sigma$-algebra: $\{1,2\}^c = \{3,4\}$, $\{1,2\} \cup \{3,4\} = \Omega$, etc.)
+
+    For $\mathcal{A}_2$, let's choose a different partition, say $\{1,4\}$ and $\{2,3\}$. This gives:
+    \[ \mathcal{A}_2 = \{\emptyset, \{1,4\}, \{2,3\}, \Omega\} \]
+    (This is also a valid $\sigma$-algebra.)
+
+    \item \textbf{Form the union $\mathcal{A} = \mathcal{A}_1 \cup \mathcal{A}_2$:}
+    \[ \mathcal{A} = \{\emptyset, \{1,2\}, \{3,4\}, \{1,4\}, \{2,3\}, \Omega\} \]
+
+    \item \textbf{Test if $\mathcal{A}$ is a $\sigma$-algebra:} We check the closure under union property.
+    Let's pick an element from $\mathcal{A}_1$ and one from $\mathcal{A}_2$.
+    Let $A_1 = \{1,2\} \in \mathcal{A}_1 \subseteq \mathcal{A}$.
+    Let $A_2 = \{2,3\} \in \mathcal{A}_2 \subseteq \mathcal{A}$.
+
+    Their union is $A_1 \cup A_2 = \{1,2,3\}$.
+    Is $\{1,2,3\}$ in our combined set $\mathcal{A}$? No.
+\end{enumerate}
+
+\textbf{Conclusion:} We have found two valid $\sigma$-algebras whose union is not a $\sigma$-algebra. Therefore, the general statement is false.
+(Note: Proposition 1.6 in your script shows that the \textit{intersection} of $\sigma$-algebras is always a $\sigma$-algebra, which is a useful contrast!)
+
+\subsection{Part (iii): The "countable or co-countable" set}
+\textbf{Statement:} The set $\mathcal{A} := \{A \subseteq \Omega \mid A \text{ or } A^c \text{ is countable}\}$ is a $\sigma$-algebra over $\Omega$.
+(A set is co-countable if its complement is countable. The hint reminds us that countable unions of countable sets are countable, and subsets of countable sets are countable. For a recap on countability, see note \hyperlink{note2}{[2]}.)
+
+\textbf{Verdict: True.}
+
+\textbf{Step-by-step reasoning:}
+To prove this is true, we must show that all three properties of a $\sigma$-algebra hold for any $\Omega$.
+
+\begin{enumerate}
+    \item \textbf{Check for $\emptyset$:} The empty set $\emptyset$ is finite, and all finite sets are countable. Since $\emptyset$ is countable, it satisfies the condition and is in $\mathcal{A}$. This property holds.
+
+    \item \textbf{Check closure under complementation:}
+    Let $A$ be an arbitrary set in $\mathcal{A}$. By definition of $\mathcal{A}$, this means either "$A$ is countable" or "$A^c$ is countable".
+    We need to show that its complement, let's call it $B = A^c$, is also in $\mathcal{A}$.
+    For $B$ to be in $\mathcal{A}$, we must show that either "$B$ is countable" or "$B^c$ is countable".
+    Substituting $B = A^c$, we need to check if "$A^c$ is countable" or "($A^c)^c$ is countable".
+    Since $(A^c)^c = A$, this is the condition "$A^c$ is countable or $A$ is countable".
+    This is the exact same condition that we started with for $A \in \mathcal{A}$. So if $A \in \mathcal{A}$, then $A^c \in \mathcal{A}$. This property holds.
+
+    \item \textbf{Check closure under countable unions:}
+    Let $A_1, A_2, \ldots$ be a countable sequence of sets, where each $A_i \in \mathcal{A}$. We need to show that their union, $U = \bigcup_{i=1}^{\infty} A_i$, is also in $\mathcal{A}$. This means we need to show that $U$ is countable or $U^c$ is countable. We can consider two cases.
+
+    \textbf{Case 1: All sets $A_i$ in the sequence are countable.}
+    The union $U = \bigcup A_i$ is a countable union of countable sets. The hint tells us that such a union is itself countable. Since $U$ is countable, it is in $\mathcal{A}$.
+
+    \textbf{Case 2: At least one set, say $A_j$, is uncountable.}
+    Since $A_j \in \mathcal{A}$ and it is uncountable, its complement $A_j^c$ must be countable.
+    Now let's examine the complement of the union, $U^c$. Using De Morgan's laws (\textbf{Lemma 1.2}), we have:
+    \[ U^c = \left(\bigcup_{i=1}^{\infty} A_i\right)^c = \bigcap_{i=1}^{\infty} A_i^c \]
+    This intersection is a subset of any of its constituent sets. In particular, it's a subset of $A_j^c$:
+    \[ \bigcap_{i=1}^{\infty} A_i^c \subseteq A_j^c \]
+    We know $A_j^c$ is countable. The hint tells us that any subset of a countable set is also countable. Therefore, $U^c$ must be countable.
+    Since $U^c$ is countable, $U$ is in $\mathcal{A}$ by definition.
+\end{enumerate}
+
+\textbf{Conclusion:} Since the set $\mathcal{A}$ satisfies all three properties for any sample space $\Omega$, the statement is true.
+
+\subsection{Part (iv): The "finite or co-finite" set}
+\textbf{Statement:} The set $\mathcal{A} := \{A \subseteq \Omega \mid A \text{ or } A^c \text{ is finite}\}$ is a $\sigma$-algebra over $\Omega$ if and only if $\Omega$ is finite.
+
+\textbf{Verdict: True.}
+
+\textbf{Step-by-step reasoning:}
+This is an "if and only if" (iff) statement, which means we must prove two implications separately.
+
+\subsubsection{Direction 1 (\texorpdfstring{$\Leftarrow$}{<=}): If \texorpdfstring{$\Omega$}{Omega} is finite, then \texorpdfstring{$\mathcal{A}$}{A} is a \texorpdfstring{$\sigma$}{sigma}-algebra.}
+\begin{enumerate}
+    \item Assume $\Omega$ is a finite set.
+    \item Let's consider any subset $A \subseteq \Omega$. Since $\Omega$ is finite, any of its subsets, including $A$ and its complement $A^c$, must also be finite.
+    \item Therefore, for any subset $A \subseteq \Omega$, the condition "$A$ is finite or $A^c$ is finite" is always true.
+    \item This means that our set collection $\mathcal{A}$ contains \textit{every} subset of $\Omega$. The set of all subsets of $\Omega$ is the power set, $\mathcal{P}(\Omega)$. So, $\mathcal{A} = \mathcal{P}(\Omega)$.
+    \item As stated in \textbf{Example 1.8 (ii)} of the script, the power set $\mathcal{P}(\Omega)$ is always a $\sigma$-algebra.
+\end{enumerate}
+So, this direction holds.
+
+\subsubsection{Direction 2 (\texorpdfstring{$\Rightarrow$}{=>}): If \texorpdfstring{$\mathcal{A}$}{A} is a \texorpdfstring{$\sigma$}{sigma}-algebra, then \texorpdfstring{$\Omega$}{Omega} is finite.}
+We will prove this by contraposition. (See note \hyperlink{note3}{[3]} for a refresher). The contrapositive statement is: "If $\Omega$ is not finite (i.e., infinite), then $\mathcal{A}$ is not a $\sigma$-algebra."
+
+\begin{enumerate}
+    \item \textbf{Assume $\Omega$ is infinite.} For simplicity, let's assume it is countably infinite, for example $\Omega = \mathbb{N} = \{1, 2, 3, \ldots\}$.
+
+    \item \textbf{We need to show that $\mathcal{A}$ is not a $\sigma$-algebra.} We do this by finding a counterexample to one of the properties. Let's test the closure under countable unions.
+
+    \item \textbf{Find a countable collection of sets in $\mathcal{A}$}. Consider the singleton sets $\{k\}$ for each $k \in \Omega$.
+    Is $\{k\} \in \mathcal{A}$? Yes, because $\{k\}$ is a finite set (it has one element). So the condition "$A$ is finite or $A^c$ is finite" is met.
+
+    \item \textbf{Construct a countable union.} Let's build a new set $E$ by taking the union of a countable number of these singletons. For example, let's take the set of all even numbers:
+    \[ E = \{2, 4, 6, 8, \ldots\} = \bigcup_{k=1}^{\infty} \{2k\} \]
+    Since each set $\{2k\}$ is in $\mathcal{A}$, if $\mathcal{A}$ were a $\sigma$-algebra, their union $E$ must also be in $\mathcal{A}$.
+
+    \item \textbf{Check if $E$ is in $\mathcal{A}$.} For $E$ to be in $\mathcal{A}$, either $E$ must be finite or its complement $E^c$ must be finite.
+    \begin{itemize}
+        \item Is $E$ finite? No, the set of even numbers is infinite.
+        \item Is $E^c$ finite? The complement is the set of odd numbers, $E^c = \{1, 3, 5, \ldots\}$. This is also an infinite set.
+    \end{itemize}
+    Since neither $E$ nor $E^c$ is finite, the set $E$ does not satisfy the condition to be in $\mathcal{A}$.
+
+    \item \textbf{Contradiction!} We have found a countable collection of sets (the singletons of even numbers) which are all in $\mathcal{A}$, but whose union ($E$) is not in $\mathcal{A}$. This means $\mathcal{A}$ is not closed under countable unions.
+\end{enumerate}
+
+\textbf{Conclusion:} We have shown that if $\Omega$ is infinite, $\mathcal{A}$ is not a $\sigma$-algebra. This proves the contrapositive, and thus proves the original implication. Since both directions hold, the "if and only if" statement is true.
+
+\newpage
+\section{Deeper Concepts}
+Here are some more detailed explanations of the concepts used in this exercise.
+
+\subsection{What is a \texorpdfstring{$\sigma$}{sigma}-algebra, really? (\hypertarget{note1}{Note [1]}) }
+At first glance, the definition of a $\sigma$-algebra can seem a bit abstract. The core motivation comes from dealing with \textit{infinite} sample spaces, particularly uncountable ones like the interval $[0,1]$.
+
+In simple cases (like rolling a die or flipping a coin), our sample space $\Omega$ is finite. We can assign a probability to every single outcome, and the set of all possible events is simply the power set $\mathcal{P}(\Omega)$. Everything works perfectly.
+
+However, when $\Omega$ is uncountable (e.g., picking a random number in $[0,1]$), things get strange. It turns out that it's mathematically \textit{impossible} to define a probability measure on the power set $\mathcal{P}([0,1])$ that satisfies a few very reasonable properties (like the probability of an interval $[a,b]$ being its length $b-a$). This is related to the famous Banach-Tarski paradox. There exist "pathological" or "non-measurable" sets for which a consistent notion of "size" or "probability" cannot be defined.
+
+The $\sigma$-algebra is our way out. Instead of trying to assign a probability to \textit{every} possible subset, we restrict ourselves to a smaller, "well-behaved" collection of subsets called measurable sets. The three rules of a $\sigma$-algebra ensure that this collection is robust enough for our needs:
+\begin{itemize}
+    \item If we can talk about the probability of an event $A$, it's natural to want to talk about the probability of it \textit{not} happening ($A^c$).
+    \item If we can talk about the probability of a series of events $A_1, A_2, \ldots$, it's natural to want to talk about the probability that \textit{at least one} of them happens ($\bigcup A_i$).
+\end{itemize}
+The $\sigma$-algebra gives us a solid foundation to build probability theory without running into logical contradictions.
+
+\subsection{Countable vs. Uncountable Sets (\hypertarget{note2}{Note [2]}) }
+This concept is fundamental to understanding when probability theory gets complicated.
+\begin{itemize}
+    \item \textbf{Finite:} A set is finite if you can count its elements and the counting stops. E.g., $\{1,2,3,4\}$.
+    \item \textbf{Countably Infinite:} A set is countably infinite if you can put its elements into a one-to-one correspondence with the natural numbers $\mathbb{N} = \{1, 2, 3, \ldots\}$. In essence, you can list them all out, even if the list goes on forever. The set of integers ($\mathbb{Z}$) and rational numbers ($\mathbb{Q}$) are classic examples.
+    \item \textbf{Countable:} A set is countable if it is either finite or countably infinite.
+    \item \textbf{Uncountable:} A set is uncountable if it's not countable. You cannot list its elements. The set of real numbers $\mathbb{R}$, or any interval like $[0,1]$, are uncountable. There are "more" real numbers between 0 and 1 than there are total natural numbers.
+\end{itemize}
+The hints in the exercise state two key properties used in the proof:
+\begin{enumerate}
+    \item A countable union of countable sets is countable.
+    \item Any subset of a countable set is countable.
+\end{enumerate}
+
+\subsection{Proof by Contraposition (\hypertarget{note3}{Note [3]}) }
+This is a standard and powerful proof technique. To prove a statement of the form "If P, then Q" ($P \implies Q$), we can instead prove its contrapositive: "If not Q, then not P" ($\neg Q \implies \neg P$). The two statements are logically equivalent.
+
+In part (iv), we wanted to prove:
+\begin{center}
+    "If $\mathcal{A}$ is a $\sigma$-algebra (P), then $\Omega$ is finite (Q)."
+\end{center}
+This can be tricky to prove directly. The contrapositive is:
+\begin{center}
+    "If $\Omega$ is not finite (not Q), then $\mathcal{A}$ is not a $\sigma$-algebra (not P)."
+\end{center}
+This turned out to be much easier to prove. We could assume $\Omega$ was infinite and use that assumption to construct a concrete case where the $\sigma$-algebra properties failed. By proving the contrapositive, we have successfully proven the original statement.
+
+\end{document}

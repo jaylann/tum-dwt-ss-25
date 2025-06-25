@@ -1,0 +1,221 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry} % Set page margins
+\usepackage{amsmath, amssymb}                % For advanced math typesetting
+\usepackage{graphicx}                       % To include images (though none here)
+\usepackage{hyperref}                       % For clickable links and references
+\usepackage{xcolor}                         % For colored text and links
+
+% --- HYPERREF SETUP ---
+% This makes the clickable links look nice and clean.
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=green!70!black,
+    urlcolor=magenta!80!black,
+    linktoc=all
+}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Conditional Independence vs. Partial Uncorrelation}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+% --- START OF DOCUMENT ---
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed walkthrough for an exercise on the difference between conditional independence and partial uncorrelation. We will construct two counterexamples to demonstrate that neither property implies the other. Each step is explained with reference to the "Discrete Probability Theory" script by Niki Kilbertus.
+\end{abstract}
+
+\section{The Exercise Statement}
+Let $(\Omega, \mathcal{A}, P)$ be a probability space and $X, Y, Z$ be real-valued random variables. By means of a counter-example, show the following:
+\begin{enumerate}
+    \item[(i)] If $X$ and $Y$ are partially uncorrelated given $Z$, they are not necessarily conditionally independent given $Z$.
+    \item[(ii)] If $X$ and $Y$ are independent given $Z$, they are not necessarily partially uncorrelated given $Z$.
+\end{enumerate}
+
+\section{Conceptual Overview}
+Before we dive into the math, let's build some intuition. This exercise highlights a core theme in probability: the difference between \textbf{any kind of relationship} and a specific \textbf{linear relationship}.
+
+\begin{itemize}
+    \item \textbf{Conditional Independence ($X \perp\perp Y \mid Z$)} \hyperlink{note1}{[1]} is a very strong statement. It says: "If I already know the value of $Z$, then finding out the value of $X$ gives me absolutely \emph{no new information} about $Y$." It concerns the entire structure of the conditional probability distributions.
+
+    \item \textbf{Partial Uncorrelation ($\rho[X, Y \mid Z] = 0$)} \hyperlink{note2}{[2]} is a weaker statement focused on linearity. It says: "After we account for the linear influence of $Z$ on both $X$ and $Y$, there is no \emph{linear relationship} left between the remainders (residuals) of $X$ and $Y$."
+\end{itemize}
+
+Our goal is to show that these two concepts are not the same. A lack of a linear relationship doesn't mean a lack of relationship altogether, and vice-versa.
+
+\section{Part (i): Uncorrelated \texorpdfstring{$\nRightarrow$}{does not imply} Independent (Given Z)}
+
+\subsection{Our Goal}
+We need to find random variables $X, Y, Z$ such that $\rho[X, Y \mid Z] = 0$, but $X$ and $Y$ are \emph{not} conditionally independent given $Z$.
+
+\subsection{Constructing the Counterexample}
+The hint suggests looking at a case where $Z$ is independent of $X$ and $Y$. Let's use a classic example of variables that are dependent but uncorrelated.
+Let's define our random variables as follows:
+\begin{itemize}
+    \item Let $X \sim \text{Unif}(-1, 1)$ be uniformly distributed on $[-1, 1]$.
+    \item Let $Y = X^2$.
+    \item Let $Z$ be any random variable that is \textbf{independent} of both $X$ and $Y$. For simplicity, let's say $Z \sim \text{Unif}(0, 1)$.
+\end{itemize}
+
+\subsection{Step 1: Show Partial Uncorrelation}
+We need to show that $\rho[X, Y \mid Z] = 0$. Let's recall the formula for partial correlation from \textbf{Definition 2.16} of the script:
+\[
+\rho[X, Y \mid Z] = \frac{\rho[X, Y] - \rho[X, Z]\rho[Y, Z]}{\sqrt{(1-\rho[X,Z]^2)(1-\rho[Y,Z]^2)}}
+\]
+To show the partial correlation is zero, we just need to show the numerator is zero. Let's analyze the three terms in the numerator: $\rho[X, Z]$, $\rho[Y, Z]$, and $\rho[X, Y]$.
+
+\paragraph{Calculating $\rho[X, Z]$ and $\rho[Y, Z]$:}
+\begin{itemize}
+    \item By our construction, $X$ and $Z$ are independent. A key property from \textbf{Proposition 2.12 (v)} is that independence implies zero covariance. If $\text{cov}[X, Z] = 0$, then $\rho[X, Z] = \frac{\text{cov}[X, Z]}{\sigma_X \sigma_Z} = 0$.
+    \item Similarly, since $Y=X^2$, $Y$ is a function of $X$. Because $X$ is independent of $Z$, it follows that $Y$ is also independent of $Z$. Therefore, $\text{cov}[Y, Z] = 0$ and $\rho[Y, Z] = 0$.
+\end{itemize}
+
+\paragraph{Calculating $\rho[X, Y]$:}
+Now we just need the correlation between $X$ and $Y=X^2$.
+\[
+\text{cov}[X, Y] = E[XY] - E[X]E[Y] = E[X \cdot X^2] - E[X]E[X^2] = E[X^3] - E[X]E[X^2]
+\]
+Let's calculate the expectations:
+\begin{itemize}
+    \item $E[X] = \int_{-1}^{1} x \cdot \frac{1}{2} dx = \frac{1}{2} \left[ \frac{x^2}{2} \right]_{-1}^{1} = \frac{1}{2} (\frac{1}{2} - \frac{1}{2}) = 0$. Since the distribution is symmetric around 0, the mean is 0.
+    \item $E[X^3] = \int_{-1}^{1} x^3 \cdot \frac{1}{2} dx = \frac{1}{2} \left[ \frac{x^4}{4} \right]_{-1}^{1} = \frac{1}{2} (\frac{1}{4} - \frac{1}{4}) = 0$.
+\end{itemize}
+Plugging these back into the covariance formula:
+\[
+\text{cov}[X, Y] = 0 - 0 \cdot E[X^2] = 0
+\]
+Since the covariance is 0, the correlation $\rho[X, Y]$ is also 0.
+
+\paragraph{Final Calculation:}
+The numerator of the partial correlation formula is $\rho[X, Y] - \rho[X, Z]\rho[Y, Z] = 0 - 0 \cdot 0 = 0$.
+Therefore, $\rho[X, Y \mid Z] = 0$. We have successfully shown they are partially uncorrelated given $Z$.
+
+\subsection{Step 2: Show They Are NOT Conditionally Independent}
+Now we must show that $X \not\perp\perp Y \mid Z$.
+According to \textbf{Definition 1.77}, conditional independence means $p(x, y \mid z) = p(x \mid z) p(y \mid z)$.
+
+Because we defined $Z$ to be independent of $(X, Y)$, the conditioning on $Z$ doesn't change their distributions.
+\begin{itemize}
+    \item $p(x, y \mid z) = p(x, y)$
+    \item $p(x \mid z) = p(x)$
+    \item $p(y \mid z) = p(y)$
+\end{itemize}
+So, for our specific construction, the condition $X \perp\perp Y \mid Z$ is equivalent to the condition $X \perp\perp Y$.
+
+Are $X$ and $Y=X^2$ independent? \textbf{No, they are clearly dependent.} If you tell me that $X=0.5$, I know with certainty that $Y = (0.5)^2 = 0.25$. This deterministic relationship is a very strong form of dependence. Since $p(x,y) \neq p(x)p(y)$, they are not independent, and therefore not conditionally independent given $Z$.
+
+\subsection{Conclusion for Part (i)}
+We have constructed a case where $\rho[X, Y \mid Z] = 0$, but $X \not\perp\perp Y \mid Z$. This shows that partial uncorrelation given a variable does not imply conditional independence given that variable. The key was that correlation only measures \emph{linear} dependence, but $Y=X^2$ is a \emph{non-linear} dependence.
+
+\section{Part (ii): Independent \texorpdfstring{$\nRightarrow$}{does not imply} Uncorrelated (Given Z)}
+
+\subsection{Our Goal}
+Now we need to do the reverse: find $X, Y, Z$ such that they are conditionally independent given $Z$ ($X \perp\perp Y \mid Z$), but they are \emph{not} partially uncorrelated given $Z$ ($\rho[X, Y \mid Z] \neq 0$).
+
+\subsection{Constructing the Counterexample}
+This is more subtle. We need a case where knowing $Z$ makes $X$ and $Y$ independent, but their unconditional selves are so tangled up that the partial correlation formula doesn't go to zero. The hint is key here.
+Let's define our variables:
+\begin{itemize}
+    \item Let $Z \sim \text{Unif}(0, 1)$. \hyperlink{note3}{[3]}
+    \item Let $X = Z^2$.
+    \item Let $Y = Z^3$.
+\end{itemize}
+Here, both $X$ and $Y$ are completely determined by $Z$.
+
+\subsection{Step 1: Show Conditional Independence}
+We want to show $X \perp\perp Y \mid Z$. Let's think about this intuitively first, then formally.
+\begin{itemize}
+    \item \textbf{Intuition:} The definition of conditional independence says "given that we know $Z$, does knowing $X$ help us know $Y$?". Let's say we know $Z=z$ (e.g., $Z=0.5$). Then we know with certainty that $X = z^2 = 0.25$ and $Y = z^3 = 0.125$. At this point, if someone tells you "by the way, $X=0.25$", you learn nothing new about $Y$, because you already knew its value was $0.125$. Since $X$ and $Y$ are both constants once $Z$ is fixed, they are conditionally independent.
+
+    \item \textbf{Formal Proof (using CDFs):} As per \textbf{Definition 1.72}, we need to show $F_{X,Y|Z=z}(x,y) = F_{X|Z=z}(x) F_{Y|Z=z}(y)$.
+    Let's fix $Z=z$ where $z \in (0,1)$. The random variables $X|Z=z$ and $Y|Z=z$ are now constants.
+    $X = z^2$ and $Y = z^3$.
+    The CDF for a constant $c$ is a step function: $F(t) = 0$ for $t < c$ and $F(t) = 1$ for $t \ge c$.
+    So, $F_{X|Z=z}(x) = \mathbb{I}(x \ge z^2)$ and $F_{Y|Z=z}(y) = \mathbb{I}(y \ge z^3)$, where $\mathbb{I}(\cdot)$ is the indicator function.
+    Their joint CDF is $F_{X,Y|Z=z}(x,y) = P(X \le x, Y \le y | Z=z) = P(z^2 \le x, z^3 \le y) = \mathbb{I}(x \ge z^2 \text{ and } y \ge z^3) = \mathbb{I}(x \ge z^2) \cdot \mathbb{I}(y \ge z^3)$.
+    Thus, $F_{X,Y|Z=z}(x,y) = F_{X|Z=z}(x) F_{Y|Z=z}(y)$, and they are conditionally independent.
+\end{itemize}
+
+\subsection{Step 2: Show They Are NOT Partially Uncorrelated}
+Now we must show that $\rho[X, Y \mid Z] \neq 0$. This requires us to calculate all the unconditional correlations. This involves a bit of integration.
+
+\paragraph{Helper Calculation:} For $Z \sim \text{Unif}(0,1)$ and any integer $k \ge 1$, the $k$-th moment is:
+\[ E[Z^k] = \int_0^1 z^k \cdot 1 \,dz = \left[\frac{z^{k+1}}{k+1}\right]_0^1 = \frac{1}{k+1} \hyperlink{note4}{[4]} \]
+
+\paragraph{Calculating Variances and Covariances:}
+\begin{itemize}
+    \item $\text{var}(Z) = E[Z^2] - (E[Z])^2 = \frac{1}{3} - (\frac{1}{2})^2 = \frac{1}{12}$.
+    \item $\text{var}(X) = \text{var}(Z^2) = E[(Z^2)^2] - (E[Z^2])^2 = E[Z^4] - (\frac{1}{3})^2 = \frac{1}{5} - \frac{1}{9} = \frac{4}{45}$.
+    \item $\text{var}(Y) = \text{var}(Z^3) = E[(Z^3)^2] - (E[Z^3])^2 = E[Z^6] - (\frac{1}{4})^2 = \frac{1}{7} - \frac{1}{16} = \frac{9}{112}$.
+    \item $\text{cov}(X, Y) = E[XY] - E[X]E[Y] = E[Z^2 Z^3] - E[Z^2]E[Z^3] = E[Z^5] - (\frac{1}{3})(\frac{1}{4}) = \frac{1}{6} - \frac{1}{12} = \frac{1}{12}$.
+    \item $\text{cov}(X, Z) = E[XZ] - E[X]E[Z] = E[Z^2 Z] - E[Z^2]E[Z] = E[Z^3] - (\frac{1}{3})(\frac{1}{2}) = \frac{1}{4} - \frac{1}{6} = \frac{1}{12}$.
+    \item $\text{cov}(Y, Z) = E[YZ] - E[Y]E[Z] = E[Z^3 Z] - E[Z^3]E[Z] = E[Z^4] - (\frac{1}{4})(\frac{1}{2}) = \frac{1}{5} - \frac{1}{8} = \frac{3}{40}$.
+\end{itemize}
+
+\paragraph{Calculating Correlations:}
+Correlation is $\rho[A, B] = \frac{\text{cov}(A,B)}{\sqrt{\text{var}(A)\text{var}(B)}}$.
+\begin{itemize}
+    \item $\rho[X, Z] = \frac{1/12}{\sqrt{(4/45)(1/12)}} = \frac{1/12}{\sqrt{1/135}} = \frac{\sqrt{135}}{12} = \frac{3\sqrt{15}}{12} = \frac{\sqrt{15}}{4}$.
+    \item $\rho[Y, Z] = \frac{3/40}{\sqrt{(9/112)(1/12)}} = \frac{3/40}{\sqrt{3/448}} = \frac{3\sqrt{448}}{40\sqrt{3}} = \frac{3 \cdot 8\sqrt{7}}{40\sqrt{3}} = \frac{3\sqrt{7}}{5\sqrt{3}} = \frac{\sqrt{21}}{5}$.
+    \item $\rho[X, Y] = \frac{1/12}{\sqrt{(4/45)(9/112)}} = \frac{1/12}{\sqrt{1/140}} = \frac{\sqrt{140}}{12} = \frac{2\sqrt{35}}{12} = \frac{\sqrt{35}}{6}$.
+\end{itemize}
+These match the (re-arranged) results from the solution sheet.
+
+\paragraph{Final Calculation:}
+Let's check the numerator of the partial correlation formula: $\rho[X, Y] - \rho[X, Z]\rho[Y, Z]$.
+\[
+\frac{\sqrt{35}}{6} - \left(\frac{\sqrt{15}}{4}\right) \left(\frac{\sqrt{21}}{5}\right) = \frac{\sqrt{35}}{6} - \frac{\sqrt{315}}{20} = \frac{\sqrt{35}}{6} - \frac{\sqrt{9 \cdot 35}}{20} = \frac{\sqrt{35}}{6} - \frac{3\sqrt{35}}{20}
+\]
+\[
+= \sqrt{35} \left( \frac{1}{6} - \frac{3}{20} \right) = \sqrt{35} \left( \frac{10 - 9}{60} \right) = \frac{\sqrt{35}}{60}
+\]
+Since the numerator is $\frac{\sqrt{35}}{60} \neq 0$, the partial correlation $\rho[X, Y \mid Z]$ is not zero.
+
+\subsection{Conclusion for Part (ii)}
+We have constructed a case where $X \perp\perp Y \mid Z$, but $\rho[X, Y \mid Z] \neq 0$. This shows that conditional independence does not imply partial uncorrelation. The reason is that partial correlation subtracts out the \emph{linear} effects of $Z$, but here the relationships ($X=Z^2, Y=Z^3$) are \emph{non-linear}. The unconditional correlations that arise from these non-linear dependencies don't perfectly cancel out in the partial correlation formula.
+
+\section{Summary and Key Takeaways}
+
+This exercise provides two powerful counterexamples to remember:
+\begin{enumerate}
+    \item \textbf{Uncorrelation $\neq$ Independence:} A non-linear relationship (like $Y=X^2$ for a symmetric $X$) can be uncorrelated but highly dependent. This holds true even when conditioning on an independent third variable.
+    \item \textbf{Conditional Independence $\neq$ Partial Uncorrelation:} A shared non-linear dependence on a third variable (like $X=Z^2, Y=Z^3$) can make $X$ and $Y$ conditionally independent (since $Z$ explains everything), but still leave them with a non-zero partial correlation because the formula only handles linear adjustments.
+\end{enumerate}
+The main lesson is to be precise about what kind of relationship you are describing. "Independence" is a statement about information, while "correlation" is a statement about linear trends. Don't use them interchangeably!
+
+\newpage
+\section*{Further Explanations}
+\hypertarget{note1}{\textbf{[1] Conditional Independence ($X \perp\perp Y \mid Z$):}}
+As per \textbf{Definition 1.77}, two random variables $X$ and $Y$ are conditionally independent given a third random variable $Z$ if their conditional joint distribution factorizes into the product of their conditional marginal distributions. For continuous variables with densities, this is written as:
+\[ p(x, y \mid z) = p(x \mid z) p(y \mid z) \]
+This must hold for all values $x, y, z$ for which the densities are defined. It essentially means that the entire probabilistic structure of $X$ and $Y$ are unrelated once we fix the value of $Z$.
+
+\vspace{1cm}
+\hypertarget{note2}{\textbf{[2] Partial Uncorrelation ($\rho[X, Y \mid Z] = 0$):}}
+As per \textbf{Definition 2.16}, partial correlation measures the linear relationship between two variables after removing the linear effect of one or more other variables. If $\rho[X, Y \mid Z] = 0$, we say $X$ and $Y$ are partially uncorrelated given $Z$. The formula is:
+\[ \rho[X, Y \mid Z] = \frac{\text{cov}(X, Y) - \frac{\text{cov}(X, Z)\text{cov}(Y, Z)}{\text{var}(Z)}}{\sqrt{(\text{var}(X) - \frac{\text{cov}(X, Z)^2}{\text{var}(Z)})(\text{var}(Y) - \frac{\text{cov}(Y, Z)^2}{\text{var}(Z)})}} \]
+This is equivalent to the formula using correlations given in the main text. The condition $\rho[X, Y \mid Z] = 0$ is true if and only if the numerator is zero. It is a much weaker condition than conditional independence, as it only talks about the absence of a \emph{linear} trend between the "residuals".
+
+\vspace{1cm}
+\hypertarget{note3}{\textbf{[3] The Uniform Distribution $U(a,b)$:}}
+A continuous random variable $X$ follows a uniform distribution on the interval $[a, b]$, denoted $X \sim \text{Unif}(a,b)$, if its probability density function (pdf) is:
+\[ p(x) = \begin{cases} \frac{1}{b-a} & \text{if } a \le x \le b \\ 0 & \text{otherwise} \end{cases} \]
+This means that the variable is equally likely to fall anywhere within the interval $[a,b]$. The expected value and variance (from \textbf{Lemma 2.27}) are:
+\[ E[X] = \frac{a+b}{2} \quad \text{and} \quad \text{var}(X) = \frac{(b-a)^2}{12} \]
+For our case, $Z \sim \text{Unif}(0,1)$, we have $a=0, b=1$, so $E[Z] = 1/2$ and $\text{var}(Z) = 1/12$.
+
+\vspace{1cm}
+\hypertarget{note4}{\textbf{[4] Moments of the Uniform Distribution $U(0,1)$:}}
+For a random variable $Z \sim \text{Unif}(0,1)$, the $k$-th moment is the expected value of $Z^k$. This is a very useful calculation for exercises involving this distribution.
+\[ E[Z^k] = \int_{-\infty}^{\infty} z^k p(z) \,dz = \int_0^1 z^k \cdot 1 \,dz \]
+The integral is straightforward:
+\[ \int_0^1 z^k \,dz = \left[ \frac{z^{k+1}}{k+1} \right]_0^1 = \frac{1^{k+1}}{k+1} - \frac{0^{k+1}}{k+1} = \frac{1}{k+1} \]
+This simple formula, $E[Z^k] = \frac{1}{k+1}$, was used repeatedly in the calculations for Part (ii).
+
+\end{document}

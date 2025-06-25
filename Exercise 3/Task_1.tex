@@ -1,0 +1,210 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% --- HYPERLINK SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=red
+}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Fair Tetrahedron Rolls}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a step-by-step solution to an introductory probability problem involving multiple rolls of a fair tetrahedron. We will meticulously define the underlying probability space and then solve each part of the exercise by applying fundamental principles such as the Laplace distribution, the complement rule, and the inclusion-exclusion principle. Key concepts are linked to a detailed explanation at the end of the document.
+\end{abstract}
+
+\section{Problem Statement}
+
+We consider a fair tetrahedron whose faces are labeled with the numbers $\{1, 2, 3, 4\}$. Assume the tetrahedron is rolled $k \geq 1$ times. Let $E$ be the event that the same number appears in each roll. Furthermore, let $F$ be the event that the product of the $k$ rolled numbers is even.
+\begin{enumerate}
+    \item[(i)] Compute the probability of $E$.
+    \item[(ii)] Compute the probability of $F$.
+    \item[(iii)] Compute the probability of $E \cup F$.
+\end{enumerate}
+
+\section{Step-by-Step Solution}
+
+\subsection{Overview of the Approach}
+Before diving into the calculations, let's outline our strategy. The first and most crucial step in any probability problem is to formalize the experiment. This means we need to define the \hyperlink{concept:probspace}{Probability Space [1]}, which consists of the sample space $\Omega$, the event space $\mathcal{A}$, and the probability measure $P$. Once we have this solid foundation, we can systematically define the events $E$ and $F$ as subsets of our sample space and calculate their probabilities.
+
+\subsection{Step 1: Defining the Probability Space}
+
+\paragraph{The Sample Space $\Omega$}
+The experiment consists of rolling the tetrahedron $k$ times. Each roll can result in one of the numbers from the set $\{1, 2, 3, 4\}$. A single outcome of the entire experiment is a sequence of $k$ numbers. For example, if $k=3$, one possible outcome is $(1, 4, 2)$.
+
+Therefore, the sample space $\Omega$ is the set of all possible $k$-tuples where each element is from $\{1, 2, 3, 4\}$. We can write this formally using the Cartesian product:
+\[
+\Omega = \{1, 2, 3, 4\}^k = \{ (x_1, x_2, \dots, x_k) \mid x_i \in \{1, 2, 3, 4\} \text{ for } i=1, \dots, k \}
+\]
+The total number of possible outcomes is the size of this set, which is $|\Omega| = 4^k$.
+
+\paragraph{The Event Space $\mathcal{A}$}
+The sample space $\Omega$ is finite. As stated in your script (e.g., \textit{Convention 1.15}), for finite or countable sample spaces, we typically choose the event space $\mathcal{A}$ to be the power set of $\Omega$, denoted $\mathcal{P}(\Omega)$. The power set is the set of all possible subsets of $\Omega$. This allows us to assign a probability to any event we can think of.
+
+\paragraph{The Probability Measure $P$}
+The problem states the tetrahedron is "fair". This is a key piece of information. It implies that each of the 4 faces has an equal chance of being the result of a roll, and each of the $k$ rolls is independent. Consequently, every possible sequence of $k$ rolls in $\Omega$ is equally likely.
+
+This scenario is a perfect application of the \hyperlink{concept:laplace}{Laplace Distribution [2]}, as described in \textit{Example 1.36 (i)} of your script. For any event $A \in \mathcal{A}$, its probability is given by the ratio of the number of favorable outcomes to the total number of outcomes:
+\[
+P(A) = \frac{|A|}{|\Omega|} = \frac{|A|}{4^k}
+\]
+Now that we have our probability space $(\Omega, \mathcal{P}(\Omega), P)$ formally defined, we can proceed to solve the three parts of the exercise.
+
+\subsection{Step 2: Part (i) - Probability of Event E}
+
+\paragraph{Defining Event E}
+Event $E$ is that the same number appears in each of the $k$ rolls. We can express this event as a subset of $\Omega$:
+\[
+E = \{ (x, x, \dots, x) \mid x \in \{1, 2, 3, 4\} \}
+\]
+\paragraph{Counting Favorable Outcomes}
+The outcomes in $E$ are sequences where all elements are identical. These are:
+\begin{itemize}
+    \item $(1, 1, \dots, 1)$
+    \item $(2, 2, \dots, 2)$
+    \item $(3, 3, \dots, 3)$
+    \item $(4, 4, \dots, 4)$
+\end{itemize}
+There are clearly 4 such outcomes. So, $|E| = 4$.
+
+\paragraph{Calculating P(E)}
+Using our Laplace formula:
+\[
+P(E) = \frac{|E|}{|\Omega|} = \frac{4}{4^k} = \frac{1}{4^{k-1}}
+\]
+\textbf{Self-check:} Does this make sense? For $k=1$, $P(E) = 1/4^0 = 1$, which is correct since any single roll is trivially "the same number". For $k=2$, $P(E) = 1/4$, which is the probability of rolling (1,1) or (2,2) or (3,3) or (4,4). The probability of, say, (1,1) is $(1/4) \times (1/4) = 1/16$. Since there are 4 such pairs, the total probability is $4 \times (1/16) = 4/16 = 1/4$. Our formula works.
+
+\subsection{Step 3: Part (ii) - Probability of Event F}
+
+\paragraph{Defining Event F and its Complement}
+Event $F$ is that the product of the $k$ rolled numbers is even. Let an outcome be $\omega = (x_1, \dots, x_k)$. The product is $\prod_{i=1}^k x_i$. This product is even if \textit{at least one} of the $x_i$ is an even number (i.e., 2 or 4).
+
+Counting this directly would be complicated (we'd have to sum the cases for exactly one even roll, exactly two, etc.). A much simpler approach is to consider the \hyperlink{concept:complement}{complementary event [3]}, $F^c$.
+\[
+F^c = \text{The event that the product of the } k \text{ rolled numbers is odd.}
+\]
+A product of integers is odd if and only if \textit{all} of the integers in the product are odd. The odd numbers on our tetrahedron are $\{1, 3\}$.
+
+\paragraph{Counting Favorable Outcomes for $F^c$}
+For an outcome to be in $F^c$, every single roll $x_i$ must be from the set $\{1, 3\}$.
+\[
+F^c = \{ (x_1, \dots, x_k) \in \Omega \mid x_i \in \{1, 3\} \text{ for all } i \}
+\]
+For each of the $k$ positions in the tuple, we have 2 choices (either 1 or 3). Therefore, the total number of outcomes in $F^c$ is:
+\[
+|F^c| = 2 \times 2 \times \dots \times 2 \text{ ($k$ times)} = 2^k
+\]
+\paragraph{Calculating P(F)}
+First, we find the probability of the complement:
+\[
+P(F^c) = \frac{|F^c|}{|\Omega|} = \frac{2^k}{4^k} = \left(\frac{2}{4}\right)^k = \left(\frac{1}{2}\right)^k
+\]
+Now, we use the complement rule $P(F) = 1 - P(F^c)$:
+\[
+P(F) = 1 - \left(\frac{1}{2}\right)^k
+\]
+This strategy of considering the complement is extremely useful when dealing with events described by "at least one".
+
+\subsection{Step 4: Part (iii) - Probability of Event E $\cup$ F}
+
+\paragraph{Using the Inclusion-Exclusion Principle}
+To find the probability of the union of two events, we use the \hyperlink{concept:inclusionexclusion}{Inclusion-Exclusion Principle [4]}, which is stated in your script as \textit{Theorem 1.20}. For two events, it is:
+\[
+P(E \cup F) = P(E) + P(F) - P(E \cap F)
+\]
+We have already calculated $P(E)$ and $P(F)$. The only missing piece is $P(E \cap F)$.
+
+\paragraph{Defining the Intersection Event $E \cap F$}
+The event $E \cap F$ occurs if an outcome belongs to both $E$ and $F$. This means:
+\begin{enumerate}
+    \item All rolls must be the same number (for event $E$).
+    \item The product of the rolls must be even (for event $F$).
+\end{enumerate}
+If all rolls are the same number, say $x$, the outcome is $(x, x, \dots, x)$. The product is $x^k$. For this product to be even, the base $x$ must be an even number. The even numbers on the tetrahedron are $\{2, 4\}$.
+So, the outcomes in $E \cap F$ are those where every roll is the same \textit{and} that number is even.
+\[
+E \cap F = \{ (x, x, \dots, x) \mid x \in \{2, 4\} \}
+\]
+\paragraph{Counting Favorable Outcomes for $E \cap F$}
+The outcomes are simply:
+\begin{itemize}
+    \item $(2, 2, \dots, 2)$
+    \item $(4, 4, \dots, 4)$
+\end{itemize}
+There are 2 such outcomes. So, $|E \cap F| = 2$.
+
+\paragraph{Calculating P($E \cap F$)}
+\[
+P(E \cap F) = \frac{|E \cap F|}{|\Omega|} = \frac{2}{4^k}
+\]
+\paragraph{Final Calculation of P($E \cup F$)}
+Now we substitute all our results into the inclusion-exclusion formula:
+\begin{align*}
+P(E \cup F) &= P(E) + P(F) - P(E \cap F) \\
+&= \frac{4}{4^k} + \left(1 - \frac{2^k}{4^k}\right) - \frac{2}{4^k} \\
+&= \frac{4 - 2}{4^k} + 1 - \frac{2^k}{4^k} \\
+&= \frac{2}{4^k} + 1 - \left(\frac{1}{2}\right)^k
+\end{align*}
+To match the presentation in the provided solution, we can also simplify $\frac{2}{4^k}$ as $\frac{2}{4 \cdot 4^{k-1}} = \frac{1}{2 \cdot 4^{k-1}} = \frac{1}{2} \cdot \left(\frac{1}{4}\right)^{k-1}$. This gives:
+\[
+P(E \cup F) = \frac{1}{2} \cdot \left(\frac{1}{4}\right)^{k-1} + 1 - \left(\frac{1}{2}\right)^k
+\]
+Both expressions are equivalent and correct.
+
+\section{Summary of Key Takeaways}
+\begin{itemize}
+    \item \textbf{Formalize First:} Always start by defining the probability space $(\Omega, \mathcal{A}, P)$. This provides a rigorous foundation and often clarifies the problem.
+    \item \textbf{Identify the Model:} Recognizing keywords like "fair" allows you to select the correct probability model, in this case, the Laplace distribution.
+    \item \textbf{Use the Complement:} For events involving "at least one", it's often far easier to calculate the probability of the complementary event ("none") and subtract from 1.
+    \item \textbf{Master the Basics:} The inclusion-exclusion principle is a fundamental tool for calculating the probability of the union of events.
+\end{itemize}
+
+\newpage
+\section*{Conceptual Deep Dive}
+Here are more detailed explanations of the key concepts we used, with references to your script.
+
+\hypertarget{concept:probspace}{}
+\subsection*{[1] Probability Space (Definition 1.18)}
+A probability space is the mathematical foundation for modeling a random process. It's a triplet $(\Omega, \mathcal{A}, P)$ where:
+\begin{itemize}
+    \item $\mathbf{\Omega}$ (the \textbf{sample space}) is the set of \textit{all possible outcomes} of an experiment. For a single coin flip, $\Omega = \{\text{Heads, Tails}\}$. In our exercise, it was the set of all possible sequences of $k$ rolls.
+    \item $\mathbf{\mathcal{A}}$ (the \textbf{$\sigma$-algebra} or \textbf{event space}) is a collection of subsets of $\Omega$. These subsets are called \textit{events}. It must satisfy certain properties (containing $\Omega$, being closed under complement and countable unions) to ensure we can consistently assign probabilities. For finite $\Omega$, we usually just take $\mathcal{A} = \mathcal{P}(\Omega)$, the set of all subsets.
+    \item $\mathbf{P}$ (the \textbf{probability measure}) is a function that assigns a probability (a number between 0 and 1) to every event in $\mathcal{A}$. It must satisfy $P(\Omega) = 1$ and be $\sigma$-additive (the probability of a union of disjoint events is the sum of their probabilities).
+\end{itemize}
+
+\hypertarget{concept:laplace}{}
+\subsection*{[2] Laplace (or Uniform) Distribution (Example 1.36 (i))}
+This is the simplest and most intuitive probability model. It applies only when the sample space $\Omega$ is \textbf{finite} and all individual outcomes are \textbf{equally likely}. These situations are often described with words like "fair", "at random", "unbiased", or "well-shuffled".
+The probability of any event $A$ is then simply the ratio of the number of outcomes in $A$ to the total number of outcomes in $\Omega$:
+\[ P(A) = \frac{\text{Number of favorable outcomes}}{\text{Total number of outcomes}} = \frac{|A|}{|\Omega|} \]
+This turns probability problems into combinatorics problems (i.e., problems of counting).
+
+\hypertarget{concept:complement}{}
+\subsection*{[3] Complementary Event}
+For any event $A$, its complement, denoted $A^c$ or $A'$, is the set of all outcomes in $\Omega$ that are \textit{not} in $A$. Since an outcome must be either in $A$ or not in $A$, their probabilities must sum to 1.
+\[ P(A) + P(A^c) = 1 \quad \implies \quad P(A) = 1 - P(A^c) \]
+This rule is especially powerful when the description of an event involves phrases like "at least one", "at least two", etc. The complement is often "none" or "at most zero", which is usually much easier to count.
+
+\hypertarget{concept:inclusionexclusion}{}
+\subsection*{[4] Inclusion-Exclusion Principle (Theorem 1.20)}
+This principle provides a way to compute the probability of the union of events. If we simply add the probabilities, $P(A) + P(B)$, we have double-counted the outcomes that are in \textit{both} events (the intersection $A \cap B$). Therefore, we must subtract the probability of the intersection. For two events $A$ and $B$, the formula is:
+\[ P(A \cup B) = P(A) + P(B) - P(A \cap B) \]
+This principle generalizes to more than two events, but the formula becomes more complex.
+
+\end{document}

@@ -1,0 +1,215 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+    pdftitle={Exercise Walkthrough: Inclusion-Exclusion},
+    pdfauthor={Justin Lanfermann},
+}
+
+% --- THEOREM ENVIRONMENTS ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newenvironment{solution}{\par\noindent\textbf{Solution:}\quad}{\hfill\qedsymbol}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: The Inclusion-Exclusion Principle}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document provides a detailed, step-by-step walkthrough for proving the \textbf{Principle of Inclusion-Exclusion}. This principle is a cornerstone of combinatorics and probability theory. It provides a systematic way to find the probability of the union of multiple events, which is essential when events are not mutually exclusive.
+
+The proof will be structured using the method of \textbf{complete induction} \hyperlink{note:induction}{[1]}. We will first establish a base case and then show that if the formula holds for $n$ events, it must also hold for $n+1$ events. Throughout the proof, we will refer to definitions and properties from the "Discrete Probability Theory" script by Niki Kilbertus.
+
+\begin{exercise}[Inclusion-Exclusion Formula]
+Let $(\Omega, \mathcal{A}, P)$ be a probability space and let $A_1, A_2, \dots, A_n$ be a finite collection of events in $\mathcal{A}$. Prove that:
+$$ P\left(\bigcup_{i=1}^n A_i\right) = \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k}) $$
+\end{exercise}
+
+\section{The Proof by Induction}
+
+\subsection{Step 1: The Base Case (n=2)}
+
+\paragraph{Goal}
+First, we need to show that the formula holds for the simplest non-trivial case, which is $n=2$. We must prove that $P(A_1 \cup A_2) = P(A_1) + P(A_2) - P(A_1 \cap A_2)$.
+
+\paragraph{Reasoning and Steps}
+The core idea is to decompose the union $A_1 \cup A_2$ into disjoint sets. By doing so, we can use the additivity property of a probability measure \hyperlink{note:additivity}{[2]}.
+
+\begin{enumerate}
+    \item \textbf{Decomposition into disjoint sets:} We can write the union $A_1 \cup A_2$ as the union of two disjoint sets: $A_2$ and the part of $A_1$ that is not in $A_2$, which is $A_1 \setminus A_2$.
+    $$ A_1 \cup A_2 = (A_1 \setminus A_2) \cup A_2 $$
+    Since an element in $A_1 \setminus A_2$ is by definition not in $A_2$, these two sets are disjoint.
+
+    \item \textbf{Apply Additivity:} Because the sets are disjoint, we can apply the additivity property of the probability measure $P$ (from \textit{Definition 1.18} in the script):
+    $$ P(A_1 \cup A_2) = P(A_1 \setminus A_2) + P(A_2) $$
+
+    \item \textbf{Use the Difference Rule:} Now we need to handle the term $P(A_1 \setminus A_2)$. From \textit{Proposition 1.17 (ii)} in the script, we know the formula for the probability of a set difference \hyperlink{note:difference}{[3]}. This rule states that if $B \subseteq A$, then $P(A \setminus B) = P(A) - P(B)$. In our case, $A_1 \cap A_2$ is a subset of $A_1$. Therefore:
+    $$ P(A_1 \setminus A_2) = P(A_1) - P(A_1 \cap A_2) $$
+
+    \item \textbf{Combine:} Substituting this back into our equation from step 2, we get:
+    $$ P(A_1 \cup A_2) = \left( P(A_1) - P(A_1 \cap A_2) \right) + P(A_2) $$
+    Rearranging the terms gives the desired result for the base case:
+    $$ P(A_1 \cup A_2) = P(A_1) + P(A_2) - P(A_1 \cap A_2) $$
+\end{enumerate}
+The base case holds.
+
+\subsection{Step 2: The Inductive Hypothesis (IH)}
+
+\paragraph{Goal}
+We assume that the inclusion-exclusion formula is true for some arbitrary integer $n \ge 2$.
+
+\paragraph{Assumption}
+Let's assume for any collection of $n$ events $B_1, \dots, B_n$, the following holds:
+$$ P\left(\bigcup_{i=1}^n B_i\right) = \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(B_{i_1} \cap \dots \cap B_{i_k}) $$
+
+\subsection{Step 3: The Inductive Step (IS)}
+
+\paragraph{Goal}
+Now, we must prove that the formula also holds for $n+1$ events, using our base case and the inductive hypothesis. We want to show:
+$$ P\left(\bigcup_{i=1}^{n+1} A_i\right) = \sum_{k=1}^{n+1} (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n+1} P(A_{i_1} \cap \dots \cap A_{i_k}) $$
+
+\paragraph{Reasoning and Steps}
+The strategy is to treat the union of $n+1$ sets as a union of two "meta-sets" and apply our proven base case. This will create terms where we can apply our inductive hypothesis.
+
+\begin{enumerate}
+    \item \textbf{Group the terms:} Let's group the first $n$ events together. Let $B = \bigcup_{i=1}^n A_i$. Then our union becomes a union of two sets:
+    $$ \bigcup_{i=1}^{n+1} A_i = \left(\bigcup_{i=1}^n A_i\right) \cup A_{n+1} = B \cup A_{n+1} $$
+
+    \item \textbf{Apply the Base Case:} We can now apply our proven formula for $n=2$ to $B$ and $A_{n+1}$:
+    \begin{equation} \label{eq:is_start}
+    P(B \cup A_{n+1}) = P(B) + P(A_{n+1}) - P(B \cap A_{n+1})
+    \end{equation}
+
+    \item \textbf{Expand the terms using IH:} We have two complex terms, $P(B)$ and $P(B \cap A_{n+1})$, that we need to expand.
+
+    For $P(B) = P(\bigcup_{i=1}^n A_i)$, we can directly apply the Inductive Hypothesis (IH):
+    \begin{equation} \label{eq:ih1}
+    P(B) = \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k})
+    \end{equation}
+
+    For $P(B \cap A_{n+1})$, we first use the distributive law for sets \hyperlink{note:distributive}{[4]}:
+    $$ B \cap A_{n+1} = \left(\bigcup_{i=1}^n A_i\right) \cap A_{n+1} = \bigcup_{i=1}^n (A_i \cap A_{n+1}) $$
+    This is a union of $n$ sets, $(A_1 \cap A_{n+1}), \dots, (A_n \cap A_{n+1})$. We can apply our IH to this union:
+    \begin{align}
+    P(B \cap A_{n+1}) &= P\left(\bigcup_{i=1}^n (A_i \cap A_{n+1})\right) \nonumber \\
+    &= \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P\left((A_{i_1} \cap A_{n+1}) \cap \dots \cap (A_{i_k} \cap A_{n+1})\right) \nonumber \\
+    &= \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k} \cap A_{n+1}) \label{eq:ih2}
+    \end{align}
+
+    \item \textbf{Combine and Simplify:} Now substitute (\ref{eq:ih1}) and (\ref{eq:ih2}) back into (\ref{eq:is_start}):
+    \begin{align*}
+    P\left(\bigcup_{i=1}^{n+1} A_i\right) = & \underbrace{\left( \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(\cap_{j=1}^k A_{i_j}) \right)}_{P(B)} + P(A_{n+1}) \\
+    & - \underbrace{\left( \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(\cap_{j=1}^k A_{i_j} \cap A_{n+1}) \right)}_{P(B \cap A_{n+1})}
+    \end{align*}
+    Let's distribute the minus sign in the last term and rearrange:
+    \begin{align*}
+    = & P(A_{n+1}) + \sum_{k=1}^n (-1)^{k-1} \sum_{I \subseteq [n], |I|=k} P(\bigcap_{i \in I} A_i) \\
+    & + \sum_{k=1}^n (-1)^{k} \sum_{J \subseteq [n], |J|=k} P\left(\left(\bigcap_{j \in J} A_j\right) \cap A_{n+1}\right)
+    \end{align*}
+    Here we've used set notation for the indices for clarity. Let's analyze the sums. The target formula for $n+1$ involves sums over all subsets of $[n+1]$. Any subset of $[n+1]$ of size $k$ either:
+    \begin{itemize}
+        \item[(a)] Does \textbf{not} contain the element $n+1$. These are exactly the subsets of $[n]$ of size $k$.
+        \item[(b)] \textbf{Does} contain the element $n+1$. These are formed by taking a subset of $[n]$ of size $k-1$ and adding $n+1$.
+    \end{itemize}
+    Our expression perfectly captures this structure \hyperlink{note:pascal}{[5]}:
+    \begin{itemize}
+        \item The term $P(A_{n+1})$ is the sum for intersections of size $k=1$ that only contains $A_{n+1}$.
+        \item The first sum $\sum_{k=1}^n \dots$ covers all intersections of events from $\{A_1, \dots, A_n\}$.
+        \item The second sum $\sum_{k=1}^n \dots$ covers all intersections that are guaranteed to include $A_{n+1}$.
+    \end{itemize}
+    Let's combine them term by term for each intersection size $k'$ from $1$ to $n+1$:
+    \begin{itemize}
+        \item For $k'=1$: We get $\sum_{i=1}^n P(A_i)$ from the first sum and $P(A_{n+1})$ from the standalone term. Total: $\sum_{i=1}^{n+1} P(A_i)$. This matches.
+        \item For $k' \in \{2, \dots, n\}$: The term is $(-1)^{k'-1}$. Intersections of size $k'$ come from two places:
+        \begin{enumerate}
+            \item Those not containing $A_{n+1}$ (from the first sum, with $k=k'$).
+            \item Those containing $A_{n+1}$ (from the second sum, with $k=k'-1$).
+        \end{enumerate}
+        Combining these gives precisely the sum over all intersections of size $k'$ from $\{A_1, \dots, A_{n+1}\}$.
+        \item For $k'=n+1$: This term only comes from the second sum, when $k=n$. The term is $(-1)^n P(A_1 \cap \dots \cap A_n \cap A_{n+1})$. This is the correct final term for the $n+1$ formula.
+    \end{itemize}
+    Thus, by rearranging and grouping the summations, we arrive at the formula for $n+1$:
+    $$ P\left(\bigcup_{i=1}^{n+1} A_i\right) = \sum_{k=1}^{n+1} (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n+1} P(A_{i_1} \cap \dots \cap A_{i_k}) $$
+\end{enumerate}
+This completes the inductive step.
+
+\section{Conclusion}
+
+We have successfully shown that:
+\begin{enumerate}
+    \item The formula holds for the base case $n=2$.
+    \item If the formula holds for any $n$ events, it also holds for $n+1$ events.
+\end{enumerate}
+By the principle of mathematical induction, the Inclusion-Exclusion formula is true for any finite number of events $n \ge 2$.
+
+\subsection*{Check Your Understanding}
+To solidify your understanding, try writing out the formula for $n=3$ events, $P(A \cup B \cup C)$. You should get:
+$$ P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C) $$
+Does this match the general formula we just proved?
+
+\newpage
+\section*{In-depth Explanations}
+
+\hypertarget{note:induction}{\label{note:induction}}
+\paragraph{[1] The Principle of Mathematical Induction}
+Induction is a powerful proof technique used to prove statements about all natural numbers (or any well-ordered set). It works like a chain of dominoes:
+\begin{itemize}
+    \item \textbf{Base Case:} You prove the statement is true for the first number (e.g., $n=1$ or $n=2$). This is like tipping the first domino.
+    \item \textbf{Inductive Step:} You prove that \textit{if} the statement is true for an arbitrary number $n$ (this is the Inductive Hypothesis), \textit{then} it must also be true for the next number, $n+1$. This is like showing that any domino is close enough to the next one to knock it over.
+\end{itemize}
+If you can prove both parts, you have proven the statement for all numbers starting from your base case, because the first one falls, which makes the second one fall, which makes the third one fall, and so on, ad infinitum.
+
+\vspace{1cm}
+\hypertarget{note:additivity}{\label{note:additivity}}
+\paragraph{[2] Additivity of Probability for Disjoint Sets}
+This is a direct consequence of the third axiom of a probability measure, $\sigma$-additivity, as defined in \textit{Definition 1.16 (iii)} and specialized for probability in \textit{Definition 1.18}. The axiom states that for any \textit{countable} collection of pairwise disjoint sets $(A_i)_{i \in \mathbb{N}}$ in $\mathcal{A}$, we have:
+$$ P\left(\bigcup_{i=1}^\infty A_i\right) = \sum_{i=1}^\infty P(A_i) $$
+For a finite number of disjoint sets, say $A_1, A_2$, we can consider the sequence $A_1, A_2, \emptyset, \emptyset, \dots$. The axiom then implies $P(A_1 \cup A_2) = P(A_1) + P(A_2) + P(\emptyset) + \dots = P(A_1) + P(A_2)$, since $P(\emptyset)=0$.
+
+\vspace{1cm}
+\hypertarget{note:difference}{\label{note:difference}}
+\paragraph{[3] Probability of a Set Difference}
+The formula $P(A \setminus B) = P(A) - P(A \cap B)$ is a basic property of measures shown in \textit{Proposition 1.17 (ii)} (though stated there for the case when $B \subseteq A$). To see it more generally, note that $A = (A \setminus B) \cup (A \cap B)$. These two sets are disjoint. By additivity \hyperlink{note:additivity}{[2]}, we have $P(A) = P(A \setminus B) + P(A \cap B)$. Rearranging this equation gives the desired result.
+
+\vspace{1cm}
+\hypertarget{note:distributive}{\label{note:distributive}}
+\paragraph{[4] Distributive Law for Sets}
+Set operations follow distributive laws, similar to multiplication over addition in arithmetic. Specifically, intersection distributes over union:
+$$ A \cap (B \cup C) = (A \cap B) \cup (A \cap C) $$
+This can be extended to unions of multiple sets:
+$$ \left(\bigcup_{i=1}^n A_i\right) \cap B = \bigcup_{i=1}^n (A_i \cap B) $$
+This is a standard result from set theory (see \textit{Appendix A.1}).
+
+\vspace{1cm}
+\hypertarget{note:pascal}{\label{note:pascal}}
+\paragraph{[5] Combinatorial Argument (Pascal's Identity)}
+The way we combined the sums in the inductive step is a probabilistic version of a famous combinatorial identity called Pascal's Identity: $\binom{n}{k} + \binom{n}{k-1} = \binom{n+1}{k}$.
+The sum $\sum_{1 \le i_1 < \dots < i_k \le n+1}$ is a sum over all $\binom{n+1}{k}$ subsets of size $k$ from the set $\{1, \dots, n+1\}$.
+Our proof showed that the sum over all intersections of size $k$ is formed by:
+\begin{itemize}
+    \item The sum over the $\binom{n}{k}$ intersections that do not involve $A_{n+1}$.
+    \item The sum over the $\binom{n}{k-1}$ intersections that are formed by taking $k-1$ events from the first $n$ and intersecting them with $A_{n+1}$.
+\end{itemize}
+Adding these two collections of intersections gives all $\binom{n+1}{k}$ possible intersections of size $k$. Our proof carefully tracked the alternating signs to show they combined correctly as well.
+
+\end{document}

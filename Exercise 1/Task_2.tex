@@ -1,0 +1,145 @@
+\documentclass[11pt,a4paper]{article}
+
+% ====== PACKAGES ======
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{wasysym} % For the dice symbols
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+\usepackage{xcolor}
+
+% Redefine link color to be less intrusive
+\hypersetup{
+    colorlinks,
+    linkcolor={blue!60!black},
+    citecolor={blue!60!black},
+    urlcolor={blue!80!black}
+}
+
+% ====== TITLE, AUTHOR, DATE ======
+\title{\textbf{Exercise Walkthrough: Probability of At Least One 'One'}}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+This document provides a step-by-step solution to the problem of calculating the probability of obtaining at least one \dicei\ when throwing six fair dice simultaneously. The core idea is to first rigorously define the underlying probability space for this experiment. Then, instead of calculating the probability of the event directly, we will calculate the probability of its complement, which is often simpler.
+
+\section{Step 1: Defining the Probability Space}
+
+Before we can calculate any probabilities, we must formally define the probability space $(\Omega', \mathcal{A}', P)$, as per \textbf{Definition 1.18} from the script. This space consists of three components: the sample space $\Omega'$, the event space $\mathcal{A}'$, and the probability measure $P$.
+
+\paragraph{The Sample Space $\Omega'$}
+The sample space is the set of all possible outcomes of our experiment. Our experiment consists of rolling six fair dice. Let the set of outcomes for a single die roll be $\Omega = \{\dicei, \diceii, \diceiii, \diceiv, \dicev, \dicevi\}$.
+Since we roll six dice, a single outcome of the experiment is a sequence of 6 results, for example $(\dicei, \dicev, \diceii, \dicei, \dicevi, \diceiii)$.
+
+The total sample space $\Omega'$ is therefore the set of all such 6-tuples. We can define this as the Cartesian product of the single-die outcome set with itself six times:
+\[
+\Omega' = \Omega^6 = \{ (\omega_1, \omega_2, \omega_3, \omega_4, \omega_5, \omega_6) \mid \omega_j \in \Omega \text{ for } j=1,\dots,6 \}
+\]
+The total number of possible outcomes, $|\Omega'|$, is $|\Omega|^6 = 6^6 = 46,656$. This setup corresponds to drawing with replacement in an ordered manner, as described in \textbf{Lemma 1.33 (i)}.
+
+\paragraph{The Event Space (σ-algebra) $\mathcal{A}'$}
+The event space is a collection of subsets of $\Omega'$ for which we can assign probabilities. Since our sample space $\Omega'$ is finite, we can choose the most comprehensive σ-algebra: the power set \hyperlink{note:powerset}{[1]} of $\Omega'$, denoted $\mathcal{P}(\Omega')$. The power set contains all possible subsets of $\Omega'$, meaning we can assign a probability to any conceivable event. This is the standard choice for finite sample spaces (\textbf{Convention 1.15}).
+\[
+\mathcal{A}' = \mathcal{P}(\Omega')
+\]
+
+\paragraph{The Probability Measure $P$}
+The problem states that the dice are "fair" and we assume a "uniform distribution". This means every elementary outcome $\omega \in \Omega'$ is equally likely. This scenario is described by the \textbf{Laplace model} (\textbf{Example 1.36 (i)}). The probability of any event $E \in \mathcal{A}'$ is the ratio of the number of favorable outcomes (the size of the event set $E$) to the total number of possible outcomes (the size of the sample space $\Omega'$). \hyperlink{note:laplace}{[2]}
+\[
+P(E) = \frac{|E|}{|\Omega'|} = \frac{|E|}{6^6}
+\]
+Thus, we have fully defined our probability space as $(\Omega^6, \mathcal{P}(\Omega^6), P)$.
+
+\section{Step 2: Defining the Event of Interest}
+
+We are interested in the event of "obtaining at least one \dicei". Let's call this event $A$. In set notation, this is the set of all outcomes in $\Omega'$ that contain the symbol \dicei\ in at least one of their six positions.
+\[
+A = \{ \omega \in \Omega' \mid \exists j \in \{1, \dots, 6\} \text{ such that } \omega_j = \dicei \}
+\]
+Calculating $|A|$ directly would be complicated. We would need to use the Principle of Inclusion-Exclusion (\textbf{Theorem 1.20}) to sum the cases with exactly one \dicei, exactly two \dicei s, and so on, which is tedious. A much more elegant approach is to use the complement rule.
+
+\section{Step 3: Using the Complement Rule}
+The complement of event $A$, denoted $A^c$, is the event that $A$ does not occur. In our case, $A^c$ is the event that "we obtain \textbf{no} \dicei s". \hyperlink{note:complement}{[3]}
+\[
+A^c = \{ \omega \in \Omega' \mid \forall j \in \{1, \dots, 6\}, \omega_j \neq \dicei \}
+\]
+The probability of $A$ can be calculated using the probability of its complement:
+\[
+P(A) = 1 - P(A^c)
+\]
+This approach is much simpler because counting the number of outcomes in $A^c$ is straightforward.
+
+\section{Step 4: Calculating the Probability of the Complement}
+
+To find $P(A^c)$, we first need to determine its size, $|A^c|$. For an outcome to be in $A^c$, each of the six dice must show a result from the set $\{\diceii, \diceiii, \diceiv, \dicev, \dicevi\}$. This set has 5 possible outcomes.
+Since the outcome of each die is independent, we can find the total number of outcomes in $A^c$ by multiplying the number of choices for each of the six positions:
+\[
+|A^c| = 5 \times 5 \times 5 \times 5 \times 5 \times 5 = 5^6 = 15,625
+\]
+Now, we use our probability measure $P$ to find $P(A^c)$:
+\[
+P(A^c) = \frac{|A^c|}{|\Omega'|} = \frac{5^6}{6^6} = \left(\frac{5}{6}\right)^6
+\]
+
+\section{Step 5: Final Calculation}
+
+Finally, we can compute $p$, the probability of our original event $A$, using the complement rule:
+\[
+p = P(A) = 1 - P(A^c) = 1 - \left(\frac{5}{6}\right)^6
+\]
+Calculating the numerical value:
+\[
+p = 1 - \frac{15,625}{46,656} = \frac{46,656 - 15,625}{46,656} = \frac{31,031}{46,656} \approx 0.6651
+\]
+So, the probability of rolling at least one \dicei\ in six throws of a fair die is approximately 66.5\%.
+
+\subsection*{Check Your Understanding}
+Let's try a small variation. Using the same logic, what would be the probability of rolling \textbf{at least one even number} (i.e., \diceii, \diceiv, or \dicevi) when throwing just \textbf{two} fair dice?
+\textit{(Hint: Define the complement event and count its outcomes.)}
+
+\section{Summary and Takeaways}
+This exercise demonstrates a fundamental problem-solving pattern in probability theory:
+\begin{enumerate}
+    \item \textbf{Formalize the Model:} Always start by clearly defining the probability space $(\Omega, \mathcal{A}, P)$. This grounds the problem in a rigorous framework and clarifies the assumptions (e.g., uniform distribution).
+    \item \textbf{Identify the Event:} Translate the problem's word description into a formal set $A \subseteq \Omega$.
+    \item \textbf{Use the Complement Rule:} For events described with "at least one," it is almost always easier to calculate the probability of the complement event ("none") and subtract it from 1.
+    \item \textbf{Count and Calculate:} Apply combinatorial principles to count the number of outcomes in the relevant event set and use the probability measure to find the final answer.
+\end{enumerate}
+The next logical step would be to look at problems involving non-uniform discrete distributions or move into the continuous domain where integration replaces counting.
+
+\newpage
+\section*{In-Depth Explanations}
+\hypertarget{note:powerset}{\label{note:powerset}}
+\paragraph{[1] Power Set (Definition A.3)}
+The power set of a set $\Omega$, denoted $\mathcal{P}(\Omega)$ or $2^\Omega$, is the collection of all possible subsets of $\Omega$, including the empty set $\emptyset$ and the set $\Omega$ itself. For a finite set with $n$ elements, its power set has $2^n$ elements. For example, if $\Omega = \{a, b\}$, then $\mathcal{P}(\Omega) = \{\emptyset, \{a\}, \{b\}, \{a, b\}\}$. In probability theory, when the sample space $\Omega$ is finite or countably infinite, we can often use the power set as our σ-algebra, allowing us to assign a probability to any subset of outcomes.
+
+\vspace{1cm}
+\hypertarget{note:laplace}{\label{note:laplace}}
+\paragraph{[2] Laplace Probability / Uniform Distribution (Example 1.36 (i), 1.37)}
+A Laplace probability space is a special case of a discrete probability space where the sample space $\Omega$ is finite and every elementary outcome $\omega \in \Omega$ is equally likely. This is the formal model for "fair" random processes like flipping a fair coin or rolling a fair die. The probability mass function (pmf) is $p(\omega) = 1/|\Omega|$ for all $\omega \in \Omega$. Consequently, the probability of any event $A \subseteq \Omega$ is given by the simple formula:
+\[
+P(A) = \sum_{\omega \in A} p(\omega) = \sum_{\omega \in A} \frac{1}{|\Omega|} = \frac{|A|}{|\Omega|}
+\]
+This reduces probability calculations to the combinatorial task of counting the number of outcomes in the event $A$ and the sample space $\Omega$.
+
+\vspace{1cm}
+\hypertarget{note:complement}{\label{note:complement}}
+\paragraph{[3] Complement Rule (Derived from Definition 1.1 \& 1.18)}
+For any set $A$ in a sample space $\Omega$, its complement $A^c$ is defined as all elements in $\Omega$ that are not in $A$ ($A^c = \Omega \setminus A$). By definition, $A$ and $A^c$ are disjoint ($A \cap A^c = \emptyset$) and their union is the entire sample space ($A \cup A^c = \Omega$).
+From the axioms of a probability measure (\textbf{Definition 1.18}), we know:
+\begin{itemize}
+    \item $P(\Omega) = 1$
+    \item For disjoint sets, $P(A \cup A^c) = P(A) + P(A^c)$ (from σ-additivity)
+\end{itemize}
+Combining these, we get $P(A) + P(A^c) = P(A \cup A^c) = P(\Omega) = 1$. Rearranging this gives the powerful and convenient complement rule:
+\[
+P(A) = 1 - P(A^c)
+\]
+
+\end{document}

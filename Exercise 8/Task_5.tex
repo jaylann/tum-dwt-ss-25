@@ -1,0 +1,228 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{url}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=red,
+    pdftitle={Exercise Walkthrough: Properties of the Characteristic Function},
+    pdfauthor={Justin Lanfermann},
+}
+
+% Theorem environments (optional, but good practice)
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{exercise}{Exercise}
+
+% Document Info
+\title{Exercise Walkthrough: Properties of the Characteristic Function}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step solution to an exercise on the basic properties of the characteristic function ($\phi_X$). Each step is explained with reference to the concepts and definitions from the "Discrete Probability Theory" script by Niki Kilbertus. The goal is to build a clear understanding of why these properties hold and how they are derived.
+\end{abstract}
+
+\section{Introduction and Overview}
+
+\noindent
+This walkthrough tackles the following exercise:
+
+\begin{exercise}
+Let $X$ and $(X_i)_{i=1}^n$ be real-valued random variables (RVRVs). Verify the following properties of the characteristic function.
+\begin{enumerate}
+    \item[(i)] $|\phi_X(t)| \leq 1$ for all $t \in \mathbb{R}$ and $\phi_X(0) = 1$.
+    \item[(ii)] $\phi_{aX+b}(t) = e^{ibt}\phi_X(at)$ for all $a \in \mathbb{R} \setminus \{0\}, b \in \mathbb{R}$.
+    \item[(iii)] We have that $P_X = P_{-X}$ if and only if $\phi_X$ is real-valued.
+    \item[(iv)] If $X_1, \ldots, X_n$ are independent, then
+    \[
+        \phi_{X_1+\dots+X_n}(t) = \phi_{X_1}(t)\cdots\phi_{X_n}(t).
+    \]
+\end{enumerate}
+\end{exercise}
+
+Before we dive into the proofs, let's quickly recall what a characteristic function is. As stated in \textbf{Definition 2.46} of the script, the characteristic function (CF) of a random variable $X$ is defined as:
+\[ \phi_X(t) = \mathbb{E}[e^{itX}] \]
+Think of the CF as a unique "fingerprint" of a random variable's distribution \hyperlink{note1}{[1]}. It's a powerful tool because it turns problems about distributions and convolutions (like sums of independent variables) into simpler problems involving multiplication, leveraging tools from complex analysis. We will now prove the four fundamental properties listed in the exercise.
+
+\section{Step-by-Step Proofs}
+
+\subsection{Property (i): Boundedness and Value at Zero}
+\textbf{Goal:} Prove that $|\phi_X(t)| \leq 1$ and $\phi_X(0) = 1$.
+
+\subsubsection{Proof of $\phi_X(0) = 1$}
+\begin{enumerate}
+    \item \textbf{Start with the definition:} We use the definition of the characteristic function \hyperlink{note1}{[1]}:
+    \[ \phi_X(t) = \mathbb{E}[e^{itX}] \]
+    \item \textbf{Substitute t=0:} We set $t=0$ in the equation:
+    \[ \phi_X(0) = \mathbb{E}[e^{i \cdot 0 \cdot X}] = \mathbb{E}[e^0] \]
+    \item \textbf{Simplify the exponent:} Since any number raised to the power of 0 is 1, we get:
+    \[ \phi_X(0) = \mathbb{E}[1] \]
+    \item \textbf{Use the property of expectation:} The expectation \hyperlink{note2}{[2]} of a constant is the constant itself. Thus:
+    \[ \mathbb{E}[1] = 1 \]
+\end{enumerate}
+\textbf{Conclusion:} By chaining these steps, we have shown that $\phi_X(0) = 1$.
+
+\subsubsection{Proof of $|\phi_X(t)| \leq 1$}
+\begin{enumerate}
+    \item \textbf{Start with the absolute value of the CF:}
+    \[ |\phi_X(t)| = |\mathbb{E}[e^{itX}]| \]
+    \item \textbf{Apply the property $|\mathbb{E}[Z]| \leq \mathbb{E}[|Z|]$:} This is a standard property of expectation (an application of Jensen's inequality for the convex function $f(z)=|z|$). We move the absolute value inside the expectation:
+    \[ |\mathbb{E}[e^{itX}]| \leq \mathbb{E}[|e^{itX}|] \]
+    \item \textbf{Calculate the modulus of the complex exponential:} We use Euler's formula \hyperlink{note3}{[3]} $e^{i\theta} = \cos(\theta) + i\sin(\theta)$. Here, $\theta = tX$.
+    \[ e^{itX} = \cos(tX) + i\sin(tX) \]
+    The modulus of a complex number $a+bi$ is $\sqrt{a^2 + b^2}$. Therefore:
+    \[ |e^{itX}| = |\cos(tX) + i\sin(tX)| = \sqrt{\cos^2(tX) + \sin^2(tX)} \]
+    \item \textbf{Use the fundamental trigonometric identity:} We know that $\cos^2(\theta) + \sin^2(\theta) = 1$. So:
+    \[ \sqrt{\cos^2(tX) + \sin^2(tX)} = \sqrt{1} = 1 \]
+    This means $|e^{itX}|$ is always equal to 1, regardless of the values of $t$ or the random variable $X$.
+    \item \textbf{Substitute back and conclude:} We substitute this result back into our inequality from step 2:
+    \[ |\phi_X(t)| \leq \mathbb{E}[|e^{itX}|] = \mathbb{E}[1] = 1 \]
+\end{enumerate}
+\textbf{Conclusion:} We have successfully shown that $|\phi_X(t)| \leq 1$ for all $t \in \mathbb{R}$.
+
+\subsection{Property (ii): Affine Transformation}
+\textbf{Goal:} Prove that $\phi_{aX+b}(t) = e^{ibt}\phi_X(at)$.
+
+\begin{enumerate}
+    \item \textbf{Define a new random variable:} Let $Y = aX + b$. We want to find its characteristic function, $\phi_Y(t)$.
+    \item \textbf{Apply the definition of the CF:}
+    \[ \phi_{aX+b}(t) = \mathbb{E}[e^{it(aX+b)}] \]
+    \item \textbf{Use properties of exponents:} We expand the term inside the exponent and split the exponential:
+    \[ e^{it(aX+b)} = e^{itaX + itb} = e^{itaX} \cdot e^{itb} \]
+    \item \textbf{Substitute back into the expectation:}
+    \[ \phi_{aX+b}(t) = \mathbb{E}[e^{itaX} \cdot e^{itb}] \]
+    \item \textbf{Use linearity of expectation \hyperlink{note4}{[4]}:} The term $e^{itb}$ is a constant with respect to the random variable $X$. We can therefore pull it out of the expectation:
+    \[ \mathbb{E}[e^{itaX} \cdot e^{itb}] = e^{itb} \mathbb{E}[e^{itaX}] \]
+    \item \textbf{Recognize the remaining CF:} The term $\mathbb{E}[e^{itaX}]$ is the characteristic function of $X$, but evaluated at the point `at`. We can write it as:
+    \[ \mathbb{E}[e^{i(at)X}] = \phi_X(at) \]
+    \item \textbf{Combine and conclude:} Putting everything together gives the final result:
+    \[ \phi_{aX+b}(t) = e^{itb} \phi_X(at) \]
+\end{enumerate}
+This property is extremely useful for relating the CF of a standardized variable back to the original one.
+
+\subsection{Property (iii): Symmetry and Real-Valued CF}
+\textbf{Goal:} Prove that $P_X = P_{-X}$ (i.e., $X$ has a symmetric distribution \hyperlink{note5}{[5]}) if and only if $\phi_X(t)$ is real-valued for all $t$. This is an "if and only if" proof, so we must prove both directions.
+
+\subsubsection{Direction 1: (Symmetry $\implies$ Real-Valued CF)}
+\textbf{Assumption:} $X$ and $-X$ have the same distribution, i.e., $P_X = P_{-X}$.
+\textbf{To Prove:} $\phi_X(t)$ is a real number for all $t \in \mathbb{R}$.
+\begin{enumerate}
+    \item \textbf{Condition for a real number:} A complex number $z$ is real if and only if it equals its complex conjugate, $z = z^*$. We will show that $\phi_X(t) = \phi_X(t)^*$.
+    \item \textbf{Calculate the complex conjugate of $\phi_X(t)$:}
+    \[ \phi_X(t)^* = (\mathbb{E}[e^{itX}])^* \]
+    We can move the conjugate inside the expectation (since integration/summation and conjugation commute):
+    \[ \phi_X(t)^* = \mathbb{E}[(e^{itX})^*] \]
+    The conjugate of $e^{i\theta}$ is $e^{-i\theta}$. So, $(e^{itX})^* = e^{-itX}$.
+    \[ \phi_X(t)^* = \mathbb{E}[e^{-itX}] \]
+    \item \textbf{Relate to the CF of $-X$:} Let's look at the definition of $\phi_{-X}(t)$:
+    \[ \phi_{-X}(t) = \mathbb{E}[e^{it(-X)}] = \mathbb{E}[e^{-itX}] \]
+    Comparing these, we see that $\phi_X(t)^* = \phi_{-X}(t)$.
+    \item \textbf{Use the symmetry assumption:} Our assumption is that $X$ and $-X$ have the same distribution. A fundamental property of distributions is that if two variables have the same distribution, they must also have the same characteristic function. Therefore:
+    \[ P_X = P_{-X} \implies \phi_X(t) = \phi_{-X}(t) \quad \text{for all } t \]
+    \item \textbf{Combine and conclude:} From step 3, we have $\phi_X(t)^* = \phi_{-X}(t)$. From step 4, we have $\phi_{-X}(t) = \phi_X(t)$. Combining these gives:
+    \[ \phi_X(t)^* = \phi_X(t) \]
+    Since the CF is equal to its own conjugate, it must be real-valued.
+\end{enumerate}
+
+\subsubsection{Direction 2: (Real-Valued CF $\implies$ Symmetry)}
+\textbf{Assumption:} $\phi_X(t)$ is real-valued for all $t \in \mathbb{R}$.
+\textbf{To Prove:} $X$ and $-X$ have the same distribution, $P_X = P_{-X}$.
+\begin{enumerate}
+    \item \textbf{Use the real-valued assumption:} If $\phi_X(t)$ is real, then $\phi_X(t) = \phi_X(t)^*$.
+    \item \textbf{Use the result from the first direction:} From step 3 above, we know that $\phi_X(t)^* = \phi_{-X}(t)$.
+    \item \textbf{Equate the CFs:} Combining these two facts gives:
+    \[ \phi_X(t) = \phi_{-X}(t) \quad \text{for all } t \]
+    So, the random variables $X$ and $-X$ have the same characteristic function.
+    \item \textbf{Use the Uniqueness Theorem \hyperlink{note6}{[6]}:} As stated in \textbf{Remark 2.47 (v)}, the characteristic function uniquely determines the distribution. Since $\phi_X(t) = \phi_{-X}(t)$, the distributions of $X$ and $-X$ must be identical.
+    \[ P_X = P_{-X} \]
+\end{enumerate}
+This completes the proof.
+
+\subsection{Property (iv): Sum of Independent Variables}
+\textbf{Goal:} If $X_1, \ldots, X_n$ are independent, prove that $\phi_{X_1+\dots+X_n}(t) = \phi_{X_1}(t)\cdots\phi_{X_n}(t)$.
+
+\begin{enumerate}
+    \item \textbf{Define the sum:} Let $S_n = X_1 + \dots + X_n$. We want to find $\phi_{S_n}(t)$.
+    \item \textbf{Apply the definition of the CF:}
+    \[ \phi_{S_n}(t) = \mathbb{E}[e^{itS_n}] = \mathbb{E}[e^{it(X_1 + \dots + X_n)}] \]
+    \item \textbf{Use properties of exponents:} We can split the exponential of a sum into a product of exponentials:
+    \[ e^{it(X_1 + \dots + X_n)} = e^{itX_1} \cdot e^{itX_2} \cdots e^{itX_n} \]
+    \item \textbf{Substitute back into the expectation:}
+    \[ \phi_{S_n}(t) = \mathbb{E}[e^{itX_1} \cdot e^{itX_2} \cdots e^{itX_n}] \]
+    \item \textbf{Use the independence property \hyperlink{note4}{[4]}:} This is the crucial step. A core property of expectation is that for \textit{independent} random variables $Z_1, \ldots, Z_n$, the expectation of their product is the product of their expectations: $\mathbb{E}[Z_1 \cdots Z_n] = \mathbb{E}[Z_1]\cdots\mathbb{E}[Z_n]$.
+
+    Here, since $X_1, \ldots, X_n$ are independent, the functions of these variables, $e^{itX_1}, \ldots, e^{itX_n}$, are also independent. Therefore, we can write:
+    \[ \mathbb{E}[e^{itX_1} \cdot e^{itX_2} \cdots e^{itX_n}] = \mathbb{E}[e^{itX_1}] \cdot \mathbb{E}[e^{itX_2}] \cdots \mathbb{E}[e^{itX_n}] \]
+    \item \textbf{Recognize the individual CFs:} Each term in the product, $\mathbb{E}[e^{itX_i}]$, is precisely the definition of the characteristic function of $X_i$, which is $\phi_{X_i}(t)$.
+    \item \textbf{Combine and conclude:} The product becomes:
+    \[ \phi_{S_n}(t) = \phi_{X_1}(t) \cdot \phi_{X_2}(t) \cdots \phi_{X_n}(t) \]
+\end{enumerate}
+This remarkable property is the main reason why characteristic functions are so fundamental for studying sums of independent random variables, forming the basis for proofs of the Law of Large Numbers and the Central Limit Theorem.
+
+\section{Check Your Understanding}
+
+\noindent
+Here's a small exercise to test your understanding. Let $X_1 \sim \mathcal{N}(\mu_1, \sigma_1^2)$ and $X_2 \sim \mathcal{N}(\mu_2, \sigma_2^2)$ be two \textit{independent} Normal random variables.
+\begin{enumerate}
+    \item The characteristic function of a normal distribution $\mathcal{N}(\mu, \sigma^2)$ is given in the script (\textbf{Example 2.48}) as $\phi(t) = \exp(i\mu t - \frac{1}{2}\sigma^2 t^2)$.
+    \item Let $S = X_1 + X_2$. Use the properties we just proved, especially property (iv), to find the characteristic function $\phi_S(t)$.
+    \item Based on the form of $\phi_S(t)$, what can you conclude about the distribution of $S = X_1 + X_2$?
+\end{enumerate}
+This shows how these properties can be used to derive important results, such as the fact that the sum of independent normal random variables is also normally distributed.
+
+\section{Summary and Next Steps}
+
+In this walkthrough, we have rigorously proven four key properties of characteristic functions:
+\begin{itemize}
+    \item They are bounded by 1 and equal to 1 at the origin.
+    \item They have a simple transformation rule for affine functions of random variables.
+    \item A real-valued CF is equivalent to having a distribution symmetric around zero.
+    \item The CF of a sum of independent random variables is the product of their individual CFs.
+\end{itemize}
+
+These properties are not just abstract mathematical facts; they are the workhorses behind many of the most important theorems in probability theory.
+A great next step would be to look at the proof sketch of the Central Limit Theorem (\textbf{Theorem 2.64} in the script). You will see that it relies heavily on the properties we have just discussed, particularly the affine transformation rule (ii) and the product rule for sums (iv), combined with a Taylor expansion of the CF. Understanding these proofs solidifies why we learn about characteristic functions in the first place.
+
+\newpage
+\section{In-depth Explanations}
+Here are more detailed explanations of the concepts referenced in the proofs.
+
+\begin{description}
+    \item[\hypertarget{note1}{[1] Characteristic Function (CF)}] The characteristic function of a real-valued random variable $X$ is defined as $\phi_X(t) = \mathbb{E}[e^{itX}]$, where $t \in \mathbb{R}$ is a real number and $i$ is the imaginary unit. It is essentially the Fourier Transform of the probability distribution of $X$. It's called a "fingerprint" because it uniquely determines the distribution (\textbf{Remark 2.47 (v)}). If two random variables have the same CF, they have the same distribution. This is a very powerful property.
+
+    \item[\hypertarget{note2}{[2] Expectation $\mathbb{E}[\cdot]$}] The expectation (or expected value/mean) of a random variable is its probability-weighted average value. As per \textbf{Definition 2.1}, for a discrete RVRV $X$, it is $\mathbb{E}[X] = \sum_x x \cdot p_X(x)$, and for a continuous RVRV, it is $\mathbb{E}[X] = \int_{-\infty}^{\infty} x \cdot p_X(x) dx$. More generally, for a function $g(X)$ of a random variable, its expectation is $\mathbb{E}[g(X)]$. This is formally justified by the Law of the Unconscious Statistician (LOTUS, \textbf{Lemma 2.2}).
+
+    \item[\hypertarget{note3}{[3] Euler's Formula and Complex Numbers}] Euler's formula connects the complex exponential function with trigonometric functions: $e^{i\theta} = \cos(\theta) + i\sin(\theta)$. For a complex number $z = a+bi$, its \textbf{complex conjugate} is $z^* = a-bi$ and its \textbf{modulus} (or absolute value) is $|z| = \sqrt{a^2+b^2}$. Applying this to Euler's formula, we find $|e^{i\theta}| = \sqrt{\cos^2(\theta) + \sin^2(\theta)} = \sqrt{1} = 1$. The conjugate is $(e^{i\theta})^* = \cos(\theta) - i\sin(\theta) = \cos(-\theta) + i\sin(-\theta) = e^{-i\theta}$.
+
+    \item[\hypertarget{note4}{[4] Properties of Expectation}] The expectation operator $\mathbb{E}$ is linear. The key properties we used are:
+    \begin{itemize}
+        \item $\mathbb{E}[c] = c$ for any constant $c$.
+        \item $\mathbb{E}[cZ] = c\mathbb{E}[Z]$ for a constant $c$ and RVRV $Z$.
+        \item \textbf{Product of Independent Variables:} If $Z_1, \ldots, Z_n$ are independent RVRVs, then $\mathbb{E}[Z_1 \cdots Z_n] = \mathbb{E}[Z_1] \cdots \mathbb{E}[Z_n]$. This is a generalization of \textbf{Proposition 2.4 (v)}, which states it for two variables. This property is fundamental and is the reason independence is such a powerful assumption.
+    \end{itemize}
+
+    \item[\hypertarget{note5}{[5] Symmetric Distribution}] A random variable $X$ has a distribution symmetric about 0 if its probability law is the same as that of $-X$. Formally, this means the probability measure $P_X$ is the same as $P_{-X}$. This implies that for any set $A$, $P(X \in A) = P(-X \in A)$. For example, $P(X \leq c) = P(-X \leq c) = P(X \geq -c)$. A classic example is the standard Normal distribution $\mathcal{N}(0,1)$.
+
+    \item[\hypertarget{note6}{[6] Uniqueness of the Characteristic Function}] The Uniqueness Theorem for characteristic functions (\textbf{Remark 2.47 (v)}) states that a probability distribution is uniquely determined by its characteristic function. That is, if two random variables $X$ and $Y$ have the same CF ($\phi_X(t) = \phi_Y(t)$ for all $t$), then they must have the same distribution ($P_X = P_Y$). This allows us to prove that two distributions are equal by simply showing their CFs are equal, which is often much easier.
+
+\end{description}
+
+\end{document}

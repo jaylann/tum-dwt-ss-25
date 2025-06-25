@@ -1,0 +1,168 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGE IMPORTS ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% --- HYPERLINK SETUP ---
+% This makes the links in the document look nice and adds metadata.
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Exercise Walkthrough: Subway Platform Probability},
+    pdfpagemode=FullScreen,
+    }
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Subway Platform Probability}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+\maketitle
+
+\section*{Overview}
+This document provides a detailed walkthrough for the subway platform probability problem. The scenario involves Agathe and Balthasar at a subway station where the number of people waiting changes over time. Our goal is to calculate the probability of Agathe boarding the train within a certain timeframe.
+
+We will break down the problem into smaller, manageable parts. First, we will model the state of the system—that is, the number of people on the platform—at each step. Then, we will use fundamental concepts of probability theory, such as conditional probability and the complement rule, to solve for the required probabilities.
+
+\section{Problem Statement}
+After a long game night, Agathe and Balthasar are standing alone at the subway station Marienplatz, where a train departs every 10 minutes. The trains are so overcrowded that only one person can board each time. Every person on the platform has the same chance of boarding. Additionally, between each train's departure and the next one's arrival, two new people arrive at the station. We need to determine the probability that Agathe will be able to board:
+\begin{itemize}
+    \item[(i)] the $n$-th train,
+    \item[(ii)] at the latest by the $n$-th train,
+\end{itemize}
+for any $n \in \mathbb{N}$.
+
+\section{Step-by-Step Solution}
+
+\subsection{Part (i): Probability of boarding the \textit{n}-th train}
+
+\subsubsection*{Step 1: Model the Number of People on the Platform}
+The core of this problem is that the sample space changes with each arriving train. Let's denote $N_k$ as the number of people on the platform just before the $k$-th train arrives.
+
+\begin{itemize}
+    \item \textbf{Initially (before the 1st train):} Agathe and Balthasar are present. So, $N_1 = 2$.
+    \item \textbf{Before the 2nd train:} After the 1st train departs, one person boards, leaving $N_1 - 1 = 1$ person. Then, two new people arrive. The total number of people is now $(N_1 - 1) + 2 = 1 + 2 = 3$. So, $N_2 = 3$.
+    \item \textbf{General Step:} If there are $N_k$ people before the $k$-th train, then after one person boards and two new people arrive, the number of people before the $(k+1)$-th train will be $N_{k+1} = (N_k - 1) + 2 = N_k + 1$.
+\end{itemize}
+This is a simple arithmetic progression. We can see that the number of people waiting for the $k$-th train is $N_k = k + 1$.
+
+\subsubsection*{Step 2: Define the Event}
+For Agathe to board the $n$-th train, a sequence of events must occur:
+\begin{enumerate}
+    \item She must \textbf{not} board the 1st train.
+    \item She must \textbf{not} board the 2nd train.
+    \item ... and so on, until ...
+    \item She must \textbf{not} board the $(n-1)$-th train.
+    \item She \textbf{must} board the $n$-th train.
+\end{enumerate}
+Let $E_k$ be the event "Agathe does not board the $k$-th train". We want to calculate the probability of the intersection of these events: $P(E_1 \cap E_2 \cap \dots \cap E_{n-1} \cap E_n^c)$. We can use the chain rule for probabilities \hyperlink{note1}{[1]} (see script, Lemma 1.66).
+
+\subsubsection*{Step 3: Calculate the Probability of Not Boarding the First $n-1$ Trains}
+The probability that Agathe does not board the $k$-th train, \textit{given that she is still on the platform}, is:
+$$ P(\text{Agathe doesn't board train } k \mid \text{she is waiting for train } k) = \frac{N_k - 1}{N_k} $$
+This is because there is 1 "successful" outcome for her (boarding) out of $N_k$ total outcomes, so the probability of her boarding is $1/N_k$. The probability of not boarding is $1 - 1/N_k = (N_k - 1)/N_k$.
+
+Using our formula $N_k = k+1$, this probability is $\frac{(k+1)-1}{k+1} = \frac{k}{k+1}$.
+
+The probability of her not boarding any of the first $n-1$ trains is the product of these conditional probabilities. This forms a \hyperlink{note3}{telescoping product} [3]:
+\begin{align*}
+    P(\text{not boarding trains } 1 \text{ to } n-1) &= P(E_1) \times P(E_2|E_1) \times \dots \times P(E_{n-1}|E_1 \cap \dots \cap E_{n-2}) \\
+    &= \prod_{k=1}^{n-1} \frac{k}{k+1} \\
+    &= \frac{1}{2} \times \frac{2}{3} \times \frac{3}{4} \times \dots \times \frac{n-2}{n-1} \times \frac{n-1}{n} \\
+    &= \frac{1}{n}
+\end{align*}
+The numerator of each term cancels with the denominator of the next, leaving only the first numerator (1) and the last denominator ($n$).
+
+\subsubsection*{Step 4: Calculate the Total Probability}
+Now, given that Agathe did not board any of the first $n-1$ trains, she is on the platform waiting for the $n$-th train. There are $N_n = n+1$ people. The probability that she boards this train is $\frac{1}{N_n} = \frac{1}{n+1}$.
+
+The total probability is the product of the probability from Step 3 and this final step:
+$$ P(\text{boards train } n) = P(\text{not boarding trains } 1 \text{ to } n-1) \times P(\text{boards train } n | \text{still waiting}) $$
+$$ P(\text{boards train } n) = \frac{1}{n} \times \frac{1}{n+1} = \frac{1}{n(n+1)} $$
+
+\paragraph{Self-Check Exercise:} What is the probability that Agathe boards the 3rd train?
+Using our formula: $P(\text{boards train } 3) = \frac{1}{3(3+1)} = \frac{1}{12}$.
+Let's verify with the step-by-step logic:
+\begin{itemize}
+    \item Don't board 1st train (2 people): $P = 1/2$.
+    \item Don't board 2nd train (3 people): $P = 2/3$.
+    \item Board 3rd train (4 people): $P = 1/4$.
+    \item Total probability: $(1/2) \times (2/3) \times (1/4) = 2/24 = 1/12$. It matches!
+\end{itemize}
+
+
+\subsection{Part (ii): Probability of boarding by the \textit{n}-th train}
+
+\subsubsection*{Step 1: Define the Event and a Simpler Approach}
+The event "Agathe boards at the latest by the $n$-th train" means she boards train 1, OR train 2, ..., OR train $n$. Since these are mutually exclusive events (she can only board once), we could sum the probabilities we found in part (i):
+$$ P(\text{boards by train } n) = \sum_{k=1}^{n} P(\text{boards train } k) = \sum_{k=1}^{n} \frac{1}{k(k+1)} $$
+While this sum can be calculated using partial fractions (it's a telescoping sum!), there is a more elegant approach using the \hyperlink{note2}{complement rule} [2].
+
+The complement of "boarding at the latest by the $n$-th train" is "not boarding any of the first $n$ trains".
+
+\subsubsection*{Step 2: Calculate the Probability of the Complement Event}
+We want to find the probability that Agathe does not board the 1st, 2nd, ..., and $n$-th trains. This is the exact same logic as in Part (i), Step 3, but we extend the product up to $n$ instead of $n-1$.
+\begin{align*}
+    P(\text{not boarding trains } 1 \text{ to } n) &= \prod_{k=1}^{n} P(\text{doesn't board train } k | \text{still waiting}) \\
+    &= \prod_{k=1}^{n} \frac{k}{k+1} \\
+    &= \frac{1}{2} \times \frac{2}{3} \times \dots \times \frac{n-1}{n} \times \frac{n}{n+1} \\
+    &= \frac{1}{n+1}
+\end{align*}
+
+\subsubsection*{Step 3: Apply the Complement Rule}
+The probability of the event we are interested in is 1 minus the probability of its complement:
+\begin{align*}
+    P(\text{boards by train } n) &= 1 - P(\text{not boarding trains } 1 \text{ to } n) \\
+    &= 1 - \frac{1}{n+1} \\
+    &= \frac{n+1 - 1}{n+1} = \frac{n}{n+1}
+\end{align*}
+
+\section{Summary and Takeaways}
+We have successfully modeled and solved the problem. The key results are:
+\begin{itemize}
+    \item The probability of Agathe boarding exactly the $n$-th train is $\frac{1}{n(n+1)}$.
+    \item The probability of Agathe boarding at the latest by the $n$-th train is $\frac{n}{n+1}$.
+\end{itemize}
+This exercise highlights several important problem-solving techniques in probability:
+\begin{enumerate}
+    \item \textbf{Modeling the Process:} The first crucial step was to formally describe how the number of people on the platform evolves. Without the relation $N_k=k+1$, the problem would be intractable.
+    \item \textbf{Decomposition of Events:} Complex events, like "boarding the $n$-th train", can often be expressed as a sequence of simpler, conditional events. The chain rule is the formal tool for this.
+    \item \textbf{The Power of the Complement:} For "at least one" or "at the latest by" type questions, it's often much easier to calculate the probability of the complementary event ("none" or "not within") and subtract it from 1.
+    \item \textbf{Recognizing Mathematical Patterns:} Identifying the telescoping nature of the product simplified the calculations immensely.
+\end{enumerate}
+
+\newpage
+\section*{In-Depth Explanations}
+\label{note1}
+\hypertarget{note1}{\textbf{[1] Conditional Probability and the Chain Rule:}}
+As per Definition 1.64 in the script, the conditional probability of an event $A$ given an event $B$ (with $P(B)>0$) is $P(A|B) = \frac{P(A \cap B)}{P(B)}$. This represents the updated probability of $A$ occurring once we know that $B$ has occurred.
+
+The chain rule (Lemma 1.66) is a direct consequence of this definition, extended to multiple events. For three events $E_1, E_2, E_3$, it states:
+$$ P(E_1 \cap E_2 \cap E_3) = P(E_1) \times P(E_2 | E_1) \times P(E_3 | E_1 \cap E_2) $$
+Intuitively, it says the probability of a specific sequence of events happening is the probability of the first, times the probability of the second given the first happened, times the probability of the third given the first two happened, and so on. This is exactly what we used to calculate the probability of Agathe making it through a series of train departures.
+
+\vspace{1cm}
+\label{note2}
+\hypertarget{note2}{\textbf{[2] The Complement Rule:}}
+For any event $A$ in a sample space $\Omega$, its complement, denoted $A^c$ or $A'$, consists of all outcomes in $\Omega$ that are not in $A$. Since an outcome must be either in $A$ or not in $A$, and these two sets are disjoint, their probabilities must sum to the total probability of the entire space, which is 1.
+$$ P(A) + P(A^c) = P(\Omega) = 1 $$
+Therefore, $P(A) = 1 - P(A^c)$. This rule is exceptionally useful when calculating $P(A^c)$ is much simpler than calculating $P(A)$ directly, as was the case in part (ii).
+
+\vspace{1cm}
+\label{note3}
+\hypertarget{note3}{\textbf{[3] Telescoping Series and Products:}}
+A telescoping series (or sum) is one where consecutive terms cancel each other out, leaving only the initial and final terms. A classic example is:
+$$ \sum_{k=1}^{n} \left(\frac{1}{k} - \frac{1}{k+1}\right) = \left(1 - \frac{1}{2}\right) + \left(\frac{1}{2} - \frac{1}{3}\right) + \dots + \left(\frac{1}{n} - \frac{1}{n+1}\right) = 1 - \frac{1}{n+1} $$
+A telescoping product works on the same principle, but with multiplication. The terms are structured such that the denominator of one term cancels the numerator of the next. This was the pattern we observed in our calculations:
+$$ \prod_{k=1}^{n} \frac{k}{k+1} = \frac{1}{2} \times \frac{2}{3} \times \frac{3}{4} \times \dots \times \frac{n}{n+1} = \frac{1}{n+1} $$
+Recognizing these patterns is a key skill for simplifying complex-looking sums and products in combinatorics and probability.
+
+\end{document}

@@ -1,0 +1,279 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage[svgnames]{xcolor}
+\usepackage[colorlinks=true, urlcolor=Blue, linkcolor=FireBrick, citecolor=DarkGreen]{hyperref}
+
+% --- Document Setup ---
+\geometry{a4paper, margin=1in}
+\linespread{1.2}
+
+% --- Title, Author, Date ---
+\title{\vspace{-2em}Exercise Walkthrough: Modes of Convergence}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+% --- Custom Theorem Styles ---
+\newtheoremstyle{exercise}
+  {\topsep}   % Space above
+  {\topsep}   % Space below
+  {\itshape}  % Body font
+  {}          % Indent amount
+  {\bfseries} % Theorem head font
+  {.}         % Punctuation after theorem head
+  {.5em}      % Space after theorem head
+  {}          % Theorem head spec (can be left empty, meaning `normal`)
+
+\theoremstyle{exercise}
+\newtheorem{exercise}{Exercise}
+
+% --- Custom Command for In-depth Notes ---
+\newcommand{\inDepthNote}[2]{\hyperref[#1]{[#2]}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\section*{The Exercise}
+
+Let's carefully work through the following exercise, which explores the properties and relationships between different modes of convergence for random variables.
+
+\begin{exercise}
+Let $X, Y$ be real-valued random variables (RVRVs) and $(X_n)_{n\in\mathbb{N}}, (Y_n)_{n\in\mathbb{N}}$ be sequences of RVRVs. Verify the following statements.
+\begin{enumerate}
+    \item If $X_n \xrightarrow{P} X$ and $Y_n \xrightarrow{P} Y$ then $X_n + Y_n \xrightarrow{P} X + Y$.
+    \item If $\mathbb{E}[|X_n - X|] \to 0$, then $X_n \xrightarrow{P} X$.
+    \item If $X_n \xrightarrow{P} X$ and $X_n \xrightarrow{P} Y$ then $P(X = Y) = 1$.
+    \item If $\mathbb{E}[|X_n - X|] \to 0$ and $\mathbb{E}[|X_n - Y|] \to 0$ then $P(X = Y) = 1$.
+\end{enumerate}
+\end{exercise}
+
+\newpage
+
+\section*{Part (i): The Sum Rule for Convergence in Probability}
+
+\subsection*{Overview}
+This part asks us to prove that if two sequences of random variables converge in probability, their sum also converges in probability to the sum of their limits. This is a very intuitive and useful property, often called the Continuous Mapping Theorem for addition. It ensures that convergence behaves nicely with basic arithmetic operations.
+
+\subsection*{Step-by-Step Solution}
+\begin{proof}
+Our goal is to show that $X_n + Y_n \xrightarrow{P} X + Y$.
+
+\paragraph{Step 1: State the Goal Formally}
+According to \textbf{Definition 2.56 (i)} of the script, we need to show that for any given $\epsilon > 0$, the following holds:
+\[
+\lim_{n \to \infty} P\left( |(X_n + Y_n) - (X + Y)| \ge \epsilon \right) = 0
+\]
+
+\paragraph{Step 2: Apply the Triangle Inequality}
+The trick is to relate the term we're interested in, $|(X_n + Y_n) - (X + Y)|$, to the terms we know something about, namely $|X_n - X|$ and $|Y_n - Y|$. We can rearrange the term and apply the triangle inequality \inDepthNote{note:triangle}{2}.
+\[
+|(X_n + Y_n) - (X + Y)| = |(X_n - X) + (Y_n - Y)| \le |X_n - X| + |Y_n - Y|
+\]
+This inequality is the key. It tells us that the error of the sum is at most the sum of the individual errors.
+
+\paragraph{Step 3: Relate the Events}
+Now, let's think about the events. If the sum of the errors $|X_n - X| + |Y_n - Y|$ is less than $\epsilon$, then our target error $|(X_n + Y_n) - (X + Y)|$ must also be less than $\epsilon$. This means that the event $\{|(X_n + Y_n) - (X + Y)| \ge \epsilon\}$ can only happen if the event $\{|X_n - X| + |Y_n - Y| \ge \epsilon\}$ happens. In set notation, this means:
+\[
+\{|(X_n + Y_n) - (X + Y)| \ge \epsilon\} \subseteq \{|X_n - X| + |Y_n - Y| \ge \epsilon\}
+\]
+If $|X_n - X| < \epsilon/2$ and $|Y_n - Y| < \epsilon/2$, their sum is less than $\epsilon$. Therefore, for their sum to be $\ge \epsilon$, at least one of them must be $\ge \epsilon/2$. This allows us to make another subset connection:
+\[
+\{|X_n - X| + |Y_n - Y| \ge \epsilon\} \subseteq \{|X_n - X| \ge \epsilon/2\} \cup \{|Y_n - Y| \ge \epsilon/2\}
+\]
+\paragraph{Step 4: Use the Union Bound}
+By the monotonicity and subadditivity of probability measures (\textbf{Proposition 1.17}), we can bound the probability:
+\begin{align*}
+P\left( |(X_n + Y_n) - (X + Y)| \ge \epsilon \right) &\le P\left( \{|X_n - X| \ge \epsilon/2\} \cup \{|Y_n - Y| \ge \epsilon/2\} \right) \\
+&\le P\left( |X_n - X| \ge \epsilon/2 \right) + P\left( |Y_n - Y| \ge \epsilon/2 \right) \quad \text{\inDepthNote{note:union-bound}{3}}
+\end{align*}
+
+\paragraph{Step 5: Take the Limit}
+We are given that $X_n \xrightarrow{P} X$ and $Y_n \xrightarrow{P} Y$. This means that as $n \to \infty$:
+\[
+P\left( |X_n - X| \ge \epsilon/2 \right) \to 0 \quad \text{and} \quad P\left( |Y_n - Y| \ge \epsilon/2 \right) \to 0
+\]
+Therefore, the sum of these two probabilities also goes to zero. Since our target probability is non-negative and is less than or equal to a quantity that goes to zero, it must also go to zero.
+\[
+\lim_{n \to \infty} P\left( |(X_n + Y_n) - (X + Y)| \ge \epsilon \right) = 0
+\]
+This completes the proof.
+\end{proof}
+
+\section*{Part (ii): $L^1$ Convergence implies Convergence in Probability}
+
+\subsection*{Overview}
+Here, we want to show that convergence in mean (specifically, in $L^1$) \inDepthNote{note:l1-conv}{5} is a stronger type of convergence than convergence in probability \inDepthNote{note:prob-conv}{1}. This means if you know that the expected absolute difference $\mathbb{E}[|X_n - X|]$ goes to zero, you can be sure that $X_n$ also converges in probability to $X$. The hint points us to a very powerful tool: Markov's inequality.
+
+\subsection*{Step-by-Step Solution}
+\begin{proof}
+We are given that $\lim_{n \to \infty} \mathbb{E}[|X_n - X|] = 0$. We want to show that for any $\epsilon > 0$, $\lim_{n \to \infty} P(|X_n - X| \ge \epsilon) = 0$.
+
+\paragraph{Step 1: Identify the Right Tool}
+The hint suggests Markov's inequality (\textbf{Theorem 2.38}). This inequality relates the probability of a random variable being large to its expectation. For a non-negative random variable $Z$ and a constant $a > 0$, it states:
+\[
+P(Z \ge a) \le \frac{\mathbb{E}[Z]}{a}
+\]
+
+\paragraph{Step 2: Apply the Inequality}
+Let's define a new, non-negative random variable $Z_n = |X_n - X|$. We are interested in the probability $P(Z_n \ge \epsilon)$. Applying Markov's inequality with $Z = Z_n$ and $a = \epsilon$, we get:
+\[
+P(|X_n - X| \ge \epsilon) \le \frac{\mathbb{E}[|X_n - X|]}{\epsilon}
+\]
+
+\paragraph{Step 3: Take the Limit}
+We can now take the limit as $n \to \infty$ on both sides of the inequality.
+\[
+\lim_{n \to \infty} P(|X_n - X| \ge \epsilon) \le \lim_{n \to \infty} \frac{\mathbb{E}[|X_n - X|]}{\epsilon}
+\]
+By our initial assumption, the numerator on the right side goes to zero: $\lim_{n \to \infty} \mathbb{E}[|X_n - X|] = 0$. Since $\epsilon$ is a fixed positive constant, the entire right side becomes 0.
+\[
+\lim_{n \to \infty} P(|X_n - X| \ge \epsilon) \le 0
+\]
+Since probability cannot be negative, we must have equality.
+\[
+\lim_{n \to \infty} P(|X_n - X| \ge \epsilon) = 0
+\]
+This is precisely the definition of $X_n \xrightarrow{P} X$.
+\end{proof}
+
+\section*{Part (iii): Uniqueness of the Limit in Probability}
+
+\subsection*{Overview}
+This part establishes a crucial property: if a sequence converges in probability, its limit is unique. Uniqueness here means that if it converges to two different random variables, $X$ and $Y$, then $X$ and $Y$ must be the same variable with probability 1. This is also called being equal "almost surely" \inDepthNote{note:almost-surely}{6}. Without this property, the concept of a "limit" would be ambiguous.
+
+\subsection*{Step-by-Step Solution}
+\begin{proof}
+We are given $X_n \xrightarrow{P} X$ and $X_n \xrightarrow{P} Y$. Our goal is to show $P(X = Y) = 1$. This is equivalent to showing $P(X \neq Y) = 0$.
+
+\paragraph{Step 1: Use the Triangle Inequality on the Limits}
+As hinted, we look at the distance $|X - Y|$. We can cleverly introduce $X_n$ and use the triangle inequality \inDepthNote{note:triangle}{2}:
+\[
+|X - Y| = |(X - X_n) + (X_n - Y)| \le |X - X_n| + |Y - X_n|
+\]
+\paragraph{Step 2: Bound the Probability for a Fixed $\epsilon$}
+Let's fix an arbitrary $\epsilon > 0$. We want to show that $P(|X - Y| \ge \epsilon) = 0$. Using the inequality from Step 1 and the same logic as in Part (i), we have:
+\[
+\{|X - Y| \ge \epsilon\} \subseteq \{|X - X_n| \ge \epsilon/2\} \cup \{|Y - X_n| \ge \epsilon/2\}
+\]
+Using the union bound \inDepthNote{note:union-bound}{3}, we get for \textbf{any} $n \in \mathbb{N}$:
+\[
+P(|X - Y| \ge \epsilon) \le P(|X_n - X| \ge \epsilon/2) + P(|X_n - Y| \ge \epsilon/2)
+\]
+\paragraph{Step 3: Take the Limit in $n$}
+The left-hand side, $P(|X - Y| \ge \epsilon)$, does not depend on $n$. We can take the limit of the right-hand side as $n \to \infty$. Since $X_n \xrightarrow{P} X$ and $X_n \xrightarrow{P} Y$, both terms on the right go to 0.
+\[
+\lim_{n \to \infty} \left( P(|X_n - X| \ge \epsilon/2) + P(|X_n - Y| \ge \epsilon/2) \right) = 0 + 0 = 0
+\]
+Since the inequality holds for all $n$, it must also hold in the limit. Therefore, we have:
+\[
+P(|X - Y| \ge \epsilon) \le 0
+\]
+As probability is non-negative, this forces $P(|X - Y| \ge \epsilon) = 0$.
+
+\paragraph{Step 4: Conclude for the Event $\{X \neq Y\}$}
+We have shown that for any $\epsilon > 0$, the probability of $X$ and $Y$ differing by at least $\epsilon$ is zero. The event that $X$ and $Y$ are not equal, $\{X \neq Y\}$, can be written as a countable union of such events:
+\[
+\{X \neq Y\} = \bigcup_{k=1}^{\infty} \left\{|X - Y| \ge \frac{1}{k}\right\}
+\]
+Using the union bound ($\sigma$-subadditivity) for countable unions:
+\[
+P(X \neq Y) = P\left(\bigcup_{k=1}^{\infty} \left\{|X - Y| \ge \frac{1}{k}\right\}\right) \le \sum_{k=1}^{\infty} P\left(|X - Y| \ge \frac{1}{k}\right)
+\]
+From Step 3, we know every term in the sum is 0. So, $P(X \neq Y) \le \sum_{k=1}^{\infty} 0 = 0$.
+Again, since probability is non-negative, $P(X \neq Y) = 0$, which means $P(X = Y) = 1$.
+\end{proof}
+
+\section*{Part (iv): Uniqueness of the Limit in $L^1$}
+
+\subsection*{Overview}
+Finally, we show that the limit in $L^1$ (in mean) is also unique almost surely. We can solve this elegantly by combining our previous results, or by a more direct proof that mirrors the logic of Part (iii) but uses expectations.
+
+\subsection*{Step-by-Step Solution (Method 1: Combining Previous Results)}
+\begin{proof}
+This is the most straightforward path.
+\begin{enumerate}
+    \item We are given $\mathbb{E}[|X_n - X|] \to 0$ and $\mathbb{E}[|X_n - Y|] \to 0$.
+    \item From Part (ii), we know that $L^1$ convergence implies convergence in probability.
+    Therefore, we have $X_n \xrightarrow{P} X$ and $X_n \xrightarrow{P} Y$.
+    \item From Part (iii), we know that if a sequence converges in probability to two limits, those limits must be almost surely equal.
+    \item Therefore, we can immediately conclude that $P(X = Y) = 1$.
+\end{enumerate}
+This shows how these concepts build upon each other.
+\end{proof}
+
+\subsection*{Step-by-Step Solution (Method 2: Direct Proof)}
+\begin{proof}
+This method provides more insight into the properties of expectation.
+\paragraph{Step 1: Use the Triangle Inequality}
+Just as in Part (iii), we start with the inequality:
+\[
+|X - Y| \le |X - X_n| + |Y - X_n|
+\]
+\paragraph{Step 2: Take the Expectation}
+We take the expectation of both sides. By the linearity and monotonicity of expectation (\textbf{Proposition 2.4}), we get:
+\begin{align*}
+\mathbb{E}[|X - Y|] &\le \mathbb{E}[|X - X_n| + |Y - X_n|] \\
+&= \mathbb{E}[|X - X_n|] + \mathbb{E}[|Y - X_n|]
+\end{align*}
+\paragraph{Step 3: Take the Limit in $n$}
+This inequality holds for all $n$. The left side does not depend on $n$. We can take the limit of the right side as $n \to \infty$. From our initial assumptions:
+\[
+\lim_{n \to \infty} \left( \mathbb{E}[|X - X_n|] + \mathbb{E}[|Y - X_n|] \right) = 0 + 0 = 0
+\]
+This implies $\mathbb{E}[|X - Y|] \le 0$. Since $|X - Y|$ is a non-negative random variable, its expectation must be non-negative, i.e., $\mathbb{E}[|X - Y|] \ge 0$.
+The only way for both to be true is if $\mathbb{E}[|X - Y|] = 0$.
+
+\paragraph{Step 4: Show that Zero Expectation Implies Almost Sure Equality}
+If the expected value of a non-negative random variable (like $|X - Y|$) is zero, the random variable itself must be zero with probability 1. We can show this using Markov's inequality. For any $k \in \mathbb{N}_{>0}$:
+\[
+P\left(|X - Y| \ge \frac{1}{k}\right) \le \frac{\mathbb{E}[|X - Y|]}{1/k} = \frac{0}{1/k} = 0
+\]
+This means $P(|X - Y| \ge 1/k) = 0$ for all $k$. As we argued in Part (iii), the event $\{X \neq Y\}$ is the countable union $\bigcup_{k=1}^{\infty} \{|X - Y| \ge 1/k\}$, and its probability is therefore 0. Thus, $P(X = Y) = 1$.
+\end{proof}
+\newpage
+
+\section*{In-depth Explanations}
+\label{sec:explanations}
+
+\subsection*{[1] Convergence in Probability ($X_n \xrightarrow{P} X$)}
+\label{note:prob-conv}
+As defined in \textbf{Definition 2.56 (i)}, a sequence of random variables $(X_n)$ converges in probability to a random variable $X$ if, for any arbitrarily small positive number $\epsilon$, the probability that $X_n$ and $X$ differ by more than $\epsilon$ becomes vanishingly small as $n$ gets large.
+\textbf{Formally:} $\lim_{n \to \infty} P(|X_n - X| \ge \epsilon) = 0$ for all $\epsilon > 0$.
+\textbf{Intuition:} For large $n$, it's extremely unlikely that $X_n$ will be far from $X$.
+
+\subsection*{[2] The Triangle Inequality}
+\label{note:triangle}
+A fundamental property of absolute values (and more generally, norms). For any real numbers $a$ and $b$, it states:
+\[ |a + b| \le |a| + |b| \]
+\textbf{Intuition:} The length of one side of a triangle is never greater than the sum of the lengths of the other two sides. In our proofs, it's a crucial tool for splitting an error term into more manageable parts.
+
+\subsection*{[3] The Union Bound (Boole's Inequality)}
+\label{note:union-bound}
+This is a direct consequence of the axioms of probability, specifically $\sigma$-additivity. For any finite or countable sequence of events $A_1, A_2, \ldots$, it states:
+\[ P(A_1 \cup A_2 \cup \ldots) \le P(A_1) + P(A_2) + \ldots \]
+It's an incredibly useful tool for bounding the probability of a complex event by breaking it down into simpler events. We used the finite version $P(A \cup B) \le P(A) + P(B)$.
+
+\subsection*{[4] Markov's Inequality}
+\label{note:markov}
+As seen in \textbf{Theorem 2.38}, this inequality provides a (often loose) upper bound on the probability that a non-negative random variable $Z$ is greater than or equal to some positive constant $a$.
+\textbf{Formally:} $P(Z \ge a) \le \frac{\mathbb{E}[Z]}{a}$ for $a > 0$.
+\textbf{Intuition:} A random variable can't be "very large, very often" if its average value is small. This inequality is foundational for proving other important results, like Chebyshev's inequality.
+
+\subsection*{[5] Convergence in Mean ($L^1$-convergence)}
+\label{note:l1-conv}
+This is a stronger mode of convergence. A sequence $(X_n)$ converges in mean (or in $L^1$) to $X$ if the expected value of the absolute difference between $X_n$ and $X$ approaches zero.
+\textbf{Formally:} $\lim_{n \to \infty} \mathbb{E}[|X_n - X|] = 0$.
+\textbf{Intuition:} Not only do large deviations become improbable (as in convergence in probability), but the "average size" of the deviation, considering all possible outcomes, goes to zero.
+
+\subsection*{[6] Almost Sure Equality ($P(X=Y)=1$)}
+\label{note:almost-surely}
+Two random variables $X$ and $Y$ are said to be equal almost surely (a.s.) if the set of outcomes $\omega$ in the sample space $\Omega$ for which $X(\omega) \neq Y(\omega)$ has a total probability of zero.
+\textbf{Formally:} $P(\{\omega \in \Omega \mid X(\omega) = Y(\omega)\}) = 1$.
+\textbf{Intuition:} For all practical purposes in probability theory, $X$ and $Y$ are interchangeable. They might differ on a set of outcomes, but the probability of one of those outcomes occurring is zero. This is the standard notion of "uniqueness" for limits of random variables.
+
+\end{document}

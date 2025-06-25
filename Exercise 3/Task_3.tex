@@ -1,0 +1,226 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue!50!black, citecolor=blue!50!black]{hyperref}
+\usepackage{enumitem}
+
+% --- DOCUMENT INFORMATION ---
+\title{Exercise Walkthrough: Russian Roulette and The Card Game}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+% --- THEOREM STYLES & COMMANDS ---
+\newtheoremstyle{tutorstyle}
+  {\topsep} % Space above
+  {\topsep} % Space below
+  {\itshape} % Body font
+  {} % Indent amount
+  {\bfseries} % Theorem head font
+  {.} % Punctuation after theorem head
+  {.5em} % Space after theorem head
+  {} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{tutorstyle}
+\newtheorem*{solution}{Solution}
+\newtheorem*{takeaway}{Key Takeaway}
+
+\newcommand{\concept}[2]{\hyperlink{#1}{#2}}
+
+% --- BEGIN DOCUMENT ---
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides a detailed, step-by-step walkthrough for two classic probability puzzles. The goal is not just to find the answers, but to demonstrate the process of rigorously modeling a real-world scenario using the formal concepts introduced in the Discrete Probability Theory course. We will pay close attention to defining the sample space, identifying events, and applying fundamental theorems like conditional probability and Bayes' rule, referencing definitions from the course script where appropriate.
+\end{abstract}
+
+\section{Problem 1: Russian Roulette}
+
+\subsection{Problem Statement}
+\textit{You play Russian roulette with a six-shooter revolver, and there are precisely two bullets in neighboring chambers. Your opponent goes first, spins the barrel, pulls the trigger, and the gun does not fire. Now it is your turn. Should you spin the barrel again or pull the trigger right away? What is the probability of survival in each case?}
+
+\subsection{Modeling the Experiment}
+To solve this, we must first translate the physical situation into a mathematical model. This is the most critical step.
+
+\paragraph{1. The Sample Space ($\Omega$):}
+The revolver has six chambers. The most natural way to model the state of the revolver is to label these chambers. Let our \concept{concept_space}{sample space} be $\Omega = \{1, 2, 3, 4, 5, 6\}$, where each number represents a chamber.
+
+\paragraph{2. The Initial Setup:}
+There are two bullets in \textbf{neighboring} chambers. Let's model this by defining the event $B = \{1, 2\}$ as the set of chambers containing bullets. Consequently, the set of empty chambers is $E = \Omega \setminus B = \{3, 4, 5, 6\}$. Our revolver's state can be visualized as (B, B, E, E, E, E).
+
+\paragraph{3. The Opponent's Turn:}
+The opponent "spins the barrel." This phrase is key. In probability, "spinning" or "shuffling" is typically modeled as a random process where all outcomes are equally likely. We will therefore assume a uniform probability distribution over the chambers. This is the \textbf{Laplace model} from \textit{Example 1.36(i)} in the script. The probability of any specific chamber $i$ being aligned with the barrel is $P(\text{chamber } i) = 1/6$.
+
+The opponent pulls the trigger and survives. Let's call this event $S_1$. Survival means the aligned chamber was empty.
+\[
+S_1 = \{\text{The chosen chamber is in } E\}
+\]
+The probability of this event is:
+\[
+P(S_1) = P(\{3, 4, 5, 6\}) = P(3) + P(4) + P(5) + P(6) = \frac{1}{6} + \frac{1}{6} + \frac{1}{6} + \frac{1}{6} = \frac{4}{6} = \frac{2}{3}
+\]
+The fact that the opponent survived provides us with crucial information. Our subsequent calculations must be \textbf{conditional} on the event $S_1$ having occurred.
+
+\subsection{Case 1: Spin Again}
+If you spin the barrel again, you are effectively resetting the experiment. The history of the opponent's turn is erased because a new, independent random chamber is selected.
+
+The setup remains the same: 2 bullet chambers and 4 empty chambers. The probability of survival is the probability of landing on an empty chamber.
+\[
+P(\text{Survival} \,|\, \text{Spin again}) = P(\text{chamber is in } E) = \frac{|E|}{|\Omega|} = \frac{4}{6} = \frac{2}{3}
+\]
+Your survival chance if you spin again is $\mathbf{2/3}$, or approximately 66.7\%.
+
+\subsection{Case 2: Pull the Trigger Directly}
+If you don't spin, the revolver's state is not re-randomized. It simply advances to the next chamber. We need to calculate your survival probability \concept{concept_condprob}{conditional} on your opponent having survived ($S_1$).
+
+Let $C_1$ be the random variable for the chamber number on the opponent's turn. We know the outcome was in the set $E=\{3, 4, 5, 6\}$. Before this information, each chamber had a $1/6$ probability. Now, we are in a new probability space conditioned on $S_1$. The four outcomes in $S_1$ were equally likely, so their conditional probabilities are now:
+\[
+P(C_1=i \,|\, S_1) = \frac{P(C_1=i \cap S_1)}{P(S_1)} = \frac{P(C_1=i)}{P(S_1)} = \frac{1/6}{4/6} = \frac{1}{4} \quad \text{for } i \in \{3,4,5,6\}
+\]
+Let $C_2$ be the random variable for the chamber on your turn. Since the revolver advances one position, $C_2 = (C_1 \pmod 6) + 1$. We need to find the probability that $C_2$ corresponds to an empty chamber. Let's analyze the four possibilities for $C_1$:
+\begin{itemize}[leftmargin=*]
+    \item If $C_1 = 3$, then you get chamber $C_2 = 4$. Chamber 4 is \textbf{empty}. You survive.
+    \item If $C_1 = 4$, then you get chamber $C_2 = 5$. Chamber 5 is \textbf{empty}. You survive.
+    \item If $C_1 = 5$, then you get chamber $C_2 = 6$. Chamber 6 is \textbf{empty}. You survive.
+    \item If $C_1 = 6$, then you get chamber $C_2 = 1$. Chamber 1 has a \textbf{bullet}. You do not survive.
+\end{itemize}
+Each of these initial states for your turn (determined by $C_1$) has a probability of $1/4$. Three of these four states lead to your survival. Using the \concept{concept_totalprob}{Law of Total Probability} (\textit{Theorem 1.65(ii)}), we can sum the probabilities of the disjoint survival paths:
+\begin{align*}
+P(\text{Survival} \,|\, \text{Pull directly}) &= P(C_2 \in E \,|\, S_1) \\
+&= \sum_{i \in E} P(C_2 \in E \,|\, C_1=i) P(C_1=i \,|\, S_1) \\
+&= 1 \cdot P(C_1=3|S_1) + 1 \cdot P(C_1=4|S_1) + 1 \cdot P(C_1=5|S_1) + 0 \cdot P(C_1=6|S_1) \\
+&= 1 \cdot \frac{1}{4} + 1 \cdot \frac{1}{4} + 1 \cdot \frac{1}{4} + 0 \cdot \frac{1}{4} = \frac{3}{4}
+\end{align*}
+Your survival chance if you pull the trigger directly is $\mathbf{3/4}$, or 75\%.
+
+\subsection{Conclusion}
+Comparing the two strategies:
+\begin{itemize}
+    \item Probability of survival (spin again): $2/3 \approx 66.7\%$
+    \item Probability of survival (pull directly): $3/4 = 75.0\%$
+\end{itemize}
+You should \textbf{pull the trigger directly}. The information that the previous chamber was empty makes it more likely that the next chamber is also empty, given the specific configuration of bullets.
+
+\begin{takeaway}
+This problem highlights the power of conditional probability. The event of your opponent surviving wasn't just luck; it provided valuable information that eliminated some possibilities (chambers 1 and 2) and changed the probabilities for the remaining outcomes on your turn. Forgetting this information by spinning again is disadvantageous.
+\end{takeaway}
+
+\newpage
+
+\section{Problem 2: The Card Game}
+
+\subsection{Problem Statement}
+\textit{I have two cards in a closed opaque box, one is red on both sides and the other is red on one and blue on the other side. I pull out one card and place it on the table, and a red side faces up. What’s the probability that the other side is also red?}
+
+\subsection{Modeling with Bayes' Theorem}
+This is a classic problem that can be misleading. Our intuition might tell us the chance is 1/2, but a formal analysis reveals the correct answer. The best tool for this job is \concept{concept_bayes}{Bayes' Theorem} (\textit{Theorem 1.65(iii)}), which is designed for updating our beliefs based on new evidence.
+
+\paragraph{1. Define Events:}
+Let's model the core components of the problem.
+\begin{itemize}
+    \item Let $C_{RR}$ be the event that we chose the Red/Red card.
+    \item Let $C_{RB}$ be the event that we chose the Red/Blue card.
+    \item Let $U$ be the event that the side facing \textbf{up} is Red. This is our evidence.
+\end{itemize}
+
+\paragraph{2. State the Goal:}
+We want to find the probability that the \textit{other} side is red, \textit{given} that the up-facing side is red. The other side can only be red if we chose the Red/Red card. Therefore, the question is asking for the probability $P(C_{RR} | U)$.
+
+\paragraph{3. Apply Bayes' Theorem:}
+According to \textit{Theorem 1.65}, the formula is:
+\[
+P(C_{RR} | U) = \frac{P(U | C_{RR}) P(C_{RR})}{P(U)}
+\]
+Let's find each component:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Prior Probability $P(C_{RR})$:} Before we see the card, we assume we are equally likely to pick either card. Thus, $P(C_{RR}) = 1/2$.
+
+    \item \textbf{Likelihood $P(U | C_{RR})$:} This is the probability of our evidence (seeing a red face up) given our hypothesis (we picked the RR card). If we have the RR card, a red face is guaranteed to be up. So, $P(U | C_{RR}) = 1$.
+
+    \item \textbf{Evidence $P(U)$:} This is the total probability of seeing a red face up, regardless of which card was chosen. We compute this using the \concept{concept_totalprob}{Law of Total Probability} (\textit{Theorem 1.65(ii)}), considering the two possible cards we could have drawn:
+    \begin{align*}
+        P(U) &= P(U | C_{RR})P(C_{RR}) + P(U | C_{RB})P(C_{RB}) \\
+             &= (1) \cdot \left(\frac{1}{2}\right) + P(U | C_{RB}) \cdot \left(\frac{1}{2}\right)
+    \end{align*}
+    To finish this, we need the likelihood of seeing red given we chose the RB card. The RB card has one red side and one blue side. Assuming we place it on the table randomly, the probability of the red side facing up is $1/2$. So, $P(U | C_{RB}) = 1/2$.
+    \begin{align*}
+        P(U) &= (1) \cdot \left(\frac{1}{2}\right) + \left(\frac{1}{2}\right) \cdot \left(\frac{1}{2}\right) \\
+             &= \frac{1}{2} + \frac{1}{4} = \frac{3}{4}
+    \end{align*}
+\end{itemize}
+
+\paragraph{4. Calculate the Final Probability:}
+Now we plug all the pieces back into Bayes' formula:
+\[
+P(C_{RR} | U) = \frac{1 \cdot \frac{1}{2}}{\frac{3}{4}} = \frac{1/2}{3/4} = \frac{1}{2} \cdot \frac{4}{3} = \frac{2}{3}
+\]
+The probability that the other side is also red is $\mathbf{2/3}$.
+
+\subsection{An Intuitive Approach}
+The formal result can be surprising. Here's a way to think about it that confirms the answer. Let's list all possible faces that could have ended up facing us.
+\begin{itemize}
+    \item Card 1 (RR) has two red faces: let's call them $R_1$ and $R_2$.
+    \item Card 2 (RB) has one red face ($R_3$) and one blue face ($B_1$).
+\end{itemize}
+When we perform the experiment, any of these four faces could land up with equal probability (assuming the card and side choices are random). However, our \textbf{evidence} is that we see a red face. This eliminates the possibility of $B_1$ facing up.
+
+We are left with three equally likely outcomes for the face we are looking at:
+\begin{enumerate}
+    \item We are looking at $R_1$. The other side is $R_2$ (Red).
+    \item We are looking at $R_2$. The other side is $R_1$ (Red).
+    \item We are looking at $R_3$. The other side is $B_1$ (Blue).
+\end{enumerate}
+Out of these three possibilities, two of them result in the other side being red. Therefore, the probability is $2/3$.
+
+\begin{takeaway}
+This problem is a classic illustration of how conditional probability works. The evidence "a red side is up" is not independent of the type of card. In fact, it's \textit{more likely} to observe this evidence if you drew the Red/Red card than if you drew the Red/Blue card. Bayes' Theorem formalizes this reasoning, weighting the prior belief by how well it explains the evidence we saw.
+\end{takeaway}
+
+\newpage
+\section{In-depth Explanations}
+
+Here are more detailed explanations of the key concepts used in this walkthrough, hyperlinked from the main text.
+
+\subsection{\hypertarget{concept_space}{Sample Space, Events, and Probability Measure}}
+The foundation of modern probability theory, as formalized by Kolmogorov, is the \textbf{probability space}, a triplet $(\Omega, \mathcal{A}, P)$ (\textit{Definition 1.18}).
+\begin{itemize}
+    \item $\Omega$ is the \textbf{sample space}, the set of all possible elementary outcomes of an experiment. In our roulette problem, $\Omega = \{1,2,3,4,5,6\}$.
+    \item $\mathcal{A}$ is the \textbf{$\sigma$-algebra} or \textbf{event space} (\textit{Definition 1.5}). It is a collection of subsets of $\Omega$. Each subset in $\mathcal{A}$ is called an \textbf{event}. For discrete sample spaces, we can typically use the power set $\mathcal{P}(\Omega)$, meaning any subset of outcomes is a valid event. For example, the event "opponent survives" was $S_1 = \{3,4,5,6\}$.
+    \item $P$ is the \textbf{probability measure}, a function that assigns a probability (a number in $[0,1]$) to every event in $\mathcal{A}$. It must satisfy certain axioms, most notably that $P(\Omega)=1$ and $\sigma$-additivity.
+\end{itemize}
+
+\subsection{\hypertarget{concept_condprob}{Conditional Probability}}
+Conditional probability, as given in \textit{Definition 1.64}, answers the question: "What is the probability of event A happening, given that we know event B has already happened?" It re-scales the probabilities to a new "universe" where B is the entire sample space. The formula is:
+\[
+P(A | B) = \frac{P(A \cap B)}{P(B)}
+\]
+This is defined only if $P(B) > 0$. It represents the probability of the outcomes that are in both A and B, divided by the probability of the new universe B. In the roulette problem, we calculated the probability of survival on the second turn given the knowledge that the first turn resulted in survival.
+
+\subsection{\hypertarget{concept_totalprob}{Law of Total Probability}}
+This law, stated in \textit{Theorem 1.65(ii)}, is a method to find the probability of an event by breaking down the sample space into smaller, disjoint pieces. If $B_1, B_2, \dots, B_n$ form a partition of the sample space $\Omega$ (they are disjoint and their union is $\Omega$), then for any event $A$:
+\[
+P(A) = \sum_{i=1}^{n} P(A | B_i) P(B_i)
+\]
+This formula essentially says "the total probability of A is the weighted average of its probabilities within each piece of the partition, where the weights are the probabilities of those pieces themselves." We used this in the card game to find the total probability of seeing a red face up, by considering the two partitions: "chose RR card" and "chose RB card".
+
+\subsection{\hypertarget{concept_bayes}{Bayes' Theorem}}
+Bayes' Theorem, from \textit{Theorem 1.65(iii)}, is derived directly from the definition of conditional probability and is one of the most important results in probability theory. It tells us how to formally update our beliefs in light of new evidence. In its most common form for two events, it states:
+\[
+P(H | E) = \frac{P(E | H) P(H)}{P(E)}
+\]
+The terms have special names that capture their role in inference (\textit{Remark 1.68}):
+\begin{itemize}
+    \item $P(H | E)$ is the \textbf{posterior} probability: what we believe about hypothesis $H$ after seeing evidence $E$.
+    \item $P(H)$ is the \textbf{prior} probability: what we believed about $H$ before seeing any evidence.
+    \item $P(E | H)$ is the \textbf{likelihood}: how likely we are to see the evidence $E$ if our hypothesis $H$ is true.
+    \item $P(E)$ is the \textbf{marginal likelihood} or \textbf{evidence}: the total probability of observing the evidence, often calculated using the Law of Total Probability.
+\end{itemize}
+In the card problem, our hypothesis was "we chose the RR card" and our evidence was "the up-facing side is red."
+
+\end{document}

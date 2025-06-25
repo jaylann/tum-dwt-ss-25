@@ -1,0 +1,145 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% --- DOCUMENT SETUP ---
+\geometry{a4paper, margin=1in}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=red
+}
+
+% --- TITLE INFO ---
+\title{Exercise Walkthrough: Sum of Independent Poisson Random Variables}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{The Exercise}
+\noindent\textbf{Statement:} Let $X \sim \text{Poi}(\lambda_1)$ and $Y \sim \text{Poi}(\lambda_2)$ be independent random variables. Show that their sum $S = X + Y$ is also Poisson distributed, specifically $S \sim \text{Poi}(\lambda_1 + \lambda_2)$.
+
+\vspace{1em}
+\noindent\textbf{Hint:} Compute the characteristic function of a Poisson RV and use properties of characteristic functions.
+
+\section*{Overview of the Approach}
+This problem is a classic application of characteristic functions \hyperlink{note1}{[1]}. The strategy is straightforward and follows the hint directly:
+\begin{enumerate}
+    \item First, we need a general formula for the characteristic function (CF) of any Poisson-distributed random variable. We will derive this from its definition.
+    \item Second, we will use the property that for \textbf{independent} random variables, the CF of their sum is the product of their individual CFs.
+    \item Finally, we will examine the resulting CF for the sum $S = X+Y$. By the \textbf{uniqueness property} of CFs, if we can match this CF to the CF of a known distribution, we have proven that $S$ follows that distribution.
+\end{enumerate}
+
+Let's work through each of these steps in detail.
+
+\section{Step 1: The Characteristic Function of a Poisson RV}
+Our first goal is to find the characteristic function $\phi_X(t)$ for a general random variable $X \sim \text{Poi}(\lambda)$.
+
+\paragraph{Reasoning:}
+From the script (\textbf{Definition 2.46, p. 64}), the characteristic function of a random variable $X$ is defined as:
+\[ \phi_X(t) = \mathbb{E}[e^{itX}] \]
+Since our random variable $X$ is discrete, the expectation is calculated by summing over all possible values $k$ that $X$ can take, weighted by their respective probabilities. The possible outcomes for a Poisson distribution are $k \in \{0, 1, 2, \dots\}$.
+\[ \mathbb{E}[g(X)] = \sum_{k=0}^{\infty} g(k) P(X=k) \]
+In our case, $g(X) = e^{itX}$. The probability mass function (pmf) for $X \sim \text{Poi}(\lambda)$ is given in the script (\textbf{Example 1.36 (vii), p. 21}) as:
+\[ P(X=k) = \frac{e^{-\lambda}\lambda^k}{k!} \]
+
+\paragraph{Derivation:}
+Let's substitute these into the definition of the CF.
+\begin{align*}
+\phi_X(t) &= \mathbb{E}[e^{itX}] \\
+&= \sum_{k=0}^{\infty} e^{itk} P(X=k) && \text{(Definition of expectation for discrete RVs)} \\
+&= \sum_{k=0}^{\infty} e^{itk} \frac{e^{-\lambda}\lambda^k}{k!} && \text{(Substituting the Poisson pmf \hyperlink{note2}{[2]})} \\
+&= e^{-\lambda} \sum_{k=0}^{\infty} \frac{(e^{it})^k \lambda^k}{k!} && \text{(The term } e^{-\lambda} \text{ is constant w.r.t. } k \text{)} \\
+&= e^{-\lambda} \sum_{k=0}^{\infty} \frac{(\lambda e^{it})^k}{k!} && \text{(Combining terms with exponent } k \text{)}
+\end{align*}
+Now, we need to recognize the sum. This is the Taylor series expansion for the exponential function \hyperlink{note3}{[3]}, which is $\sum_{k=0}^{\infty} \frac{z^k}{k!} = e^z$. In our case, $z = \lambda e^{it}$.
+\begin{align*}
+\phi_X(t) &= e^{-\lambda} \exp(\lambda e^{it}) && \text{(Applying the Taylor series formula)} \\
+&= \exp(-\lambda + \lambda e^{it}) && \text{(Combining exponents)} \\
+&= \exp(\lambda(e^{it} - 1)) && \text{(Factoring out } \lambda \text{)}
+\end{align*}
+So, we have our general formula: the characteristic function of a random variable $X \sim \text{Poi}(\lambda)$ is $\phi_X(t) = \exp(\lambda(e^{it} - 1))$.
+
+\section{Step 2: The Characteristic Function of the Sum}
+Now we use the result from Step 1 to find the CF of $S = X+Y$.
+
+\paragraph{Reasoning:}
+The problem states that $X$ and $Y$ are \textbf{independent}. This is the crucial property we need. As stated in the script (\textbf{Remark 2.47 (iv), p. 64}), for independent random variables, the characteristic function of their sum is the product of their individual characteristic functions \hyperlink{note4}{[4]}.
+\[ \phi_{X+Y}(t) = \phi_X(t) \phi_Y(t) \]
+We have $X \sim \text{Poi}(\lambda_1)$ and $Y \sim \text{Poi}(\lambda_2)$. We can use the formula from Step 1 for each of them.
+
+\paragraph{Derivation:}
+Let $S = X+Y$.
+\begin{align*}
+\phi_S(t) &= \phi_{X+Y}(t) \\
+&= \phi_X(t) \phi_Y(t) && \text{(Due to independence)} \\
+&= \exp(\lambda_1(e^{it} - 1)) \cdot \exp(\lambda_2(e^{it} - 1)) && \text{(Using the result from Step 1)} \\
+&= \exp(\lambda_1(e^{it} - 1) + \lambda_2(e^{it} - 1)) && \text{(Product of exponentials is exp of sum)} \\
+&= \exp((\lambda_1 + \lambda_2)(e^{it} - 1)) && \text{(Factoring out } (e^{it} - 1)\text{)}
+\end{align*}
+This gives us the characteristic function for the sum $S$.
+
+\section{Step 3: Concluding the Proof}
+The final step is to interpret the result from Step 2.
+
+\paragraph{Reasoning:}
+The characteristic function we found for $S$ is:
+\[ \phi_S(t) = \exp((\lambda_1 + \lambda_2)(e^{it} - 1)) \]
+Let's compare this to the general form of a Poisson CF we derived in Step 1: $\phi_Z(t) = \exp(\lambda(e^{it} - 1))$ for a random variable $Z \sim \text{Poi}(\lambda)$.
+Our result for $\phi_S(t)$ has exactly this form, with the parameter $\lambda = \lambda_1 + \lambda_2$.
+
+The uniqueness property of characteristic functions (\textbf{Remark 2.47 (v), p. 64}) states that a probability distribution is uniquely determined by its CF. In other words, if two random variables have the same CF, they must follow the same distribution \hyperlink{note5}{[5]}.
+
+\paragraph{Conclusion:}
+Since the characteristic function of $S = X+Y$ is that of a Poisson distribution with parameter $\lambda_1 + \lambda_2$, we can conclude that $S$ must be distributed as such.
+\[ S \sim \text{Poi}(\lambda_1 + \lambda_2) \]
+This completes the proof.
+
+\section*{Summary and Takeaways}
+We have successfully shown that the sum of two independent Poisson random variables is another Poisson random variable whose parameter is the sum of the individual parameters.
+
+The key takeaways from this exercise are:
+\begin{itemize}
+    \item \textbf{Power of CFs:} Characteristic functions are a powerful tool, especially for problems involving sums of independent random variables. They often transform a complicated convolution of distributions into a simple multiplication.
+    \item \textbf{The "Trilogy" of Properties:} The solution relies on a three-step pattern common in such proofs: (1) Find the general CF for the distribution family. (2) Use the independence property ($\phi_{X+Y} = \phi_X \phi_Y$). (3) Use the uniqueness property to identify the resulting distribution.
+\end{itemize}
+
+This method is not limited to Poisson distributions and is frequently used to prove similar closure properties for other distributions, like the Normal or Gamma distributions.
+
+\newpage
+\section*{Further Explanations}
+\hypertarget{note1}{}{\textbf{[1] Characteristic Function (CF):}}
+The characteristic function of a random variable $X$ is defined as $\phi_X(t) = \mathbb{E}[e^{itX}]$, where $i$ is the imaginary unit and $t \in \mathbb{R}$. It's a fundamental tool in probability theory because it always exists (unlike the moment-generating function) and, most importantly, it uniquely determines the distribution of the random variable. This means if you know the CF, you know the distribution. See \textbf{Definition 2.46, p. 64} for the formal definition.
+
+\vspace{1em}
+\hypertarget{note2}{}{\textbf{[2] Poisson Distribution:}}
+The Poisson distribution, denoted $\text{Poi}(\lambda)$, is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time or space if these events occur with a known constant mean rate and independently of the time since the last event. Its probability mass function (pmf) is $P(X=k) = \frac{e^{-\lambda}\lambda^k}{k!}$ for $k=0, 1, 2, \dots$. The parameter $\lambda$ is the expected number of events in the interval. See \textbf{Example 1.36 (vii), p. 21}.
+
+\vspace{1em}
+\hypertarget{note3}{}{\textbf{[3] Taylor Series for $e^z$:}}
+The Taylor series (or Maclaurin series, since it's centered at 0) for the exponential function $e^z$ is one of the most important series in mathematics. It is given by:
+\[ e^z = \sum_{k=0}^{\infty} \frac{z^k}{k!} = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \dots \]
+This series converges for all complex numbers $z$. Recognizing this pattern is the key to simplifying the sum in our derivation.
+
+\vspace{1em}
+\hypertarget{note4}{}{\textbf{[4] Independence and CFs:}}
+A crucial property of characteristic functions is how they behave with sums of \textit{independent} random variables. If $X$ and $Y$ are independent, then the expectation of the product of functions of $X$ and $Y$ is the product of their individual expectations, i.e., $\mathbb{E}[g(X)h(Y)] = \mathbb{E}[g(X)]\mathbb{E}[h(Y)]$. Applying this to the CF of the sum $S=X+Y$:
+\[ \phi_S(t) = \mathbb{E}[e^{it(X+Y)}] = \mathbb{E}[e^{itX}e^{itY}] = \mathbb{E}[e^{itX}]\mathbb{E}[e^{itY}] = \phi_X(t)\phi_Y(t) \]
+This property is mentioned in \textbf{Remark 2.47 (iv), p. 64}.
+
+\vspace{1em}
+\hypertarget{note5}{}{\textbf{[5] Uniqueness Property of CFs:}}
+This property, also known as the Inversion Theorem, establishes a one-to-one correspondence between probability distributions and characteristic functions. If two random variables $X$ and $Y$ have the same characteristic function (i.e., $\phi_X(t) = \phi_Y(t)$ for all $t \in \mathbb{R}$), then they must have the same probability distribution ($F_X(z) = F_Y(z)$ for all $z \in \mathbb{R}$). This allows us to identify a distribution by simply identifying its CF. See \textbf{Remark 2.47 (v), p. 64}.
+
+\end{document}

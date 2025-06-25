@@ -1,0 +1,225 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks,
+    linkcolor={blue!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Conditional Expectation with Joint PDFs}
+\author{Justin Lanfermann}
+\date{25. June of 2025}
+
+% --- MAIN DOCUMENT ---
+\begin{document}
+
+\maketitle
+
+\section{Problem Statement}
+
+Let $(\Omega, \mathcal{A}, P)$ be a probability space, and let $X, Y: \Omega \to \mathbb{R}$ be two real-valued random variables (RVs). Their joint probability density function (PDF) \hyperlink{ref:pdf}{[1]} is given by:
+\[
+p_{X,Y}(x,y) = \exp(-y) \cdot \chi_A(x,y)
+\]
+where the set $A$ is defined as $A = \{(x,y) \in \mathbb{R}^2 \mid 0 \le x \le y\}$. This can also be written as:
+\[
+p_{X,Y}(x,y) =
+\begin{cases}
+e^{-y} & \text{if } 0 \le x \le y \\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+We are tasked with the following:
+\begin{itemize}
+    \item[(i)] Verify that $p_{X,Y}(x,y)$ is a valid PDF.
+    \item[(ii)] Compute the conditional expectation $\mathbb{E}[X \mid Y]$.
+    \item[(iii)] Compute the conditional expectation $\mathbb{E}[Y \mid X]$.
+\end{itemize}
+
+\hrulefill
+\vspace{1cm}
+
+\section{Step-by-Step Solution}
+
+\subsection{(i) Verifying the PDF}
+
+\paragraph{Overview}
+To verify that $p_{X,Y}(x,y)$ is a valid joint PDF, we need to check two conditions based on \textbf{Definition 1.39 (probability density function)} from the script:
+\begin{enumerate}
+    \item \textbf{Non-negativity:} The function must be non-negative everywhere, i.e., $p_{X,Y}(x,y) \ge 0$ for all $(x,y) \in \mathbb{R}^2$.
+    \item \textbf{Integration to one:} The integral of the function over the entire plane must be equal to 1, i.e., $\iint_{\mathbb{R}^2} p_{X,Y}(x,y) \,dx\,dy = 1$.
+\end{enumerate}
+
+\paragraph{Step 1: Checking Non-negativity}
+The exponential function $e^{-y}$ is always positive for any real $y$. The indicator function \hyperlink{ref:indicator}{[2]} $\chi_A(x,y)$ is either 1 (if $(x,y) \in A$) or 0 (otherwise). Therefore, their product $e^{-y} \chi_A(x,y)$ is always greater than or equal to 0. The first condition is met.
+
+\paragraph{Step 2: Integration to One}
+Now we need to compute the double integral over $\mathbb{R}^2$. The indicator function $\chi_A(x,y)$ makes the integrand non-zero only over the region $A$, so we can restrict our integration bounds to this region. The region $A$ is defined by $0 \le x \le y$. This implies that for any $y$, $x$ ranges from $0$ to $y$. It also means $y$ must be non-negative (since $x \ge 0$).
+We can set up the integral in two ways. Let's follow the order used in the provided solution to see how it works. The condition $0 \le x \le y$ is equivalent to $y \ge x$ for $x \ge 0$. So we integrate with respect to $y$ first, from $x$ to $\infty$, and then with respect to $x$ from $0$ to $\infty$.
+
+\begin{align*}
+    \iint_{\mathbb{R}^2} p_{X,Y}(x,y) \,dy\,dx &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} e^{-y} \chi_A(x,y) \,dy\,dx \\
+    &= \int_{0}^{\infty} \left( \int_{x}^{\infty} e^{-y} \,dy \right) \,dx \quad \text{(Bounds from } 0 \le x \le y\text{)} \\
+    &= \int_{0}^{\infty} \left[ -e^{-y} \right]_{y=x}^{y=\infty} \,dx \quad \text{(Inner integral w.r.t. } y\text{)} \\
+    &= \int_{0}^{\infty} \left( - \lim_{y\to\infty} e^{-y} - (-e^{-x}) \right) \,dx \\
+    &= \int_{0}^{\infty} (0 + e^{-x}) \,dx \\
+    &= \int_{0}^{\infty} e^{-x} \,dx \quad \text{(Outer integral w.r.t. } x\text{)} \\
+    &= \left[ -e^{-x} \right]_{x=0}^{x=\infty} \\
+    &= (- \lim_{x\to\infty} e^{-x}) - (-e^{-0}) \\
+    &= (0) - (-1) = 1.
+\end{align*}
+Since both conditions are met, $p_{X,Y}(x,y)$ is a valid PDF.
+
+\subsection{(ii) Computing E[X | Y]}
+
+\paragraph{Overview}
+To find the conditional expectation $\mathbb{E}[X \mid Y]$, we first need to find the conditional PDF \hyperlink{ref:cond_pdf}{[3]} $p_{X|Y=y}(x)$. This is given by the formula:
+\[
+p_{X|Y=y}(x) = \frac{p_{X,Y}(x,y)}{p_Y(y)}
+\]
+where $p_Y(y)$ is the marginal PDF \hyperlink{ref:marginal}{[4]} of $Y$. Once we have the conditional PDF, the conditional expectation is computed as:
+\[
+\mathbb{E}[X \mid Y=y] = \int_{-\infty}^{\infty} x \cdot p_{X|Y=y}(x) \,dx
+\]
+This entire process is laid out in \textbf{Definition 2.28 (conditional expectation)}.
+
+\paragraph{Step 1: Compute the Marginal PDF of Y, $p_Y(y)$}
+We find $p_Y(y)$ by "integrating out" the variable $x$ from the joint PDF, as described in \textbf{Theorem 1.63 (iii)}.
+\begin{align*}
+    p_Y(y) &= \int_{-\infty}^{\infty} p_{X,Y}(x,y) \,dx \\
+    &= \int_{-\infty}^{\infty} e^{-y} \chi_A(x,y) \,dx \\
+    &= e^{-y} \int_{0}^{y} 1 \,dx \quad \text{(for } y \ge 0, \text{ otherwise 0)} \\
+    &= e^{-y} \left[ x \right]_{x=0}^{x=y} \\
+    &= y e^{-y} \quad \text{for } y \ge 0.
+\end{align*}
+So, the marginal PDF is $p_Y(y) = y e^{-y} \chi_{\mathbb{R}_{\ge 0}}(y)$. This is a Gamma distribution $\Gamma(2,1)$.
+
+\paragraph{Step 2: Compute the Conditional PDF, $p_{X|Y=y}(x)$}
+Now we can find the conditional PDF.
+\[
+p_{X|Y=y}(x) = \frac{p_{X,Y}(x,y)}{p_Y(y)} = \frac{e^{-y} \chi_{\{0 \le x \le y\}}}{y e^{-y} \chi_{\{y \ge 0\}}} = \frac{1}{y} \chi_{[0,y]}(x) \quad \text{for } y > 0.
+\]
+This is the PDF of a uniform distribution on the interval $[0, y]$, i.e., $X \mid Y=y \sim \text{Unif}(0,y)$ (see \textbf{Example 1.56 (i)}).
+
+\paragraph{Step 3: Compute the Conditional Expectation, $\mathbb{E}[X \mid Y=y]$}
+The expectation of a uniform distribution $\text{Unif}(a,b)$ is simply $(a+b)/2$. For $X \mid Y=y \sim \text{Unif}(0,y)$, the expectation is $(0+y)/2 = y/2$. We can also compute this explicitly:
+\begin{align*}
+    \mathbb{E}[X \mid Y=y] &= \int_{-\infty}^{\infty} x \cdot p_{X|Y=y}(x) \,dx \\
+    &= \int_{0}^{y} x \cdot \frac{1}{y} \,dx \\
+    &= \frac{1}{y} \left[ \frac{x^2}{2} \right]_{x=0}^{x=y} \\
+    &= \frac{1}{y} \left( \frac{y^2}{2} - 0 \right) = \frac{y}{2}.
+\end{align*}
+The conditional expectation is a function of the value of the conditioning variable. So we write the final answer as a random variable: $\mathbb{E}[X \mid Y] = \frac{Y}{2}$.
+
+\subsection{(iii) Computing E[Y | X]}
+
+\paragraph{Overview}
+The procedure is symmetric to part (ii). We first find the marginal PDF of X, $p_X(x)$, then the conditional PDF $p_{Y|X=x}(y)$, and finally compute the expectation $\mathbb{E}[Y \mid X=x]$.
+
+\paragraph{Step 1: Compute the Marginal PDF of X, $p_X(x)$}
+We integrate out $y$ from the joint PDF. The integration is over $y \ge x$ for a fixed $x \ge 0$.
+\begin{align*}
+    p_X(x) &= \int_{-\infty}^{\infty} p_{X,Y}(x,y) \,dy \\
+    &= \int_{x}^{\infty} e^{-y} \,dy \quad \text{(for } x \ge 0, \text{ otherwise 0)} \\
+    &= \left[ -e^{-y} \right]_{y=x}^{y=\infty} \\
+    &= (0) - (-e^{-x}) = e^{-x} \quad \text{for } x \ge 0.
+\end{align*}
+So, $p_X(x) = e^{-x} \chi_{\mathbb{R}_{\ge 0}}(x)$. This is the exponential distribution $\text{Exp}(1)$ (see \textbf{Example 1.56 (iv)}).
+
+\paragraph{Step 2: Compute the Conditional PDF, $p_{Y|X=x}(y)$}
+For $x \ge 0$:
+\[
+p_{Y|X=x}(y) = \frac{p_{X,Y}(x,y)}{p_X(x)} = \frac{e^{-y} \chi_{\{y \ge x\}}}{e^{-x} \chi_{\{x \ge 0\}}} = e^{x-y} \chi_{[x, \infty)}(y).
+\]
+This is a "shifted" exponential distribution.
+
+\paragraph{Step 3: Compute the Conditional Expectation, $\mathbb{E}[Y \mid X=x]$}
+For $x \ge 0$, we compute:
+\[
+\mathbb{E}[Y \mid X=x] = \int_{-\infty}^{\infty} y \cdot p_{Y|X=x}(y) \,dy = \int_{x}^{\infty} y \cdot e^{x-y} \,dy = e^x \int_{x}^{\infty} y e^{-y} \,dy.
+\]
+This integral requires integration by parts \hyperlink{ref:ibp}{[5]} ($\int u \,dv = uv - \int v \,du$).
+Let $u = y$ and $dv = e^{-y} \,dy$. Then $du = dy$ and $v = -e^{-y}$.
+\begin{align*}
+    \int_{x}^{\infty} y e^{-y} \,dy &= \left[ y(-e^{-y}) \right]_{x}^{\infty} - \int_{x}^{\infty} (-e^{-y}) \,dy \\
+    &= \left( \lim_{y\to\infty} -ye^{-y} - (-xe^{-x}) \right) + \int_{x}^{\infty} e^{-y} \,dy \\
+    &= (0 + xe^{-x}) + \left[ -e^{-y} \right]_{x}^{\infty} \\
+    &= xe^{-x} + (0 - (-e^{-x})) \\
+    &= xe^{-x} + e^{-x} = (x+1)e^{-x}.
+\end{align*}
+Now, we substitute this back into our expression for the expectation:
+\[
+\mathbb{E}[Y \mid X=x] = e^x \cdot \left( (x+1)e^{-x} \right) = x+1.
+\]
+This holds for $x \ge 0$. As a random variable, the result is $\mathbb{E}[Y \mid X] = X+1$.
+
+\newpage
+
+\section{Summary of Takeaways}
+
+\begin{itemize}
+    \item \textbf{PDF Validation:} Always check non-negativity and that the integral over the entire domain equals 1. The support of the PDF (where it's non-zero) is crucial for setting up the correct integration limits.
+    \item \textbf{Marginalization:} To find the distribution of a single variable from a joint distribution, you "integrate out" the other variable(s). This is a fundamental operation.
+    \item \textbf{Conditioning:} The conditional PDF $p_{Y|X}$ tells you the distribution of $Y$ given that $X$ has taken a specific value. It is found by dividing the joint PDF by the marginal PDF of the conditioning variable.
+    \item \textbf{Conditional Expectation:} $\mathbb{E}[Y \mid X]$ is the expected value of $Y$ computed using the conditional distribution $p_{Y|X}$. It is not a constant but a random variable itself, as its value depends on the value of $X$.
+\end{itemize}
+
+\hrulefill
+\vspace{1cm}
+
+\section{In-depth Explanations}
+
+\hypertarget{ref:pdf}{}
+\paragraph{[1] Probability Density Function (PDF)}
+A function $p: \mathbb{R}^n \to \mathbb{R}_{\ge 0}$ is a PDF if it's non-negative and its integral over the entire space $\mathbb{R}^n$ is 1. For a continuous random variable $X$, the probability of $X$ falling into a set $A$ is given by integrating the PDF over that set: $P(X \in A) = \int_A p(x) dx$. Crucially, for any single point $c$, $P(X=c) = 0$, and the value $p(c)$ is not a probability itself, but a measure of probability *density*.
+\textit{(Script Reference: Definition 1.39)}
+\vspace{1em}
+
+\hypertarget{ref:indicator}{}
+\paragraph{[2] Indicator Function ($\chi_A$)}
+The indicator function of a set $A$, denoted $\chi_A(x)$, is a simple but powerful tool. It is defined as:
+\[ \chi_A(x) =
+\begin{cases}
+1 & \text{if } x \in A \\
+0 & \text{if } x \notin A
+\end{cases}
+\]
+In probability, it's used to define PDFs that are non-zero only on a specific region (their support), simplifying the notation for integration bounds.
+\textit{(Script Reference: Used in Proposition 1.42)}
+\vspace{1em}
+
+\hypertarget{ref:cond_pdf}{}
+\paragraph{[3] Conditional PDF and Expectation}
+Given two continuous RVs $X$ and $Y$ with joint PDF $p_{X,Y}(x,y)$, the conditional PDF of $Y$ given $X=x$ is defined as $p_{Y|X=x}(y) = \frac{p_{X,Y}(x,y)}{p_X(x)}$, provided $p_X(x) > 0$. It describes the probability distribution of $Y$ when we know the value of $X$. The conditional expectation $\mathbb{E}[Y \mid X=x]$ is the mean of this conditional distribution.
+\textit{(Script Reference: Definitions 1.73, 2.28)}
+\vspace{1em}
+
+\hypertarget{ref:marginal}{}
+\paragraph{[4] Marginal PDF}
+The marginal PDF of a single variable is obtained from a joint PDF by integrating over all possible values of the other variables. For a joint PDF $p_{X,Y}(x,y)$, the marginal PDF of $X$ is $p_X(x) = \int_{-\infty}^\infty p_{X,Y}(x,y) \,dy$. It represents the distribution of $X$ irrespective of the value of $Y$.
+\textit{(Script Reference: Theorem 1.63)}
+\vspace{1em}
+
+\hypertarget{ref:ibp}{}
+\paragraph{[5] Integration by Parts}
+This is a fundamental calculus technique used to integrate the product of two functions. The formula stems from the product rule for differentiation and is given by:
+\[ \int u \,dv = uv - \int v \,du \]
+Choosing the functions for $u$ (which will be differentiated) and $dv$ (which will be integrated) is the key to successfully applying this method. A common mnemonic for choosing $u$ is LIATE (Logarithmic, Inverse trig, Algebraic, Trigonometric, Exponential).
+\vspace{1em}
+
+\end{document}

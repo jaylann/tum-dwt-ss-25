@@ -1,0 +1,227 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{libertine} % A nice font for readability
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black,
+    citecolor=green!60!black,
+    pdftitle={Exercise Walkthrough: Independence and Correlation},
+    pdfauthor={Justin Lanfermann},
+}
+
+% --- DOCUMENT METADATA ---
+\title{\textbf{Exercise Walkthrough: Independence vs. Uncorrelatedness}}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step walkthrough for an exercise on the relationship between independence and uncorrelatedness of random variables. We will first prove that independence implies uncorrelatedness. Then, we will construct a counterexample to show that the reverse is not true: two random variables can be uncorrelated without being independent. Each step is justified with reference to definitions and theorems from the "Discrete Probability Theory" script by Niki Kilbertus.
+\end{abstract}
+
+\section{Overview of the Problem}
+
+The exercise asks us to explore the link between two key properties of random variables (RVs), $X$ and $Y$:
+\begin{enumerate}
+    \item \textbf{Independence}: A strong condition meaning that the value of one variable gives no information about the value of the other. \hyperlink{note1}{[1]}
+    \item \textbf{Uncorrelatedness}: A weaker condition meaning that there is no \emph{linear} relationship between the variables. \hyperlink{note2}{[2]}
+\end{enumerate}
+We will tackle this in two parts:
+\begin{itemize}
+    \item \textbf{Part (i):} Show that independence is the stronger property by proving that if $X$ and $Y$ are independent, they must also be uncorrelated.
+    \item \textbf{Part (ii):} Show that the relationship doesn't go the other way by providing an example of two variables that are uncorrelated but are clearly dependent.
+\end{itemize}
+
+\section{Part (i): Independence implies Uncorrelatedness}
+
+\subsection{Goal and Strategy}
+Our goal is to show that if two random variables $X$ and $Y$ are independent, then their covariance is zero, which by definition means they are uncorrelated.
+
+\textbf{Our strategy is as follows:}
+\begin{enumerate}
+    \item Start with the definition of covariance.
+    \item Calculate the term $\mathbb{E}[XY]$ by using its integral definition.
+    \item Apply the property of independence, which allows us to factorize the joint probability density function (pdf).
+    \item Show that this factorization leads to $\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]$.
+    \item Substitute this result back into the covariance formula to show it equals zero.
+\end{enumerate}
+
+\subsection{Step-by-Step Proof}
+
+\paragraph{Step 1: Recall the definition of covariance.}
+From \textbf{Remark 2.10} (computational formula for covariance), we know that the covariance between $X$ and $Y$ is given by:
+\begin{equation}
+    \text{cov}[X, Y] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y]
+    \label{eq:cov}
+\end{equation}
+To show that $X$ and $Y$ are uncorrelated, we need to prove that $\text{cov}[X, Y] = 0$. This is equivalent to showing that $\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]$.
+
+\paragraph{Step 2: Express $\mathbb{E}[XY]$ as an integral.}
+Using the Law of the Unconscious Statistician (\textbf{Lemma 2.2}) for a function $g(X,Y) = XY$, the expected value $\mathbb{E}[XY]$ is computed by integrating over the joint pdf $p_{X,Y}(x,y)$:
+\begin{equation}
+    \mathbb{E}[XY] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} xy \cdot p_{X,Y}(x,y) \,dx\,dy
+    \label{eq:exy_integral}
+\end{equation}
+
+\paragraph{Step 3: Apply the independence assumption.}
+Here comes the crucial step. We are given that $X$ and $Y$ are independent. According to \textbf{Definition 1.72 (iii)}, for independent continuous random variables, their joint pdf factorizes into the product of their marginal pdfs:
+\begin{equation*}
+    p_{X,Y}(x,y) = p_X(x) p_Y(y)
+\end{equation*}
+We can substitute this into our integral for $\mathbb{E}[XY]$ from Equation \ref{eq:exy_integral}:
+\begin{equation*}
+    \mathbb{E}[XY] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} xy \cdot p_X(x) p_Y(y) \,dx\,dy
+\end{equation*}
+
+\paragraph{Step 4: Separate the integral.}
+Since the integrand is now a product of a function of $x$ and a function of $y$, and the integration limits are constant, we can separate the double integral into a product of two single integrals (an application of Fubini's Theorem):
+\begin{align*}
+    \mathbb{E}[XY] &= \int_{-\infty}^{\infty} y \cdot p_Y(y) \left( \int_{-\infty}^{\infty} x \cdot p_X(x) \,dx \right) \,dy \\
+    &= \left( \int_{-\infty}^{\infty} x \cdot p_X(x) \,dx \right) \left( \int_{-\infty}^{\infty} y \cdot p_Y(y) \,dy \right)
+\end{align*}
+
+\paragraph{Step 5: Relate back to expectation.}
+We recognize these single integrals. By the definition of expectation (\textbf{Definition 2.1}), they are precisely $\mathbb{E}[X]$ and $\mathbb{E}[Y]$:
+\begin{align*}
+    \mathbb{E}[X] &= \int_{-\infty}^{\infty} x \cdot p_X(x) \,dx \\
+    \mathbb{E}[Y] &= \int_{-\infty}^{\infty} y \cdot p_Y(y) \,dy
+\end{align*}
+Therefore, we have shown:
+\begin{equation}
+    \mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]
+    \label{eq:exy_factor}
+\end{equation}
+
+\paragraph{Step 6: Conclude the proof.}
+Substituting Equation \ref{eq:exy_factor} back into the covariance formula (Equation \ref{eq:cov}):
+\begin{equation*}
+    \text{cov}[X, Y] = \mathbb{E}[X]\mathbb{E}[Y] - \mathbb{E}[X]\mathbb{E}[Y] = 0
+\end{equation*}
+Since $\text{cov}[X, Y] = 0$, the random variables $X$ and $Y$ are, by definition, uncorrelated.
+
+\subsection{Summary of Part (i)}
+The logic is a direct chain: independence allows the joint pdf to be factorized, which in turn allows the integral for $\mathbb{E}[XY]$ to be separated into $\mathbb{E}[X]\mathbb{E}[Y]$. This directly leads to the covariance being zero.
+
+\section{Part (ii): Uncorrelated but not Independent}
+
+\subsection{Goal and Strategy}
+Now we need a counterexample: a pair of RVs $(X, Y)$ that are uncorrelated ($\text{cov}[X, Y] = 0$) but are \emph{not} independent. The hint suggests letting $Y$ be a deterministic function of $X$, specifically $Y=X^2$. This is a great choice because if $Y$ is a function of $X$, it is clearly dependent on $X$. If we can choose the distribution of $X$ cleverly so that $\text{cov}[X, X^2] = 0$, we have our counterexample.
+
+\textbf{Our strategy is as follows:}
+\begin{enumerate}
+    \item Define $X$ and $Y=X^2$. A uniform distribution symmetric around zero, like $X \sim \text{Unif}(-1, 1)$, is a good candidate.
+    \item Show that $X$ and $Y$ are uncorrelated by computing $\text{cov}[X, Y]$ and showing it is zero.
+    \item Show that $X$ and $Y$ are not independent by showing that their joint CDF, $F_{X,Y}(x,y)$, does not equal the product of their marginal CDFs, $F_X(x)F_Y(y)$.
+\end{enumerate}
+
+\subsection{Step-by-Step Construction}
+
+\paragraph{Step 1: Define the random variables.}
+Let $X \sim \text{Unif}(-1, 1)$. The pdf of $X$ is:
+\begin{equation*}
+    p_X(x) =
+    \begin{cases}
+        \frac{1}{2} & \text{if } x \in [-1, 1] \\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation*}
+Let $Y = X^2$.
+
+\paragraph{Step 2: Show $X$ and $Y$ are uncorrelated.}
+We again use the formula $\text{cov}[X, Y] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y]$.
+First, let's compute $\mathbb{E}[X]$. From \textbf{Lemma 2.27 (i)}, for a uniform distribution Unif(a,b), the mean is $(a+b)/2$.
+\begin{equation*}
+    \mathbb{E}[X] = \frac{-1 + 1}{2} = 0
+\end{equation*}
+Because $\mathbb{E}[X]=0$, the covariance formula simplifies to:
+\begin{equation*}
+    \text{cov}[X, Y] = \mathbb{E}[XY] - 0 \cdot \mathbb{E}[Y] = \mathbb{E}[XY]
+\end{equation*}
+Now we substitute $Y=X^2$:
+\begin{equation*}
+    \mathbb{E}[XY] = \mathbb{E}[X \cdot X^2] = \mathbb{E}[X^3]
+\end{equation*}
+We compute $\mathbb{E}[X^3]$ using LOTUS (\textbf{Lemma 2.2}):
+\begin{equation*}
+    \mathbb{E}[X^3] = \int_{-\infty}^{\infty} x^3 p_X(x) \,dx = \int_{-1}^{1} x^3 \cdot \frac{1}{2} \,dx
+\end{equation*}
+This is an integral of an odd function ($f(x)=x^3$) over a symmetric interval $[-1, 1]$. Such integrals are always zero. \hyperlink{note4}{[4]} For completeness, the calculation is:
+\begin{equation*}
+    \frac{1}{2} \int_{-1}^{1} x^3 \,dx = \frac{1}{2} \left[ \frac{x^4}{4} \right]_{-1}^{1} = \frac{1}{2} \left( \frac{1^4}{4} - \frac{(-1)^4}{4} \right) = \frac{1}{2} \left( \frac{1}{4} - \frac{1}{4} \right) = 0
+\end{equation*}
+So, $\text{cov}[X, Y] = 0$. $X$ and $Y$ are uncorrelated.
+
+\paragraph{Step 3: Show $X$ and $Y$ are not independent.}
+To show they are not independent, we will show that $F_{X,Y}(x,y) \neq F_X(x)F_Y(y)$ for some $(x,y)$. According to \textbf{Definition 1.72 (i)}, this is sufficient to prove non-independence.
+
+First, let's find the marginal CDFs, $F_X(x)$ and $F_Y(y)$, for $x \in [-1,1]$ and $y \in [0,1]$ (the supports of $X$ and $Y$).
+\begin{align*}
+    F_X(x) &= P(X \le x) = \int_{-1}^{x} \frac{1}{2} \,dt = \frac{1}{2}[t]_{-1}^x = \frac{x+1}{2} \\
+    F_Y(y) &= P(Y \le y) = P(X^2 \le y) = P(-\sqrt{y} \le X \le \sqrt{y}) \\
+           &= \int_{-\sqrt{y}}^{\sqrt{y}} \frac{1}{2} \,dt = \frac{1}{2}[t]_{-\sqrt{y}}^{\sqrt{y}} = \frac{1}{2}(\sqrt{y} - (-\sqrt{y})) = \sqrt{y}
+\end{align*}
+So, the product is $F_X(x)F_Y(y) = \frac{(x+1)\sqrt{y}}{2}$.
+
+Now, let's find the joint CDF, $F_{X,Y}(x,y)$:
+\begin{align*}
+    F_{X,Y}(x,y) &= P(X \le x, Y \le y) = P(X \le x, X^2 \le y) \\
+                  &= P(X \le x, -\sqrt{y} \le X \le \sqrt{y}) \\
+                  &= P(X \in [-\sqrt{y}, \sqrt{y}] \cap (-\infty, x]) \\
+                  &= P(-\sqrt{y} \le X \le \min(x, \sqrt{y})) \\
+                  &= \int_{-\sqrt{y}}^{\min(x, \sqrt{y})} \frac{1}{2} \,dt = \frac{1}{2}[t]_{-\sqrt{y}}^{\min(x, \sqrt{y})} = \frac{\min(x, \sqrt{y}) + \sqrt{y}}{2}
+\end{align*}
+Now we must check if $F_{X,Y}(x,y) = F_X(x)F_Y(y)$:
+\begin{equation*}
+    \frac{\min(x, \sqrt{y}) + \sqrt{y}}{2} \stackrel{?}{=} \frac{(x+1)\sqrt{y}}{2}
+\end{equation*}
+Let's pick a test point, for instance $x=0.5$ and $y=0.09$. Then $\sqrt{y}=0.3$.
+\begin{itemize}
+    \item LHS: $\frac{\min(0.5, 0.3) + 0.3}{2} = \frac{0.3 + 0.3}{2} = 0.3$
+    \item RHS: $\frac{(0.5+1)\sqrt{0.09}}{2} = \frac{1.5 \cdot 0.3}{2} = \frac{0.45}{2} = 0.225$
+\end{itemize}
+Since $0.3 \neq 0.225$, the equality does not hold. Therefore, $X$ and $Y$ are not independent.
+
+\subsection{Visual Intuition for Part (ii)}
+The relationship $Y=X^2$ means that all the probability mass of the joint distribution $(X,Y)$ lies on the parabola $y=x^2$ for $x \in [-1,1]$. If you were to create a scatter plot of samples from this joint distribution, they would form a perfect parabolic arc.
+\begin{itemize}
+    \item \textbf{Dependence:} This is the picture of perfect dependence. If you know the value of $X$, you know the value of $Y$ with certainty. For example, if $X=0.5$, then $Y$ must be $0.25$. This is the opposite of independence.
+    \item \textbf{Uncorrelatedness:} Correlation measures the \emph{linear} trend. For $x \in [0, 1]$, as $x$ increases, $y$ increases. This suggests a positive correlation. But for $x \in [-1, 0]$, as $x$ increases, $y$ decreases. This suggests a negative correlation. Because the distribution of $X$ is symmetric around 0, these two opposing linear trends perfectly cancel each other out, resulting in a net linear relationship of zero.
+\end{itemize}
+This example beautifully illustrates that "uncorrelated" is not the same as "unrelated".
+
+\vfill
+\hrule
+\subsection*{More In-Depth Explanations}
+\small
+\begin{description}
+    \item[\hypertarget{note1}{[1] Independence of Random Variables}] Independence is a core concept stating that the outcome of one RV provides no probabilistic information about the outcome of another. For continuous RVs $X$ and $Y$, this is formally defined by the factorization of their joint probability density function (pdf) into the product of their marginal pdfs: $p_{X,Y}(x,y) = p_X(x)p_Y(y)$ for all $x, y$. This must hold for their CDFs as well: $F_{X,Y}(x,y) = F_X(x)F_Y(y)$.
+
+    \item[\hypertarget{note2}{[2] Covariance and Correlation}] Covariance measures the joint variability of two RVs. A positive covariance indicates they tend to move in the same direction, while a negative covariance indicates they move in opposite directions. However, its value depends on the units of the RVs.
+    \begin{equation*}
+        \text{cov}[X, Y] = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]
+    \end{equation*}
+    Correlation, $\rho[X,Y]$, is the normalized version of covariance, which is dimensionless and always lies in $[-1, 1]$. It measures the strength and direction of the \emph{linear} relationship between two RVs. A correlation of 0 means there is no linear relationship, and the variables are called \emph{uncorrelated}.
+    \begin{equation*}
+        \rho[X, Y] = \frac{\text{cov}[X, Y]}{\sqrt{\text{var}[X]\text{var}[Y]}}
+    \end{equation*}
+
+    \item[\hypertarget{note3}{[3] Law of the Unconscious Statistician (LOTUS)}] This is a very useful theorem (\textbf{Lemma 2.2}) that allows us to calculate the expectation of a function of a random variable, say $g(X)$, without first finding the probability distribution of the new random variable $Z=g(X)$. We can compute it directly by integrating $g(x)$ against the pdf of the original variable $X$:
+    \begin{equation*} \mathbb{E}[g(X)] = \int_{-\infty}^{\infty} g(x)p_X(x)\,dx \end{equation*}
+
+    \item[\hypertarget{note4}{[4] Integral of an Odd Function over a Symmetric Interval}] A function $f(x)$ is called \emph{odd} if $f(-x) = -f(x)$ for all $x$. Examples include $x, x^3, \sin(x)$. When an odd function is integrated over an interval that is symmetric about the origin, like $[-a, a]$, the result is always zero. This is because the area below the x-axis for $x<0$ perfectly cancels out the area above the x-axis for $x>0$.
+    \begin{equation*} \int_{-a}^{a} f(x)\,dx = 0 \quad \text{if } f \text{ is an odd function.} \end{equation*}
+\end{description}
+\end{document}

@@ -1,0 +1,148 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Exercise Walkthrough},
+    pdfpagemode=FullScreen,
+}
+
+% --- TITLE, AUTHOR, DATE ---
+\title{Exercise Walkthrough: Inverse Transform Sampling for a 2D Gaussian}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+% --- COMMANDS ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\T}{\top}
+\newcommand{\E}{\mathbb{E}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step walkthrough for an exercise on sampling from a multivariate Gaussian distribution using the inverse transform sampling method. It covers the derivation of a method to sample from a standard one-dimensional Gaussian, and extends this to the two-dimensional case using an affine transformation based on the Cholesky decomposition. All steps are justified with references to concepts from the "Discrete Probability Theory" script.
+\end{abstract}
+
+\section{Overview of the Problem}
+
+The goal of this exercise is to generate samples from a specific 2-dimensional Gaussian distribution:
+\[ X \sim \N\left(\mu = \begin{pmatrix} 1 \\ 2 \end{pmatrix}, \Sigma = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}\right) \]
+The method we are asked to use is \textbf{inverse transform sampling} \hyperref[concept:its]{[1]}. This technique, formalized in Proposition 2.23 of the script, provides a general way to turn samples from a uniform distribution $U(0,1)$ into samples from any other distribution, provided we can compute the inverse of its cumulative distribution function (CDF), also known as the quantile function.
+
+Our approach will be:
+\begin{enumerate}
+    \item First, figure out how to generate samples from the simplest Gaussian, the standard normal distribution $\N(0,1)$.
+    \item Then, use an \textbf{affine transformation} \hyperref[concept:affine]{[2]} to convert these standard normal samples into samples from our target 2D Gaussian distribution. This step will involve the \textbf{Cholesky decomposition} \hyperref[concept:cholesky]{[3]} of the covariance matrix $\Sigma$.
+\end{enumerate}
+
+\section{Part (i): Sampling from a 1D Standard Normal}
+
+\subsection{The Challenge with Direct Inversion}
+The inverse transform sampling method (Remark 2.24) states that if we have a random variable $U \sim U(0,1)$, we can generate a sample $x$ from a distribution with CDF $F_X$ by computing $x = F_X^{-1}(u)$.
+
+For a standard normal distribution $Z \sim \N(0,1)$, the CDF is often denoted by $\Phi(z)$:
+\[ \Phi(z) = P(Z \le z) = \int_{-\infty}^{z} \frac{1}{\sqrt{2\pi}} e^{-t^2/2} dt \]
+Unfortunately, this integral does not have a closed-form elementary solution, and neither does its inverse, $\Phi^{-1}(u)$ (the quantile function, also called the probit function). Therefore, we cannot directly apply the inverse transform sampling formula in a simple analytical way.
+
+\subsection{A Practical Solution: The Box-Muller Transform}
+To overcome this, a clever technique called the \textbf{Box-Muller transform} \hyperref[concept:boxmuller]{[4]} is used. It's a beautiful piece of statistics that allows us to generate two independent standard normal samples from two independent uniform samples.
+
+\paragraph{Derivation and Transformation:}
+Let $U_1, U_2$ be two independent random variables drawn from $U(0,1)$. The Box-Muller transformation defines two new random variables, $Z_1$ and $Z_2$, as follows:
+\begin{align}
+    Z_1 &= \sqrt{-2 \ln(U_1)} \cos(2\pi U_2) \\
+    Z_2 &= \sqrt{-2 \ln(U_1)} \sin(2\pi U_2)
+\end{align}
+It can be proven that $Z_1$ and $Z_2$ are independent random variables, and both follow a standard normal distribution, i.e., $Z_1 \sim \N(0,1)$ and $Z_2 \sim \N(0,1)$.
+
+This provides the required transformation: to get one standard normal sample, we can generate two uniform samples and apply, for instance, the formula for $Z_1$. To be efficient, we typically generate pairs of standard normal samples at a time.
+
+\section{Part (ii): Sampling from N(\textmu, \Sigma)}
+
+Now that we can generate samples from a standard normal distribution, we need to transform them to fit our target distribution $\N(\mu, \Sigma)$.
+
+\subsection{Using the Affine Transformation Property of Gaussians}
+Lemma 2.53 (ii) in the script describes a crucial property of Gaussian distributions: an affine transformation of a Gaussian random vector is also a Gaussian random vector. Specifically, if $Z \sim \N(\mu_Z, \Sigma_Z)$ is a $d$-dimensional Gaussian, then for a matrix $\mat{A} \in \R^{k \times d}$ and a vector $\mat{b} \in \R^k$, the random vector $Y = \mat{A}Z + \mat{b}$ is distributed as:
+\[ Y \sim \N(\mat{A}\mu_Z + \mat{b}, \mat{A}\Sigma_Z \mat{A}^\T) \]
+Our goal is to find a matrix $\mat{A}$ and a vector $\mat{b}$ that will transform standard normal samples into our target samples.
+
+Let's start with a 2-dimensional standard normal vector $\mat{Z} = \begin{pmatrix} Z_1 \\ Z_2 \end{pmatrix}$, where $Z_1, Z_2 \sim \N(0,1)$ are independent. The distribution of $\mat{Z}$ is:
+\[ \mat{Z} \sim \N\left(\mu_Z = \begin{pmatrix} 0 \\ 0 \end{pmatrix}, \Sigma_Z = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = \mat{I}\right) \]
+We want to find $\mat{A}$ and $\mat{b}$ such that $\mat{X} = \mat{A}\mat{Z} + \mat{b}$ follows our target distribution $\N(\mu, \Sigma)$. Using the transformation rule:
+\[ \mat{A}\mat{Z} + \mat{b} \sim \N(\mat{A}\mathbf{0} + \mat{b}, \mat{A}\mat{I}\mat{A}^\T) = \N(\mat{b}, \mat{A}\mat{A}^\T) \]
+By comparing this with our target distribution $\N(\mu, \Sigma)$, we can see that we need to find $\mat{A}$ and $\mat{b}$ such that:
+\begin{enumerate}
+    \item $\mat{b} = \mu = \begin{pmatrix} 1 \\ 2 \end{pmatrix}$
+    \item $\mat{A}\mat{A}^\T = \Sigma = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$
+\end{enumerate}
+
+\subsection{Finding the Transformation Matrix via Cholesky Decomposition}
+The second condition, $\mat{A}\mat{A}^\T = \Sigma$, is a classic problem that can be solved using the Cholesky decomposition. The Cholesky decomposition of a positive-definite matrix $\Sigma$ finds a unique lower-triangular matrix $\mat{L}$ such that $\mat{L}\mat{L}^\T = \Sigma$. We can simply choose our transformation matrix $\mat{A}$ to be this matrix $\mat{L}$.
+
+Let's compute the Cholesky decomposition for our covariance matrix $\Sigma = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$. We are looking for a matrix $\mat{L}$ of the form:
+\[ \mat{L} = \begin{pmatrix} l_{11} & 0 \\ l_{21} & l_{22} \end{pmatrix} \]
+such that $\mat{L}\mat{L}^\T = \Sigma$.
+\[ \mat{L}\mat{L}^\T = \begin{pmatrix} l_{11} & 0 \\ l_{21} & l_{22} \end{pmatrix} \begin{pmatrix} l_{11} & l_{21} \\ 0 & l_{22} \end{pmatrix} = \begin{pmatrix} l_{11}^2 & l_{11}l_{21} \\ l_{11}l_{21} & l_{21}^2 + l_{22}^2 \end{pmatrix} \]
+By equating this with $\Sigma$, we get a system of equations:
+\begin{itemize}
+    \item $l_{11}^2 = 2 \implies l_{11} = \sqrt{2}$
+    \item $l_{11}l_{21} = 1 \implies \sqrt{2} \cdot l_{21} = 1 \implies l_{21} = \frac{1}{\sqrt{2}}$
+    \item $l_{21}^2 + l_{22}^2 = 2 \implies \left(\frac{1}{\sqrt{2}}\right)^2 + l_{22}^2 = 2 \implies \frac{1}{2} + l_{22}^2 = 2 \implies l_{22}^2 = \frac{3}{2} \implies l_{22} = \sqrt{\frac{3}{2}}$
+\end{itemize}
+So, our transformation matrix is:
+\[ \mat{A} = \mat{L} = \begin{pmatrix} \sqrt{2} & 0 \\ \frac{1}{\sqrt{2}} & \sqrt{\frac{3}{2}} \end{pmatrix} \]
+
+\section{Summary of the Full Algorithm}
+
+We now have all the components to generate a sample $\mat{X}$ from $\N(\mu, \Sigma)$.
+
+\begin{enumerate}
+    \item \textbf{Generate Uniform Samples:} Draw two independent samples, $U_1$ and $U_2$, from a $U(0,1)$ distribution.
+
+    \item \textbf{Generate Standard Normal Samples:} Use the Box-Muller transform to convert $U_1, U_2$ into a vector of two independent standard normal samples $\mat{Z} = \begin{pmatrix} Z_1 \\ Z_2 \end{pmatrix}$.
+    \[
+    Z_1 = \sqrt{-2 \ln(U_1)} \cos(2\pi U_2) \quad \text{and} \quad Z_2 = \sqrt{-2 \ln(U_1)} \sin(2\pi U_2)
+    \]
+
+    \item \textbf{Apply Affine Transformation:} Use the computed matrix $\mat{L}$ and the given mean vector $\mu$ to transform $\mat{Z}$ into the final sample $\mat{X}$.
+    \[ \mat{X} = \mat{L}\mat{Z} + \mu = \begin{pmatrix} \sqrt{2} & 0 \\ \frac{1}{\sqrt{2}} & \sqrt{\frac{3}{2}} \end{pmatrix} \begin{pmatrix} Z_1 \\ Z_2 \end{pmatrix} + \begin{pmatrix} 1 \\ 2 \end{pmatrix} \]
+\end{enumerate}
+Repeating these steps will generate a set of samples that are distributed according to the desired 2-dimensional Gaussian distribution.
+
+\hrule
+\vspace{1cm}
+\section*{Further Explanations}
+
+\phantomsection
+\subsection*{[1] Inverse Transform Sampling} \label{concept:its}
+This is a fundamental method for generating random numbers from a given probability distribution, provided its cumulative distribution function (CDF) can be inverted. As stated in Proposition 2.23 and Remark 2.24 of the script, if a random variable $X$ has a continuous and strictly increasing CDF, $F_X$, then the random variable $U = F_X(X)$ is uniformly distributed on $[0,1]$. By inverting this relationship, we get $X = F_X^{-1}(U)$. This gives a practical way to sample $X$: first, draw a sample $u$ from $U(0,1)$, then compute $x = F_X^{-1}(u)$. The set of such $x$'s will be distributed according to $F_X$.
+
+\phantomsection
+\subsection*{[2] Affine Transformation of Gaussians} \label{concept:affine}
+This property, highlighted in Lemma 2.53 (ii), is a cornerstone of working with multivariate Gaussian distributions. It states that if you take a Gaussian random vector and apply a linear transformation (matrix multiplication) and a shift (vector addition), the result is another Gaussian random vector. This makes Gaussians incredibly tractable, as many complex operations reduce to simple linear algebra on their mean vectors and covariance matrices.
+
+\phantomsection
+\subsection*{[3] Cholesky Decomposition} \label{concept:cholesky}
+The Cholesky decomposition is a numerical analysis technique for decomposing a symmetric, positive-definite matrix into the product of a lower-triangular matrix and its transpose ($\Sigma = \mat{L}\mat{L}^\T$). It is essentially a "matrix square root". In statistics, it is widely used to find a linear transformation that can turn uncorrelated random variables into correlated ones with a specific covariance structure, which is exactly what was needed in this exercise.
+
+\phantomsection
+\subsection*{[4] The Box-Muller Transform} \label{concept:boxmuller}
+The Box-Muller transform is a pseudo-random number sampling method for generating pairs of independent, standard normally distributed random numbers from a single pair of independent, uniformly distributed random numbers. The method is a direct consequence of a change of variables in a two-dimensional Cartesian system to a polar coordinate system. It elegantly bypasses the problem that the standard normal CDF cannot be inverted in a simple closed form.
+
+\end{document}

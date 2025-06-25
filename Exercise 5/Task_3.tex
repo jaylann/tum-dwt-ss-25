@@ -1,0 +1,184 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=1in]{geometry} % Set page margins
+\usepackage{amsmath, amssymb, amsthm}    % For math symbols and environments
+\usepackage{graphicx}                     % To include images
+\usepackage{xcolor}                       % For custom colors
+\usepackage[utf8]{inputenc}               % Input encoding
+\usepackage{hyperref}                     % For clickable links and references
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=red,
+    pdftitle={Exercise Walkthrough: Memoryless Property},
+    pdfauthor={Justin Lanfermann},
+}
+
+% --- TITLE AND AUTHOR ---
+\title{Exercise Walkthrough: Memoryless Property of the Exponential Distribution}
+\author{Justin Lanfermann}
+\date{25. June of 2025}
+
+% --- CUSTOM COMMANDS ---
+\newcommand{\R}{\mathbb{R}} % Real numbers symbol
+
+% --- BEGIN DOCUMENT ---
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a step-by-step walkthrough for an exercise on the memoryless property of the exponential distribution, based on the script "Discrete Probability Theory" by Niki Kilbertus. The goal is to demonstrate that this property uniquely defines the exponential distribution among continuous distributions on the positive real numbers. We will prove both directions of the "if and only if" statement, explaining the reasoning and citing relevant definitions.
+\end{abstract}
+
+\section{Overview of the Exercise}
+
+The core of this exercise is to prove that for a continuous random variable $X$ with support on $\R_{>0}$, the following two statements are equivalent:
+\begin{enumerate}
+    \item $X$ is exponentially distributed, i.e., $X \sim \text{Exp}(\lambda)$ for some $\lambda > 0$. \hyperlink{note:exp}{[3]}
+    \item $X$ has the memoryless property: $P(X > t + s | X > s) = P(X > t)$ for all $s, t \ge 0$.
+\end{enumerate}
+This property is fundamental in many real-world applications, such as modeling the lifetime of electronic components or the waiting time for an event, where the future probability of failure is independent of the component's current age.
+
+An "if and only if" proof requires us to prove two implications:
+\begin{itemize}
+    \item \textbf{Necessity (The "$\Rightarrow$" direction):} If $X \sim \text{Exp}(\lambda)$, then it is memoryless.
+    \item \textbf{Sufficiency (The "$\Leftarrow$" direction):} If $X$ is memoryless, then it must be that $X \sim \text{Exp}(\lambda)$.
+\end{itemize}
+We will prove each direction separately.
+
+\section{The Proof}
+
+\subsection{Direction 1: Necessity ($\Rightarrow$)}
+
+\noindent \textbf{Goal:} Assume $X \sim \text{Exp}(\lambda)$ and show that $P(X > t + s | X > s) = P(X > t)$.
+
+\subsubsection*{Step 1: State the assumption and recall relevant functions}
+We assume that $X$ is exponentially distributed. According to your script (Example 1.56 (iv)), this means its probability density function (PDF) \hyperlink{note:pdfcdf}{[1]} is $p_X(x) = \lambda e^{-\lambda x}$ for $x > 0$.
+
+The first thing we need is the probability $P(X > x)$. This is often called the \textbf{survival function}. We can calculate it from the cumulative distribution function (CDF) \hyperlink{note:pdfcdf}{[1]}, $F_X(x) = P(X \le x)$.
+For the exponential distribution, the CDF is:
+\[ F_X(x) = \int_0^x \lambda e^{-\lambda u} du = [ -e^{-\lambda u} ]_0^x = -e^{-\lambda x} - (-e^0) = 1 - e^{-\lambda x} \]
+Therefore, the survival function is:
+\[ P(X > x) = 1 - P(X \le x) = 1 - F_X(x) = 1 - (1 - e^{-\lambda x}) = e^{-\lambda x} \]
+This is a key formula for this part of the proof.
+
+\subsubsection*{Step 2: Expand the conditional probability}
+Now, let's start with the left-hand side of the equation we want to prove. Using the definition of conditional probability \hyperlink{note:condprob}{[2]} (Definition 1.64), we have:
+\[ P(X > t + s | X > s) = \frac{P(\{X > t+s\} \cap \{X > s\})}{P(X > s)} \]
+\textit{Reasoning:} The event $\{X > t+s\}$ is a subset of the event $\{X > s\}$. If a value is greater than $t+s$ (and $t>0$), it is automatically greater than $s$. Therefore, the intersection of these two events is just the smaller event, $\{X > t+s\}$. So, we can simplify the numerator:
+\[ P(X > t + s | X > s) = \frac{P(X > t+s)}{P(X > s)} \]
+
+\subsubsection*{Step 3: Substitute and simplify}
+Now we can substitute the survival function formula $P(X > x) = e^{-\lambda x}$ that we derived in Step 1:
+\[ \frac{P(X > t+s)}{P(X > s)} = \frac{e^{-\lambda(t+s)}}{e^{-\lambda s}} \]
+Using the rules of exponents ($e^{a+b} = e^a e^b$), we get:
+\[ \frac{e^{-\lambda t} e^{-\lambda s}}{e^{-\lambda s}} = e^{-\lambda t} \]
+
+\subsubsection*{Step 4: Conclude the proof}
+We have shown that the left-hand side simplifies to $e^{-\lambda t}$. We also know from Step 1 that $P(X > t) = e^{-\lambda t}$. Therefore:
+\[ P(X > t + s | X > s) = e^{-\lambda t} = P(X > t) \]
+This completes the proof for the "$\Rightarrow$" direction. We have successfully shown that any exponentially distributed random variable has the memoryless property. $\qed$
+
+\subsection{Direction 2: Sufficiency ($\Leftarrow$)}
+
+\noindent \textbf{Goal:} Assume $P(X > t + s | X > s) = P(X > t)$ and show that $X \sim \text{Exp}(\lambda)$.
+
+\subsubsection*{Step 1: Formulate the problem mathematically}
+We start with the assumption, which is the memoryless property. Let's define the survival function as $f(x) := P(X > x)$. The exercise states that $X$ has a strictly positive continuous density, which means $f(x)$ is a differentiable and strictly decreasing function.
+
+Using the definition of conditional probability as before, the memoryless property can be written as:
+\[ \frac{P(X > t+s)}{P(X > s)} = P(X > t) \]
+Substituting our function $f(x)$, this becomes:
+\[ \frac{f(t+s)}{f(s)} = f(t) \]
+Rearranging this gives a very important relationship:
+\[ f(t+s) = f(s) \cdot f(t) \]
+\textit{Reasoning:} This is a famous equation known as \textbf{Cauchy's functional equation}. \hyperlink{note:cauchy}{[5]} For a continuous function, the only non-trivial solutions are of the form $f(x) = e^{cx}$ for some constant $c$. We will now show this result formally using the hint from the exercise, which involves differentiation.
+
+\subsubsection*{Step 2: Differentiate the functional equation}
+Our goal is to find the explicit form of the function $f(x)$. The hint suggests looking at the function $\phi(s) = \frac{f(t+s)}{f(s)}$. Our assumption tells us that $\phi(s) = f(t)$. Since $f(t)$ does not depend on $s$, it is a constant with respect to $s$. This means its derivative with respect to $s$ must be zero.
+\[ \frac{d}{ds} \phi(s) = 0 \]
+Let's compute the derivative of $\phi(s)$ using the quotient rule for differentiation:
+\[ \frac{d}{ds} \left( \frac{f(t+s)}{f(s)} \right) = \frac{f'(t+s) \cdot f(s) - f(t+s) \cdot f'(s)}{[f(s)]^2} = 0 \]
+Since we know $f(s) = P(X>s) > 0$, the denominator is not zero, so the numerator must be zero:
+\[ f'(t+s)f(s) - f(t+s)f'(s) = 0 \]
+Rearranging this gives:
+\[ f'(t+s)f(s) = f(t+s)f'(s) \implies \frac{f'(t+s)}{f(t+s)} = \frac{f'(s)}{f(s)} \]
+\textit{Reasoning:} This equation tells us that the function $h(x) = \frac{f'(x)}{f(x)}$ has the same value for any input $s$ and any other input $t+s$. Since this holds for all $s, t \ge 0$, the function $h(x)$ must be a constant for all $x > 0$. Let's call this constant $c$.
+
+\subsubsection*{Step 3: Solve the differential equation}
+We now have a simple ordinary differential equation (ODE) \hyperlink{note:ode}{[4]}:
+\[ \frac{f'(x)}{f(x)} = c \]
+We can recognize the left-hand side as the derivative of $\ln(f(x))$. So, we have:
+\[ \frac{d}{dx} \ln(f(x)) = c \]
+To find $f(x)$, we integrate both sides with respect to $x$ from $0$ to some value $t$:
+\[ \int_0^t \left( \frac{d}{dx} \ln(f(x)) \right) dx = \int_0^t c \, dx \]
+\[ \big[ \ln(f(x)) \big]_0^t = \big[ cx \big]_0^t \]
+\[ \ln(f(t)) - \ln(f(0)) = ct \]
+The support of $X$ is $\R_{>0}$, so $f(0) = P(X>0) = 1$. Since $\ln(1) = 0$, this simplifies to:
+\[ \ln(f(t)) = ct \]
+Exponentiating both sides gives the solution for $f(t)$:
+\[ f(t) = e^{ct} \]
+
+\subsubsection*{Step 4: Determine the constant and conclude}
+We have found that $P(X > t) = e^{ct}$. Now we use the properties of a survival function to determine the constant $c$. We know that as $t \to \infty$, the probability of $X$ being greater than $t$ must go to zero.
+\[ \lim_{t \to \infty} P(X > t) = \lim_{t \to \infty} e^{ct} = 0 \]
+This limit is only zero if the constant $c$ is negative. So, we can write $c = -\lambda$ for some positive constant $\lambda > 0$.
+
+This gives us the survival function:
+\[ P(X > t) = e^{-\lambda t} \]
+From this, we can find the CDF $F_X(t)$:
+\[ F_X(t) = P(X \le t) = 1 - P(X > t) = 1 - e^{-\lambda t} \]
+And finally, the PDF $p_X(t)$ is the derivative of the CDF:
+\[ p_X(t) = \frac{d}{dt} F_X(t) = \frac{d}{dt} (1 - e^{-\lambda t}) = -(-\lambda)e^{-\lambda t} = \lambda e^{-\lambda t} \]
+This is precisely the PDF of an exponential distribution with parameter $\lambda$. Therefore, $X \sim \text{Exp}(\lambda)$. This completes the proof for the "$\Leftarrow$" direction. $\qed$
+
+\section{Summary of Key Points}
+We have successfully demonstrated both directions of the proof:
+\begin{itemize}
+    \item We showed that if a variable is exponentially distributed, its survival function $P(X>x)=e^{-\lambda x}$ naturally leads to the memoryless property through simple algebraic manipulation.
+    \item We showed that if a variable has the memoryless property, its survival function must satisfy the functional equation $f(t+s)=f(s)f(t)$. By solving the resulting differential equation, we proved that the survival function must be of the form $e^{-\lambda x}$, which uniquely identifies the distribution as exponential.
+\end{itemize}
+This exercise highlights a defining feature of the exponential distribution and provides excellent practice in manipulating probability functions and solving a simple differential equation that often appears in probability theory.
+
+\newpage
+\section{In-depth Explanations}
+
+\hypertarget{note:pdfcdf}{\subsection*{[1] PDF, CDF, and Survival Function}}
+For a continuous random variable $X$, we describe its distribution using several related functions:
+\begin{itemize}
+    \item \textbf{Probability Density Function (PDF)}, $p_X(x)$: A non-negative function that describes the relative likelihood for the random variable to take on a given value. Probabilities are found by integrating the PDF over an interval. It must satisfy $\int_{-\infty}^{\infty} p_X(x)dx = 1$. (See Definition 1.39)
+    \item \textbf{Cumulative Distribution Function (CDF)}, $F_X(x)$: This function gives the probability that $X$ will take a value less than or equal to $x$. It is defined as $F_X(x) = P(X \le x) = \int_{-\infty}^{x} p_X(t)dt$. The PDF is the derivative of the CDF, $p_X(x) = F'_X(x)$. (See Definition 1.21)
+    \item \textbf{Survival Function}, $S_X(x)$ or $f(x)$ in this exercise: This gives the probability that $X$ will take a value greater than $x$. It's the complement of the CDF: $S_X(x) = P(X > x) = 1 - F_X(x)$.
+\end{itemize}
+
+\hypertarget{note:condprob}{\subsection*{[2] Conditional Probability}}
+The conditional probability of an event $A$ occurring, given that another event $B$ has already occurred, is defined as:
+\[ P(A|B) = \frac{P(A \cap B)}{P(B)} \]
+This is valid as long as $P(B) > 0$. It essentially re-scales the probability of the intersection of $A$ and $B$ by the probability of the new, smaller "universe" $B$. (See Definition 1.64)
+
+\hypertarget{note:exp}{\subsection*{[3] The Exponential Distribution}}
+The exponential distribution, denoted $\text{Exp}(\lambda)$, is a continuous probability distribution that models the time between events in a Poisson point process. Its parameter $\lambda > 0$ is the rate parameter.
+\begin{itemize}
+    \item \textbf{PDF:} $p_X(x) = \lambda e^{-\lambda x}$ for $x \ge 0$.
+    \item \textbf{CDF:} $F_X(x) = 1 - e^{-\lambda x}$ for $x \ge 0$.
+\end{itemize}
+(See Example 1.56 (iv))
+
+\hypertarget{note:ode}{\subsection*{[4] Solving the Differential Equation}}
+The equation $\frac{f'(x)}{f(x)} = c$ is a first-order separable ordinary differential equation.
+\begin{enumerate}
+    \item \textbf{Recognize the Logarithmic Derivative:} The expression $\frac{f'(x)}{f(x)}$ is the result of applying the chain rule to $\ln(f(x))$. That is, $\frac{d}{dx}\ln(f(x)) = \frac{1}{f(x)} \cdot f'(x)$. This is the most direct way to solve it.
+    \item \textbf{Integrate both sides:} By writing $\frac{d}{dx}\ln(f(x)) = c$ and integrating, we find $\ln(f(x)) = cx + K$ for some integration constant $K$.
+    \item \textbf{Solve for $f(x)$:} Exponentiating gives $f(x) = e^{cx+K} = e^K \cdot e^{cx}$. The constant $e^K$ can be determined by an initial condition. In our case, $f(0)=1$, so $1 = e^K \cdot e^0 \implies e^K = 1$. This leaves us with $f(x)=e^{cx}$.
+\end{enumerate}
+
+\hypertarget{note:cauchy}{\subsection*{[5] Cauchy's Functional Equation}}
+The equation $f(x+y) = f(x)f(y)$ is a famous functional equation. If we seek solutions that have a basic property, like being continuous at even a single point, it can be shown that the only solutions are of the form $f(x) = a^x$ for some constant $a$. In our proof, we derived this result from first principles using differentiation, which is a common technique when the function is known to be differentiable.
+
+\end{document}

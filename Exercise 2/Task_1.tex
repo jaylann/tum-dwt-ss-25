@@ -1,0 +1,233 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{bookmark}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=MidnightBlue,
+    urlcolor=RoyalBlue,
+    citecolor=ForestGreen,
+    linktoc=all
+}
+
+% --- THEOREM-LIKE ENVIRONMENTS ---
+\newtheoremstyle{exercise_style}
+  {\topsep}   % Space above
+  {\topsep}   % Space below
+  {\itshape}  % Body font
+  {}          % Indent amount
+  {\bfseries} % Theorem head font
+  {.}         % Punctuation after theorem head
+  {.5em}      % Space after theorem head
+  {}          % Theorem head spec (can be left empty, meaning `normal')
+\theoremstyle{exercise_style}
+\newtheorem*{exercise}{Exercise}
+
+\theoremstyle{definition}
+\newtheorem*{solution}{Solution}
+
+% --- METADATA ---
+\title{\bfseries Exercise Walkthrough: Measurability and Generators}
+\author{Justin Lanfermann}
+\date{25. June of 2025}
+
+% --- DOCUMENT ---
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step walkthrough of a fundamental exercise in probability theory. The exercise establishes that to verify the measurability of a function, it is sufficient to check the property on a generating set of the codomain's $\sigma$-algebra. We will break down the proof into its core components, explain the reasoning behind each step, and connect the logic to key definitions from the "Discrete Probability Theory" script.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Overview and Motivation}
+
+Hello! Today, we're going to tackle an exercise that might seem a bit abstract at first, but its result is a cornerstone for working with measurable functions in practice.
+
+In probability theory, we need functions to be \textbf{measurable} \hyperlink{concept:measurable_function}{[3]} to ensure we can meaningfully talk about the probabilities of events involving them. For instance, if $X$ is a random variable, we want to be able to compute $P(X \in A)$. The definition of measurability (Def. 1.45 in the script) requires us to check a condition for \textit{every} set in the target $\sigma$-algebra. This can be a daunting task, as a $\sigma$-algebra can contain an enormous number of very complex sets.
+
+This exercise provides us with a powerful shortcut. It shows that we only need to check the measurability condition for a smaller, simpler collection of sets, the so-called \textbf{generator} \hyperlink{concept:generator}{[2]} of the $\sigma$-algebra. This is analogous to linear algebra, where to check if a linear map is zero, you only need to check its action on the basis vectors, not on every vector in the space.
+
+Let's state the problem and then dive into the solution.
+
+\section{The Exercise}
+
+\begin{exercise}
+Let $(X, \mathcal{A}_X)$ and $(Y, \mathcal{A}_Y)$ be measurable spaces, $f : X \to Y$ a map, and $\mathcal{E}_Y \subseteq \mathcal{A}_Y$ arbitrary. Show that
+\begin{equation} \label{eq:1}
+    \sigma(f^{-1}(\mathcal{E}_Y)) = f^{-1}(\sigma(\mathcal{E}_Y)).
+\end{equation}
+Further, show that
+\begin{equation} \label{eq:2}
+    f \text{ is } \mathcal{A}_X\text{-}\sigma(\mathcal{E}_Y)\text{-measurable} \iff f^{-1}(E) \in \mathcal{A}_X \text{ for all } E \in \mathcal{E}_Y.
+\end{equation}
+With that, finally show that for $\sigma(\mathcal{E}_Y) = \mathcal{A}_Y$ it holds that
+\begin{equation} \label{eq:3}
+    f \text{ is } \mathcal{A}_X\text{-}\mathcal{A}_Y\text{-measurable} \iff f^{-1}(\mathcal{E}_Y) \subseteq \mathcal{A}_X.
+\end{equation}
+\end{exercise}
+
+\begin{solution}
+We will prove each part sequentially. The first part is a technical result about sets and functions that we'll then use to prove the main statement about measurability in the second and third parts.
+\end{solution}
+
+\subsection{Part 1: The Generator-Preimage Identity}
+Our goal is to prove the set equality $\sigma(f^{-1}(\mathcal{E}_Y)) = f^{-1}(\sigma(\mathcal{E}_Y))$. To prove that two sets are equal, we must show that each is a subset of the other.
+
+\subsubsection{Proof of "$\subseteq$": $\sigma(f^{-1}(\mathcal{E}_Y)) \subseteq f^{-1}(\sigma(\mathcal{E}_Y))$}
+This is the more straightforward direction. Our strategy is to show that the set on the right, $f^{-1}(\sigma(\mathcal{E}_Y))$, is a $\sigma$-algebra that contains the set $f^{-1}(\mathcal{E}_Y)$.
+
+\begin{enumerate}
+    \item \textbf{The Right-Hand Side is a $\sigma$-algebra:} First, let's establish that for any $\sigma$-algebra $\mathcal{A}$ on $Y$, its preimage $f^{-1}(\mathcal{A}) = \{f^{-1}(A) | A \in \mathcal{A}\}$ is a $\sigma$-algebra on $X$. This is a standard result that relies on the fact that the preimage operation commutes with set operations (complement, union, intersection) \hyperlink{concept:preimage}{[4]}. Since $\sigma(\mathcal{E}_Y)$ is by definition a \textbf{$\sigma$-algebra} \hyperlink{concept:sigma_algebra}{[1]} on $Y$, its preimage $f^{-1}(\sigma(\mathcal{E}_Y))$ is a $\sigma$-algebra on $X$.
+
+    \item \textbf{It Contains the Generating Set:} By definition of a generator (Def. 1.7 in the script), we know that $\mathcal{E}_Y \subseteq \sigma(\mathcal{E}_Y)$. Applying the preimage function $f^{-1}$ to both sides of this inclusion gives us:
+    \[
+        f^{-1}(\mathcal{E}_Y) \subseteq f^{-1}(\sigma(\mathcal{E}_Y)).
+    \]
+    This holds because the preimage operation preserves subset relations.
+
+    \item \textbf{Conclusion:} We have a set $f^{-1}(\mathcal{E}_Y)$. The term $\sigma(f^{-1}(\mathcal{E}_Y))$ is, by definition, the \textit{smallest} $\sigma$-algebra on $X$ that contains $f^{-1}(\mathcal{E}_Y)$.
+    From steps 1 and 2, we know that $f^{-1}(\sigma(\mathcal{E}_Y))$ is \textit{a} $\sigma$-algebra on $X$ that contains $f^{-1}(\mathcal{E}_Y)$. Therefore, the smallest such $\sigma$-algebra must be a subset of this one.
+    \[
+        \sigma(f^{-1}(\mathcal{E}_Y)) \subseteq f^{-1}(\sigma(\mathcal{E}_Y)).
+    \]
+\end{enumerate}
+
+\subsubsection{Proof of "$\supseteq$": $f^{-1}(\sigma(\mathcal{E}_Y)) \subseteq \sigma(f^{-1}(\mathcal{E}_Y))$}
+This direction is more involved. The strategy here is to use a common proof technique for generated $\sigma$-algebras: define a "helper" collection of sets, show it's a $\sigma$-algebra containing the generator, and then draw conclusions.
+
+\begin{enumerate}
+    \item \textbf{Define a Helper Collection:} Let's define a collection of sets in $Y$:
+    \[
+        \tilde{\mathcal{A}} = \{ A' \in \sigma(\mathcal{E}_Y) \mid f^{-1}(A') \in \sigma(f^{-1}(\mathcal{E}_Y)) \}.
+    \]
+    In plain English, $\tilde{\mathcal{A}}$ consists of all the sets from the "big" $\sigma$-algebra $\sigma(\mathcal{E}_Y)$ whose preimages land in the "small" $\sigma$-algebra $\sigma(f^{-1}(\mathcal{E}_Y))$. Our goal is to show that this collection $\tilde{\mathcal{A}}$ is actually equal to $\sigma(\mathcal{E}_Y)$.
+
+    \item \textbf{Show $\tilde{\mathcal{A}}$ is a $\sigma$-algebra:} We check the three conditions from Def. 1.5 in the script.
+        \begin{itemize}
+            \item \textbf{Contains Y?} We need to check if $Y \in \tilde{\mathcal{A}}$. The condition is $f^{-1}(Y) \in \sigma(f^{-1}(\mathcal{E}_Y))$. Since $f^{-1}(Y) = X$, and any $\sigma$-algebra on $X$ must contain $X$, this is true. So $Y \in \tilde{\mathcal{A}}$.
+            \item \textbf{Closed under complements?} Let $A' \in \tilde{\mathcal{A}}$. This means $f^{-1}(A') \in \sigma(f^{-1}(\mathcal{E}_Y))$. We need to check if $(A')^c \in \tilde{\mathcal{A}}$. The condition is $f^{-1}((A')^c) \in \sigma(f^{-1}(\mathcal{E}_Y))$. Since $f^{-1}((A')^c) = (f^{-1}(A'))^c$ \hyperlink{concept:preimage}{[4]} and $\sigma(f^{-1}(\mathcal{E}_Y))$ is a $\sigma$-algebra (closed under complements), this is true.
+            \item \textbf{Closed under countable unions?} Let $A'_1, A'_2, \dots \in \tilde{\mathcal{A}}$. This means $f^{-1}(A'_i) \in \sigma(f^{-1}(\mathcal{E}_Y))$ for all $i$. We need to check if $\bigcup_i A'_i \in \tilde{\mathcal{A}}$. The condition is $f^{-1}(\bigcup_i A'_i) \in \sigma(f^{-1}(\mathcal{E}_Y))$. Since $f^{-1}(\bigcup_i A'_i) = \bigcup_i f^{-1}(A'_i)$ \hyperlink{concept:preimage}{[4]} and $\sigma(f^{-1}(\mathcal{E}_Y))$ is a $\sigma$-algebra (closed under countable unions), this is also true.
+        \end{itemize}
+    Thus, $\tilde{\mathcal{A}}$ is a $\sigma$-algebra on $Y$.
+
+    \item \textbf{Show $\mathcal{E}_Y \subseteq \tilde{\mathcal{A}}$:} Let's take an arbitrary set $E \in \mathcal{E}_Y$. To show that $E \in \tilde{\mathcal{A}}$, we must check if it satisfies the condition in the definition of $\tilde{\mathcal{A}}$, which is: $f^{-1}(E) \in \sigma(f^{-1}(\mathcal{E}_Y))$. This is true by the very definition of a generated $\sigma$-algebra, because $f^{-1}(E)$ is an element of the generating set $f^{-1}(\mathcal{E}_Y)$, which is a subset of $\sigma(f^{-1}(\mathcal{E}_Y))$. So, $\mathcal{E}_Y \subseteq \tilde{\mathcal{A}}$.
+
+    \item \textbf{Conclusion:} From steps 2 and 3, we have shown that $\tilde{\mathcal{A}}$ is a $\sigma$-algebra on $Y$ that contains the generating set $\mathcal{E}_Y$. Since $\sigma(\mathcal{E}_Y)$ is the \textit{smallest} such $\sigma$-algebra, it must be that $\sigma(\mathcal{E}_Y) \subseteq \tilde{\mathcal{A}}$.
+
+    But by its definition, $\tilde{\mathcal{A}}$ is already a subset of $\sigma(\mathcal{E}_Y)$. The only way both $\sigma(\mathcal{E}_Y) \subseteq \tilde{\mathcal{A}}$ and $\tilde{\mathcal{A}} \subseteq \sigma(\mathcal{E}_Y)$ can be true is if they are equal: $\sigma(\mathcal{E}_Y) = \tilde{\mathcal{A}}$.
+
+    Finally, what does this mean? It means for any set $A' \in \sigma(\mathcal{E}_Y)$, it is also in $\tilde{\mathcal{A}}$, which by definition implies $f^{-1}(A') \in \sigma(f^{-1}(\mathcal{E}_Y))$. This is precisely the inclusion we wanted to show:
+    \[
+        f^{-1}(\sigma(\mathcal{E}_Y)) \subseteq \sigma(f^{-1}(\mathcal{E}_Y)).
+    \]
+\end{enumerate}
+Since we have shown both inclusions, we have proven that $\sigma(f^{-1}(\mathcal{E}_Y)) = f^{-1}(\sigma(\mathcal{E}_Y))$.
+\hfill $\qed$
+
+\subsection{Part 2: The Measurability Equivalence}
+
+Now we use our result from Part 1 to prove the main statement about measurability. We need to prove an "if and only if" statement.
+
+\subsubsection{Proof of "$\Rightarrow$"}
+This direction is straightforward.
+\begin{enumerate}
+    \item \textbf{Assumption:} We assume $f$ is $\mathcal{A}_X$-$\sigma(\mathcal{E}_Y)$-measurable.
+    \item \textbf{Definition of Measurability (Def. 1.45):} This means that for every set $A' \in \sigma(\mathcal{E}_Y)$, its preimage $f^{-1}(A')$ must be in $\mathcal{A}_X$.
+    \item \textbf{Goal:} We want to show that $f^{-1}(E) \in \mathcal{A}_X$ for all $E \in \mathcal{E}_Y$.
+    \item \textbf{Argument:} By definition, the generator $\mathcal{E}_Y$ is a subset of the generated $\sigma$-algebra $\sigma(\mathcal{E}_Y)$. So, any set $E \in \mathcal{E}_Y$ is also a set in $\sigma(\mathcal{E}_Y)$. Since our assumption holds for \textit{all} sets in $\sigma(\mathcal{E}_Y)$, it must also hold for all sets in $\mathcal{E}_Y$. The implication is direct.
+\end{enumerate}
+
+\subsubsection{Proof of "$\Leftarrow$"}
+This is the more useful direction, where we get the "shortcut".
+\begin{enumerate}
+    \item \textbf{Assumption:} We assume that $f^{-1}(E) \in \mathcal{A}_X$ for all $E \in \mathcal{E}_Y$. This can be written more concisely as the set inclusion $f^{-1}(\mathcal{E}_Y) \subseteq \mathcal{A}_X$.
+    \item \textbf{Goal:} We want to show that $f$ is $\mathcal{A}_X$-$\sigma(\mathcal{E}_Y)$-measurable. This means we must show that $f^{-1}(A') \in \mathcal{A}_X$ for all $A' \in \sigma(\mathcal{E}_Y)$, or concisely, $f^{-1}(\sigma(\mathcal{E}_Y)) \subseteq \mathcal{A}_X$.
+    \item \textbf{Argument:}
+        \begin{itemize}
+            \item From our assumption $f^{-1}(\mathcal{E}_Y) \subseteq \mathcal{A}_X$, and since $\mathcal{A}_X$ is itself a $\sigma$-algebra, it must contain the smallest $\sigma$-algebra generated by $f^{-1}(\mathcal{E}_Y)$. That is:
+            \[
+                \sigma(f^{-1}(\mathcal{E}_Y)) \subseteq \sigma(\mathcal{A}_X) = \mathcal{A}_X.
+            \]
+            \item Now, we use our hard-won identity from Part 1: $\sigma(f^{-1}(\mathcal{E}_Y)) = f^{-1}(\sigma(\mathcal{E}_Y))$.
+            \item Substituting this into the previous line gives us:
+            \[
+                f^{-1}(\sigma(\mathcal{E}_Y)) \subseteq \mathcal{A}_X.
+            \]
+            \item This is precisely the definition of $f$ being $\mathcal{A}_X$-$\sigma(\mathcal{E}_Y)$-measurable.
+        \end{itemize}
+\end{enumerate}
+This completes the proof of the equivalence. \hfill $\qed$
+
+\subsection{Part 3: The Corollary}
+This final part is a direct application of what we just proved.
+\begin{enumerate}
+    \item \textbf{Setup:} We are given that $\sigma(\mathcal{E}_Y) = \mathcal{A}_Y$. This means $\mathcal{E}_Y$ is a generator for the entire target $\sigma$-algebra $\mathcal{A}_Y$.
+    \item \textbf{Goal:} We want to show that $f$ is $\mathcal{A}_X$-$\mathcal{A}_Y$-measurable if and only if $f^{-1}(\mathcal{E}_Y) \subseteq \mathcal{A}_X$.
+    \item \textbf{Argument:} Let's take the equivalence we proved in Part 2:
+    \[
+        f \text{ is } \mathcal{A}_X\text{-}\sigma(\mathcal{E}_Y)\text{-measurable} \iff f^{-1}(E) \in \mathcal{A}_X \text{ for all } E \in \mathcal{E}_Y.
+    \]
+    Now, we simply substitute our setup condition $\sigma(\mathcal{E}_Y) = \mathcal{A}_Y$ into the left-hand side. The statement becomes:
+    \[
+        f \text{ is } \mathcal{A}_X\text{-}\mathcal{A}_Y\text{-measurable} \iff f^{-1}(E) \in \mathcal{A}_X \text{ for all } E \in \mathcal{E}_Y.
+    \]
+    The right-hand side, "$f^{-1}(E) \in \mathcal{A}_X$ for all $E \in \mathcal{E}_Y$", is just the definition of the set inclusion $f^{-1}(\mathcal{E}_Y) \subseteq \mathcal{A}_X$.
+    So, the equivalence holds.
+\end{enumerate}
+\hfill $\qed$
+
+\section{Summary and Takeaways}
+
+We have successfully proven a very important result in measure theory. The main takeaway is this:
+
+\begin{center}
+\parbox{0.8\textwidth}{%
+\textbf{Key Result:} To prove that a function $f: (X, \mathcal{A}_X) \to (Y, \mathcal{A}_Y)$ is measurable, you do not need to check that the preimage of \textit{every} set in $\mathcal{A}_Y$ belongs to $\mathcal{A}_X$. Instead, you only need to find a \textit{generating set} $\mathcal{E}_Y$ for $\mathcal{A}_Y$ (i.e., $\sigma(\mathcal{E}_Y) = \mathcal{A}_Y$) and check the condition just for the sets in $\mathcal{E}_Y$.
+}
+\end{center}
+
+\paragraph{Why is this useful?} Consider a continuous function $f: \mathbb{R} \to \mathbb{R}$. We want to show it is Borel-measurable, i.e., measurable with respect to the Borel $\sigma$-algebra $\mathcal{B}$ on both the domain and codomain. The Borel $\sigma$-algebra is generated by the collection of all open intervals $(a, b)$. Checking measurability for every bizarre Borel set would be impossible. But thanks to our result, we only need to check that for any open interval $(a, b)$, the preimage $f^{-1}((a, b))$ is a Borel set. Since $f$ is continuous, we know from analysis that the preimage of an open set is always an open set. And since all open sets are, by definition, in the Borel $\sigma$-algebra, the condition is satisfied. The proof becomes trivial!
+
+\paragraph{Quick Question for You:}
+Based on this, can you prove that if $X$ is a real-valued random variable (i.e., a measurable function from $(\Omega, \mathcal{A})$ to $(\mathbb{R}, \mathcal{B})$), then the function $Y = X^2$ is also a random variable? What would you choose as the generating set for $\mathcal{B}$ on the codomain to make the proof easiest?
+
+\newpage
+
+\section{In-depth Concepts}
+\label{sec:concepts}
+Here are more detailed explanations of the key concepts used in this walkthrough.
+
+\begin{description}
+    \item[\hypertarget{concept:sigma_algebra}{[1] What is a $\sigma$-algebra?}] A $\sigma$-algebra (or sigma-field) $\mathcal{A}$ on a set $X$ is a collection of subsets of $X$ that is "stable" enough for us to build a consistent theory of measure (like length, volume, or probability). It must satisfy three properties (Def. 1.5):
+    \begin{enumerate}
+        \item It contains the whole space: $X \in \mathcal{A}$.
+        \item It is closed under complements: If $A \in \mathcal{A}$, then its complement $A^c = X \setminus A$ must also be in $\mathcal{A}$.
+        \item It is closed under countable unions: If $A_1, A_2, A_3, \dots$ is a sequence of sets in $\mathcal{A}$, then their union $\bigcup_{i=1}^{\infty} A_i$ must also be in $\mathcal{A}$.
+    \end{enumerate}
+    The sets inside $\mathcal{A}$ are called \textit{measurable sets}. In probability, this is our \textit{event space}.
+
+    \item[\hypertarget{concept:generator}{[2] What is a generator of a $\sigma$-algebra?}] Often, a $\sigma$-algebra is too large and complex to describe by listing all its elements. A generator is a smaller, simpler collection of subsets $\mathcal{E}$ whose sets we consider fundamentally important. The $\sigma$-algebra generated by $\mathcal{E}$, denoted $\sigma(\mathcal{E})$, is defined as the \textit{smallest} $\sigma$-algebra that contains all the sets in $\mathcal{E}$ (Def. 1.7). For example, the Borel $\sigma$-algebra on $\mathbb{R}$, denoted $\mathcal{B}$, is generated by the collection of all open intervals.
+
+    \item[\hypertarget{concept:measurable_function}{[3] What is a measurable function?}] A function $f: (X, \mathcal{A}_X) \to (Y, \mathcal{A}_Y)$ between two measurable spaces is called \textit{measurable} if it respects their structure (Def. 1.45). This means that for any measurable set $A_Y$ in the codomain $Y$ (i.e., $A_Y \in \mathcal{A}_Y$), its preimage $f^{-1}(A_Y)$ must be a measurable set in the domain $X$ (i.e., $f^{-1}(A_Y) \in \mathcal{A}_X$). In probability theory, a \textit{random variable} is simply a measurable function from the sample space $(\Omega, \mathcal{A})$ to a space of values, like $(\mathbb{R}, \mathcal{B})$. This property guarantees that questions like "what is the probability that the random variable $X$ has a value less than 5?" are well-posed, because $\{ \omega \in \Omega \mid X(\omega) < 5 \} = X^{-1}((-\infty, 5))$ is guaranteed to be an event in $\mathcal{A}$.
+
+    \item[\hypertarget{concept:preimage}{[4] What are preimages and why are they so useful?}] The preimage (or inverse image) of a set $A_Y \subseteq Y$ under a function $f: X \to Y$ is the set of all points in the domain $X$ that map into $A_Y$. Formally, $f^{-1}(A_Y) = \{x \in X \mid f(x) \in A_Y\}$. A key reason preimages are central to measure theory is that they behave very well with respect to set operations:
+    \begin{itemize}
+        \item $f^{-1}(A_Y^c) = (f^{-1}(A_Y))^c$
+        \item $f^{-1}(\bigcup_i A_{Y,i}) = \bigcup_i f^{-1}(A_{Y,i})$
+        \item $f^{-1}(\bigcap_i A_{Y,i}) = \bigcap_i f^{-1}(A_{Y,i})$
+    \end{itemize}
+    This "commuting" property is exactly what allows us to prove that the preimage of a $\sigma$-algebra is also a $\sigma$-algebra, a crucial step in our proof above.
+\end{description}
+
+\end{document}

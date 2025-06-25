@@ -1,0 +1,173 @@
+\documentclass[11pt,a4paper]{article}
+
+% Preamble: Loading necessary packages
+\usepackage[a4paper, margin=2.5cm]{geometry} % For setting page margins
+\usepackage{amsmath, amssymb, amsfonts} % For advanced math typesetting
+\usepackage{parskip} % For paragraphs separated by a vertical space instead of indentation
+\usepackage[utf8]{inputenc} % For input encoding
+\usepackage[T1]{fontenc} % For font encoding
+\usepackage{xcolor} % For colors
+\usepackage{hyperref} % For creating hyperlinks in the document
+
+% Hyperlink setup for a clean look
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=red,
+    pdftitle={Exercise Walkthrough: De Morgan's Laws},
+    pdfpagemode=FullScreen,
+}
+
+% --- Document Metadata ---
+\title{Exercise Walkthrough: De Morgan's Laws}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+
+% --- Start of the Document ---
+\begin{document}
+\maketitle
+
+\section{Overview and Goal}
+
+This document provides a step-by-step walkthrough for proving De Morgan's Laws as stated in \textit{Lemma 1.2} of the "Discrete Probability Theory" script (page 9). The exercise asks us to prove the following two identities for any given set $\Omega$ and an arbitrary family of its subsets $\{A_\alpha \subseteq \Omega \mid \alpha \in I\}$:
+\begin{enumerate}
+    \item $\left( \bigcup_{\alpha \in I} A_\alpha \right)^c = \bigcap_{\alpha \in I} A_\alpha^c$
+    \item $\left( \bigcap_{\alpha \in I} A_\alpha \right)^c = \bigcup_{\alpha \in I} A_\alpha^c$
+\end{enumerate}
+
+These laws are fundamental tools. They describe how the complement operation interacts with unions and intersections. In probability theory, this is crucial for calculating probabilities of complex events, especially since a $\sigma$-algebra is defined by its closure under complement and countable union (see \textit{Definition 1.5}).
+
+We will prove the first identity in full detail. The proof for the second identity is very similar, and I will leave it as a short exercise for you to solidify your understanding.
+
+\section{The Proof: Step-by-Step}
+
+\subsection{The Strategy: Proof by Double Inclusion}
+
+To prove that two sets, let's call them $S$ and $T$, are equal ($S=T$), the standard method is to show that each set is a subset of the other. This is called proof by double inclusion \hyperlink{ref1}{[1]}.
+We need to show:
+\begin{enumerate}
+    \item $S \subseteq T$: Every element of $S$ is also an element of $T$.
+    \item $T \subseteq S$: Every element of $T$ is also an element of $S$.
+\end{enumerate}
+
+For our first identity, this means we will prove:
+\begin{itemize}
+    \item[a)] $\left( \bigcup_{\alpha \in I} A_\alpha \right)^c \subseteq \bigcap_{\alpha \in I} A_\alpha^c$
+    \item[b)] $\bigcap_{\alpha \in I} A_\alpha^c \subseteq \left( \bigcup_{\alpha \in I} A_\alpha \right)^c$
+\end{itemize}
+
+\subsection{Part 1: Proving the First Inclusion ($\subseteq$)}
+
+\textbf{Goal:} Show that $\left( \bigcup_{\alpha \in I} A_\alpha \right)^c \subseteq \bigcap_{\alpha \in I} A_\alpha^c$.
+
+\begin{itemize}
+    \item \textbf{Step 1: Start with an arbitrary element.}
+    Let $x$ be an arbitrary element of the set on the left-hand side.
+    $$ x \in \left( \bigcup_{\alpha \in I} A_\alpha \right)^c $$
+
+    \item \textbf{Step 2: Unpack the definition of the complement.}
+    The definition of a set complement \hyperlink{ref2}{[2]} states that if an element is in the complement of a set, it is *not* in the set itself.
+    $$ \text{This means that } x \notin \left( \bigcup_{\alpha \in I} A_\alpha \right) $$
+
+    \item \textbf{Step 3: Unpack the definition of the union.}
+    The definition of a union \hyperlink{ref3}{[3]} states that an element is in the union if it is in *at least one* of the sets. Since our element $x$ is *not* in the union, it must not be in *any* of the sets $A_\alpha$.
+    $$ \text{This means that for all } \alpha \in I, \text{ we have } x \notin A_\alpha $$
+
+    \item \textbf{Step 4: Use the definition of the complement again.}
+    If $x \notin A_\alpha$ for every single $\alpha$, then by the definition of a complement \hyperlink{ref2}{[2]}, $x$ must be in the complement of every single $A_\alpha$.
+    $$ \text{This means that for all } \alpha \in I, \text{ we have } x \in A_\alpha^c $$
+
+    \item \textbf{Step 5: Unpack the definition of the intersection.}
+    The definition of an intersection \hyperlink{ref4}{[4]} states that if an element is in the intersection of a family of sets, it must be in *every single one* of those sets. Since we've established that $x \in A_\alpha^c$ for all $\alpha$, it must be in their intersection.
+    $$ \text{This implies that } x \in \bigcap_{\alpha \in I} A_\alpha^c $$
+
+    \item \textbf{Conclusion of Part 1:} We started by picking an arbitrary element $x$ from the set on the left-hand side and, through a series of logical steps based on definitions, we have shown that it must also be an element of the set on the right-hand side. This proves the first inclusion.
+\end{itemize}
+
+\subsection{Part 2: Proving the Second Inclusion ($\supseteq$)}
+
+\textbf{Goal:} Show that $\bigcap_{\alpha \in I} A_\alpha^c \subseteq \left( \bigcup_{\alpha \in I} A_\alpha \right)^c$.
+
+\begin{itemize}
+    \item \textbf{Step 1: Start with an arbitrary element.}
+    Let $x$ be an arbitrary element of the set on the right-hand side (of the original `$\subseteq$` statement).
+    $$ x \in \bigcap_{\alpha \in I} A_\alpha^c $$
+
+    \item \textbf{Step 2: Unpack the definition of the intersection.}
+    According to the definition of intersection \hyperlink{ref4}{[4]}, if $x$ is in the intersection, it must be an element of every set in the family.
+    $$ \text{This means that for all } \alpha \in I, \text{ we have } x \in A_\alpha^c $$
+
+    \item \textbf{Step 3: Unpack the definition of the complement.}
+    If $x$ is in the complement of every $A_\alpha$ \hyperlink{ref2}{[2]}, it means it is *not* in any of the original sets $A_\alpha$.
+    $$ \text{This means that for all } \alpha \in I, \text{ we have } x \notin A_\alpha $$
+
+    \item \textbf{Step 4: Use the definition of the union.}
+    If $x$ is not in *any* of the sets $A_\alpha$, it cannot possibly be in their union \hyperlink{ref3}{[3]} (which contains only elements that are in at least one $A_\alpha$).
+    $$ \text{This implies that } x \notin \left( \bigcup_{\alpha \in I} A_\alpha \right) $$
+
+    \item \textbf{Step 5: Use the definition of the complement again.}
+    Finally, if an element is not in a set, it must be in that set's complement \hyperlink{ref2}{[2]}.
+    $$ \text{This means that } x \in \left( \bigcup_{\alpha \in I} A_\alpha \right)^c $$
+
+    \item \textbf{Conclusion of Part 2:} We started with an arbitrary element $x$ from the right-hand side and showed it must also be in the left-hand side. This proves the second inclusion.
+\end{itemize}
+
+\subsection{Final Conclusion}
+Since we have successfully shown both inclusions (Part 1 and Part 2), we can conclude by the principle of double inclusion \hyperlink{ref1}{[1]} that the two sets are equal.
+$$ \left( \bigcup_{\alpha \in I} A_\alpha \right)^c = \bigcap_{\alpha \in I} A_\alpha^c $$
+The proof for the first of De Morgan's laws is complete.
+
+\section{Check Your Understanding}
+
+Now it's your turn! The best way to internalize this proof technique is to apply it yourself.
+
+\textbf{Exercise:} Prove the second of De Morgan's laws:
+$$ \left( \bigcap_{\alpha \in I} A_\alpha \right)^c = \bigcup_{\alpha \in I} A_\alpha^c $$
+
+\textbf{Hint:} Follow the exact same strategy of double inclusion.
+\begin{enumerate}
+    \item For the "$\subseteq$" part, start by assuming $x \in \left( \bigcap_{\alpha \in I} A_\alpha \right)^c$ and work your way to showing that $x \in \bigcup_{\alpha \in I} A_\alpha^c$. How does being "not in the intersection" differ from being "not in the union"?
+    \item For the "$\supseteq$" part, start by assuming $x \in \bigcup_{\alpha \in I} A_\alpha^c$ and show that it implies $x \in \left( \bigcap_{\alpha \in I} A_\alpha \right)^c$.
+\end{enumerate}
+The logic is perfectly analogous to what we did above.
+
+\section{Summary \& Key Takeaways}
+
+\begin{itemize}
+    \item \textbf{De Morgan's Laws} provide a critical identity for simplifying expressions involving complements of unions or intersections. Essentially, the complement "flips" the operation (union to intersection, and vice-versa) and distributes over the individual sets.
+    \item The \textbf{Proof by Double Inclusion} ($S \subseteq T$ and $T \subseteq S \implies S=T$) is the standard and most rigorous method for proving that two sets are equal.
+    \item The proof itself is a methodical application of the fundamental \textbf{definitions} of set operations: complement, union, and intersection. Being precise with these definitions is key.
+\end{itemize}
+
+These laws are not just abstract rules; they appear frequently when manipulating events in probability theory. For example, if you want to find the probability that "not all of events $A_\alpha$ occur," you are looking for $P\left(\left(\bigcap A_\alpha\right)^c\right)$, which De Morgan's law tells you is equal to $P\left(\bigcup A_\alpha^c\right)$ -- the probability that "at least one of the complement events occurs."
+
+\newpage
+\section*{In-depth Explanations}
+
+\hypertarget{ref1}{\subsection*{[1] Proof of Set Equality (Double Inclusion)}}
+In set theory, two sets $S$ and $T$ are defined to be equal if and only if they contain exactly the same elements. While this sounds simple, proving it requires a formal procedure. The axiom of extensionality states that $S = T$ if and only if $(\forall x: x \in S \iff x \in T)$. This biconditional ($\iff$) is logically equivalent to the conjunction of two conditionals:
+\begin{enumerate}
+    \item $(\forall x: x \in S \implies x \in T)$, which is the definition of $S \subseteq T$ (S is a subset of T).
+    \item $(\forall x: x \in T \implies x \in S)$, which is the definition of $T \subseteq S$ (T is a subset of S).
+\end{enumerate}
+Therefore, to prove $S=T$, we must prove both $S \subseteq T$ and $T \subseteq S$. This two-part proof is known as proof by double inclusion.
+
+\hypertarget{ref2}{\subsection*{[2] Set Complement ($A^c$)}}
+Given a universe or sample space $\Omega$, the complement of a set $A \subseteq \Omega$, denoted $A^c$ (or sometimes $\bar{A}$ or $\Omega \setminus A$), is the set of all elements in $\Omega$ that are *not* in $A$. Formally:
+$$ A^c = \{ x \in \Omega \mid x \notin A \} $$
+This means that for any element $x \in \Omega$, exactly one of two statements is true: either $x \in A$ or $x \in A^c$.
+
+\hypertarget{ref3}{\subsection*{[3] Set Union ($\bigcup$)}}
+The union of a family of sets $\{A_\alpha \mid \alpha \in I\}$, denoted $\bigcup_{\alpha \in I} A_\alpha$, is the set containing all elements that belong to *at least one* of the sets $A_\alpha$ in the family. Formally:
+$$ \bigcup_{\alpha \in I} A_\alpha = \{ x \in \Omega \mid \exists \alpha \in I \text{ such that } x \in A_\alpha \} $$
+The key words are "at least one" which corresponds to the logical "OR" ($\exists$ is the existential quantifier, "there exists"). If an element is *not* in the union, it must not be in *any* of the sets.
+
+\hypertarget{ref4}{\subsection*{[4] Set Intersection ($\bigcap$)}}
+The intersection of a family of sets $\{A_\alpha \mid \alpha \in I\}$, denoted $\bigcap_{\alpha \in I} A_\alpha$, is the set containing only those elements that belong to *every single one* of the sets $A_\alpha$ in the family. Formally:
+$$ \bigcap_{\alpha \in I} A_\alpha = \{ x \in \Omega \mid \forall \alpha \in I, x \in A_\alpha \} $$
+The key words are "every single one" which corresponds to the logical "AND" ($\forall$ is the universal quantifier, "for all"). If an element is in the intersection, it must be everywhere.
+
+\end{document}

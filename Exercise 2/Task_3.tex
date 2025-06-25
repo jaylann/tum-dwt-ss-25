@@ -1,0 +1,168 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+}
+
+% --- TITLE, AUTHOR, DATE ---
+\title{Exercise Walkthrough: The Poisson Limit Theorem}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+This document provides a detailed, step-by-step walkthrough of the proof for the **Poisson Limit Theorem**, as stated in \textbf{Theorem 1.38} of the course script. The theorem establishes a fundamental connection between the Binomial distribution and the Poisson distribution.
+
+\paragraph{The Core Idea.} In simple terms, the theorem states that if we have a process with a very large number of trials ($n \to \infty$), but the probability of success in each trial is very small ($p_n \to 0$), the total number of successes can be approximated by a Poisson distribution. The key is that the number of trials and the success probability must be related in a specific way: their product, which represents the average number of successes, must approach a constant value $\lambda$.
+
+This is incredibly useful in practice. Think about modeling:
+\begin{itemize}
+    \item The number of typos in a very long book.
+    \item The number of radioactive decays in a sample over a minute.
+    \item The number of calls arriving at a call center in an hour.
+\end{itemize}
+In all these cases, there are many "trials" (words, atoms, seconds), but the probability of the event (typo, decay, call) in any given trial is tiny. The Poisson distribution emerges naturally in these scenarios, and this theorem is the mathematical reason why.
+
+\section{The Proof, Step-by-Step}
+
+\subsection{Problem Statement}
+We want to prove \textbf{Theorem 1.38}. Let $(p_n)_{n \in \mathbb{N}} \subset [0,1]$ be a sequence of probabilities such that the limit $\lambda := \lim_{n \to \infty} n p_n$ exists and is a positive real number. We must show that for any fixed $k \in \mathbb{N}_0$, the probability mass function (PMF) of the Binomial distribution $\text{Bin}(n, p_n)$ converges to the PMF of the Poisson distribution $\text{Poi}(\lambda)$.
+
+\vspace{5mm}
+\noindent
+\textbf{To Prove:}
+\[
+\lim_{n \to \infty} \underbrace{\binom{n}{k} p_n^k (1-p_n)^{n-k}}_{\text{PMF of Bin}(n, p_n) \text{ at } k} = \underbrace{\frac{\lambda^k e^{-\lambda}}{k!}}_{\text{PMF of Poi}(\lambda) \text{ at } k}
+\]
+
+\subsection{Strategy}
+The expression for the Binomial PMF is a product of three terms: $\binom{n}{k}$, $p_n^k$, and $(1-p_n)^{n-k}$. Our strategy will be to analyze the limit of each part as $n \to \infty$ and then combine the results.
+
+\subsubsection{Step 1: Analyzing the Binomial Coefficient $\binom{n}{k}$}
+Let's start by expanding the binomial coefficient. For a fixed integer $k$:
+\[
+\binom{n}{k} = \frac{n!}{k!(n-k)!} = \frac{n \cdot (n-1) \cdot (n-2) \cdots (n-k+1)}{k!}
+\]
+This expression has exactly $k$ terms in the numerator. Since we are interested in the case where $n$ is very large, each of these terms, $(n-i)$, is "almost" equal to $n$. To make this precise, we can factor out $n$ from each term in the numerator:
+\[
+\binom{n}{k} = \frac{1}{k!} \left[ n \cdot n\left(1-\frac{1}{n}\right) \cdot n\left(1-\frac{2}{n}\right) \cdots n\left(1-\frac{k-1}{n}\right) \right]
+\]
+\[
+\binom{n}{k} = \frac{n^k}{k!} \left[ \left(1-\frac{1}{n}\right) \left(1-\frac{2}{n}\right) \cdots \left(1-\frac{k-1}{n}\right) \right]
+\]
+Now, let's look at the limit of the product in the square brackets. As $n \to \infty$, each term $(1 - i/n)$ goes to 1. Since $k$ is a fixed number, we have a product of a fixed number of terms all converging to 1. Therefore, the entire product converges to 1. \hyperref[note:product_limit]{[1]}
+
+This gives us a crucial approximation for large $n$:
+\[
+\lim_{n \to \infty} \frac{\binom{n}{k}}{n^k/k!} = 1 \quad \text{or informally,} \quad \binom{n}{k} \approx \frac{n^k}{k!} \text{ for large } n.
+\]
+
+\subsubsection{Step 2: Combining with the Success Term $p_n^k$}
+Now let's bring in the term $p_n^k$. Using our approximation from Step 1, we get:
+\[
+\binom{n}{k} p_n^k \approx \left( \frac{n^k}{k!} \right) p_n^k = \frac{(n p_n)^k}{k!}
+\]
+We are given that $\lim_{n \to \infty} n p_n = \lambda$. Since raising to a fixed power $k$ is a continuous operation, we can take the limit:
+\[
+\lim_{n \to \infty} \binom{n}{k} p_n^k = \lim_{n \to \infty} \frac{(n p_n)^k}{k!} = \frac{\lambda^k}{k!}
+\]
+This is fantastic! We have already obtained a large part of our target Poisson PMF. The only missing piece is the $e^{-\lambda}$ term.
+
+\subsubsection{Step 3: Analyzing the Failure Term $(1-p_n)^{n-k}$}
+This is where the exponential function makes its appearance. Let's analyze the term $(1-p_n)^{n-k}$. We can split this into two parts:
+\[
+(1-p_n)^{n-k} = (1-p_n)^n \cdot (1-p_n)^{-k}
+\]
+Let's analyze the limit of each part separately.
+\begin{itemize}
+    \item \textbf{For $(1-p_n)^{-k}$:} We know that $np_n \to \lambda$, where $\lambda$ is a finite positive constant. As $n \to \infty$, it must be that $p_n \to 0$. \hyperref[note:pn_to_zero]{[2]}
+    Therefore, $\lim_{n \to \infty} (1-p_n) = 1$. Since $k$ is fixed, we have $\lim_{n \to \infty} (1-p_n)^{-k} = 1^{-k} = 1$. This term doesn't contribute to the final limit.
+
+    \item \textbf{For $(1-p_n)^n$:} This is a classic limit form. We substitute $p_n \approx \lambda/n$ for large $n$. This suggests that the limit of $(1-p_n)^n$ should be the same as the limit of $(1 - \lambda/n)^n$. This relies on a famous result from calculus. \hyperref[note:exp_limit]{[3]}
+    \[
+    \lim_{n \to \infty} \left(1 - \frac{\lambda}{n}\right)^n = e^{-\lambda}
+    \]
+\end{itemize}
+Combining these two parts, the limit of the failure term is:
+\[
+\lim_{n \to \infty} (1-p_n)^{n-k} = \left(\lim_{n \to \infty} (1-p_n)^n\right) \cdot \left(\lim_{n \to \infty} (1-p_n)^{-k}\right) = e^{-\lambda} \cdot 1 = e^{-\lambda}
+\]
+
+\subsubsection{Step 4: Assembling the Final Result}
+Now we can put all the pieces together. The limit of a product is the product of the limits (provided they exist).
+\begin{align*}
+\lim_{n \to \infty} \left[ \binom{n}{k} p_n^k (1-p_n)^{n-k} \right] &= \left[ \lim_{n \to \infty} \binom{n}{k} p_n^k \right] \cdot \left[ \lim_{n \to \infty} (1-p_n)^{n-k} \right] \\
+&= \left( \frac{\lambda^k}{k!} \right) \cdot \left( e^{-\lambda} \right) \\
+&= \frac{\lambda^k e^{-\lambda}}{k!}
+\end{align*}
+This is exactly the PMF of the Poisson distribution with parameter $\lambda$, evaluated at $k$. The proof is complete.
+
+\section{Summary and Takeaways}
+We have formally shown how the Binomial distribution converges to the Poisson distribution under specific conditions. The key steps of the proof were:
+\begin{enumerate}
+    \item Approximating the binomial coefficient $\binom{n}{k}$ with $\frac{n^k}{k!}$ for large $n$.
+    \item Combining this with the success term $p_n^k$ to get the $\frac{\lambda^k}{k!}$ part of the Poisson PMF, using the given condition $\lim np_n = \lambda$.
+    \item Showing that the failure term $(1-p_n)^{n-k}$ converges to $e^{-\lambda}$ by recognizing a standard limit definition of the exponential function.
+\end{enumerate}
+This theorem provides the rigorous foundation for using the Poisson distribution as a model for counting rare events in a large number of trials, a cornerstone concept in probability and statistics.
+
+\newpage
+\section{In-depth Explanations}
+
+\subsection*{[1] The Limit of the Product}
+\label{note:product_limit}
+We claimed that $\lim_{n \to \infty} \left[ \left(1-\frac{1}{n}\right) \left(1-\frac{2}{n}\right) \cdots \left(1-\frac{k-1}{n}\right) \right] = 1$.
+Since the limit of a finite product is the product of the limits, we can write:
+\[
+\lim_{n \to \infty} \left[ \prod_{i=1}^{k-1} \left(1-\frac{i}{n}\right) \right] = \prod_{i=1}^{k-1} \left[ \lim_{n \to \infty} \left(1-\frac{i}{n}\right) \right]
+\]
+For any fixed $i$, as $n \to \infty$, the term $i/n \to 0$. So, $\lim_{n \to \infty} (1 - i/n) = 1$.
+The product becomes:
+\[
+\prod_{i=1}^{k-1} [1] = 1 \cdot 1 \cdots 1 = 1
+\]
+It is crucial that $k$ is a \textbf{fixed} number, ensuring we are dealing with a finite product.
+
+\subsection*{[2] Why $p_n \to 0$}
+\label{note:pn_to_zero}
+We are given that $\lim_{n \to \infty} n p_n = \lambda$, where $\lambda$ is a finite positive number. We can express $p_n$ as:
+\[
+p_n = \frac{n p_n}{n}
+\]
+Now we take the limit as $n \to \infty$:
+\[
+\lim_{n \to \infty} p_n = \lim_{n \to \infty} \frac{n p_n}{n}
+\]
+The numerator converges to a finite constant $\lambda$, while the denominator diverges to $\infty$. Therefore, the limit of the fraction is 0.
+\[
+\lim_{n \to \infty} p_n = \frac{\lambda}{\infty} = 0
+\]
+
+\subsection*{[3] The Limit Definition of $e^x$}
+\label{note:exp_limit}
+A standard definition of the exponential function is $\lim_{m \to \infty} \left(1 + \frac{x}{m}\right)^m = e^x$. Our term is $\lim_{n \to \infty} (1-p_n)^n$. A rigorous argument that this converges to $e^{-\lambda}$ involves logarithms. Let $L = \lim_{n \to \infty} (1-p_n)^n$. Then:
+\[
+\ln(L) = \ln \left( \lim_{n \to \infty} (1-p_n)^n \right) = \lim_{n \to \infty} \ln \left( (1-p_n)^n \right) = \lim_{n \to \infty} n \ln(1-p_n)
+\]
+We used the continuity of the logarithm to bring the limit inside. Now, we use the fact that $p_n \to 0$. The Taylor series expansion of $\ln(1-x)$ around $x=0$ is $-x - x^2/2 - \dots$. For small $x$, we have $\ln(1-x) \approx -x$. So, for large $n$, $p_n$ is small, and $\ln(1-p_n) \approx -p_n$.
+\[
+\ln(L) = \lim_{n \to \infty} n (-p_n) = \lim_{n \to \infty} -(np_n) = -\lambda
+\]
+Since $\ln(L) = -\lambda$, we conclude that $L = e^{-\lambda}$.
+
+\end{document}

@@ -1,0 +1,163 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry} % Set page margins
+\usepackage{amsmath, amssymb, amsfonts}     % For advanced math typesetting
+\usepackage{xcolor}                         % For custom colors
+\usepackage[
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=green!60!black,
+    urlcolor=purple!80!black,
+    hidelinks % Hides the ugly boxes around links, but they are still clickable
+]{hyperref}
+\usepackage{bookmark}                       % For better PDF bookmarks
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: Monte Carlo Integration}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+% --- HELPER COMMAND FOR CLICKABLE NOTES ---
+% Creates a clickable link [Number] that jumps to the concept explanation at the end
+\newcommand{\conceptnote}[2]{%
+    \hyperlink{#1}{\color{blue!70!black}[#2]}%
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a step-by-step walkthrough for an exercise on Monte Carlo (MC) integration. We will explore how to numerically approximate an integral over the unit disk by leveraging the Law of Large Numbers. Each step of the process is explained in detail, from generating samples to calculating the final estimate, with references to key concepts from the "Discrete Probability Theory" script.
+\end{abstract}
+
+\section{Overview: What is Monte Carlo Integration?}
+
+At its core, Monte Carlo integration is a numerical method that uses random sampling to estimate the value of an integral. The main idea is surprisingly simple and relies on a fundamental theorem in probability theory: the \textbf{Law of Large Numbers (LLN)}\conceptnote{lln}{3}.
+
+The LLN (see script, Theorems 2.61 & 2.62) tells us that the average of a large number of independent and identically distributed (iid)\conceptnote{iid}{4} samples converges to the expected value of the distribution they are drawn from.
+Let's say we have a random variable $Y$. The LLN states:
+\[ \mathbb{E}[Y] \approx \frac{1}{n}\sum_{i=1}^n Y_i \]
+How does this help with integration? We can frame an integral as an expectation. For a function $f(x)$ and a domain $U$, the expected value of $f(X)$ where $X$ is a random variable drawn uniformly\conceptnote{unif}{1} from $U$ is:
+\[ \mathbb{E}[f(X)] = \int_U f(x) p(x) \,dx = \int_U f(x) \frac{1}{\lambda^d(U)} \,dx \]
+where $\lambda^d(U)$ is the volume (or area, or length) of the domain $U$. By rearranging and applying the LLN, we get the Monte Carlo estimation formula:
+\[ \underbrace{\int_U f(x) \,dx}_{\text{The integral we want}} = \lambda^d(U) \cdot \mathbb{E}[f(X)] \approx \underbrace{\lambda^d(U) \cdot \frac{1}{n} \sum_{i=1}^n f(x_i)}_{\text{Our MC estimate}} \]
+where the $x_i$ are $n$ iid samples drawn uniformly from $U$.
+
+\textbf{Analogy:} Think of estimating the area of a pond on a rectangular field. You can't measure the pond directly, but you can throw a large number of stones randomly all over the field. The ratio of stones that land in the pond to the total number of stones thrown gives you an estimate of the pond's area relative to the field's area. This is exactly the Monte Carlo principle.
+
+\section{The Exercise: Step-by-Step Solution}
+
+Let's apply this principle to the given problem.
+\begin{itemize}
+    \item \textbf{Function:} $f(x) = 10 - x_1^2 - x_2^2$
+    \item \textbf{Domain:} The unit disk, $D^2 = \{x \in \mathbb{R}^2 \mid x_1^2 + x_2^2 < 1\}$.
+\end{itemize}
+Our goal is to estimate $I = \int_{D^2} f(x) \,dx$.
+
+\subsection{Part (i): Sampling Uniformly from the Unit Disk}
+
+This is the most critical step. The quality of our estimate depends entirely on having samples that are truly uniform over the domain $D^2$. The exercise correctly warns us not to simply sample from the square $[-1, 1] \times [-1, 1]$, as this would not be uniform over the disk.
+
+\textbf{The Correct Method: Rejection Sampling}\conceptnote{rejection}{2}
+
+Rejection sampling is a simple and elegant way to achieve a uniform distribution over a complex shape (like a disk) contained within a simpler shape (like a square).
+
+\begin{enumerate}
+    \item \textbf{Define a bounding box:} The unit disk $D^2$ fits perfectly inside the square $S = [-1, 1] \times [-1, 1]$. The area of this square is $\lambda^2(S) = 2 \times 2 = 4$.
+    \item \textbf{Generate a sample:} Draw a point $(x_1, x_2)$ uniformly from the square $S$. This is easy: we just draw $x_1 \sim \text{Unif}(-1, 1)$ and $x_2 \sim \text{Unif}(-1, 1)$ independently.
+    \item \textbf{Accept or Reject:} We check if the point falls inside our target domain, the unit disk. A point is inside the disk if its distance from the origin is less than 1, i.e., if $x_1^2 + x_2^2 < 1$.
+    \begin{itemize}
+        \item If it is, we \textbf{accept} the point.
+        \item If not, we \textbf{reject} it and go back to step 2.
+    \end{itemize}
+    \item \textbf{Repeat:} We continue this process until we have collected the desired number, $n$, of accepted samples.
+\end{enumerate}
+The set of $n$ accepted points will be uniformly distributed within the unit disk $D^2$, which is exactly what we need.
+
+\subsection{Part (ii): Estimating the Area of the Disk}
+
+We can use the very process of rejection sampling to estimate the area of the disk. The probability of an accepted sample is the ratio of the areas:
+\[ P(\text{accept}) = \frac{\text{Area}(D^2)}{\text{Area}(S)} = \frac{\pi \cdot 1^2}{4} = \frac{\pi}{4} \]
+From our experiment, we can estimate this probability by the ratio of accepted samples to total samples drawn. Let $n$ be the number of accepted samples (the points inside the disk) and $N_{total}$ be the total number of points we generated from the square until we got $n$ accepted points.
+\[ \frac{\pi}{4} \approx \frac{n}{N_{total}} \quad \implies \quad \hat{\pi} = 4 \cdot \frac{n}{N_{total}} \]
+So, by keeping track of how many samples we rejected, we can get a Monte Carlo estimate for $\pi$. For example, if we need $n=10000$ points and it took $N_{total}=12732$ attempts, our estimate would be $\hat{\pi} = 4 \cdot (10000 / 12732) \approx 3.1416$. This demonstrates how we can use the samples to estimate the measure $\lambda^2(D^2)$ of the domain.
+
+\subsection{Part (iii): Approximating the Integral}
+
+Now we use our $n$ uniform samples from the disk, let's call them $\{x_1, x_2, \dots, x_n\}$, to estimate the integral. We apply the main Monte Carlo formula:
+\[ \int_{D^2} f(x) \,dx \approx \lambda^2(D^2) \cdot \frac{1}{n} \sum_{i=1}^n f(x_i) \]
+Here, $\lambda^2(D^2)$ is the area of the unit disk, which is $\pi$. The sum is the average value of our function $f$ evaluated at our random sample points.
+The algorithm is:
+\begin{enumerate}
+    \item Generate $n$ points $\{x_1, \dots, x_n\}$ uniformly from $D^2$ using rejection sampling as described in Part (i). Each $x_i$ is a pair $(x_{i,1}, x_{i,2})$.
+    \item For each point $x_i$, calculate $f(x_i) = 10 - x_{i,1}^2 - x_{i,2}^2$.
+    \item Compute the sample mean: $\bar{f} = \frac{1}{n} \sum_{i=1}^n f(x_i)$.
+    \item Multiply by the area of the domain: $\hat{I}_n = \pi \cdot \bar{f}$.
+\end{enumerate}
+This value $\hat{I}_n$ is our Monte Carlo estimate of the integral. As $n \to \infty$, the Law of Large Numbers guarantees that $\hat{I}_n \to I$.
+
+\textbf{Comparison with the Analytical Value}
+
+The exercise provides the true value, which can be found by switching to polar coordinates. This is a great way to check our work.
+\begin{itemize}
+    \item \textbf{Coordinate change:} $x_1 = r\cos\varphi$, $x_2 = r\sin\varphi$. The term $x_1^2 + x_2^2$ becomes $r^2$. The differential area element $dx_1dx_2$ becomes $r\,dr\,d\varphi$.
+    \item \textbf{Integration limits:} For the unit disk, the radius $r$ goes from $0$ to $1$, and the angle $\varphi$ goes from $0$ to $2\pi$.
+\end{itemize}
+The integral becomes:
+\begin{align*}
+    I &= \iint_{D^2} (10 - x_1^2 - x_2^2) \,dx_1dx_2 \\
+      &= \int_{0}^{2\pi} \int_{0}^{1} (10 - r^2) \cdot r \,dr\,d\varphi \\
+      &= \int_{0}^{2\pi} \left[ \int_{0}^{1} (10r - r^3) \,dr \right] d\varphi \\
+      &= \int_{0}^{2\pi} \left[ 5r^2 - \frac{r^4}{4} \right]_{0}^{1} d\varphi \\
+      &= \int_{0}^{2\pi} \left( 5 - \frac{1}{4} \right) d\varphi = \int_{0}^{2\pi} \frac{19}{4} \,d\varphi \\
+      &= \frac{19}{4} [\varphi]_{0}^{2\pi} = \frac{19}{4} \cdot 2\pi = \frac{19\pi}{2} \approx 29.845
+\end{align*}
+Wait, the solution provided in the exercise sheet is $2\pi \cdot \frac{14}{3} \approx 29.32$. Let's re-check their calculation:
+$\int_0^1 (10-r^2)r dr = \int_0^1 (10r-r^3)dr = [5r^2 - r^4/4]_0^1 = 5-1/4=19/4$.
+My calculation seems correct. Let me check their formula: $(5r^2 - r^3/3)$. This seems to be a typo in the exercise sheet's calculation, integrating $r^2$ instead of $r^3$. The correct integral of $r^3$ is $r^4/4$. Our analytical result of $\frac{19\pi}{2}$ is correct. A good Monte Carlo simulation with large $n$ should yield a value close to 29.845. This is a great example of why it's good to double-check given solutions!
+
+\subsection*{Check for Understanding}
+
+\textit{\textbf{Question:}} Based on what we've discussed, how would you adapt this process to estimate the integral of the same function, $f(x) = 10 - x_1^2 - x_2^2$, but over the \textbf{top half of the unit disk} (i.e., where $x_2 \ge 0$)? How do the sampling process and the final calculation change?
+
+\textit{\textbf{Answer Hint:}} Think about the rejection sampling condition and the area of the new domain.
+
+\section{Summary and Next Steps}
+
+\paragraph{Key Takeaways}
+\begin{itemize}
+    \item Monte Carlo integration uses the Law of Large Numbers to approximate integrals by averaging function values at random sample points.
+    \item The core formula is $\int_U f(x) dx \approx \text{Area}(U) \times \text{SampleMean}(f)$.
+    \item Generating samples uniformly from the integration domain is crucial. Rejection sampling is a powerful technique for non-standard shapes.
+    \item The accuracy of the estimate improves as the number of samples, $n$, increases.
+\end{itemize}
+
+\paragraph{Further Reading}
+A key advantage of Monte Carlo methods is that their error typically decreases proportionally to $1/\sqrt{n}$, regardless of the dimension $d$ of the domain. This makes them far more efficient than grid-based methods in high dimensions (a phenomenon known as the "curse of dimensionality"). You might want to look into the \textbf{Central Limit Theorem (CLT)} (script, Theorem 2.64) to understand how we can create confidence intervals for our Monte Carlo estimates.
+
+\newpage
+\section*{Concept Explanations}
+
+\hypertarget{unif}{\textbf{[1] Uniform Distribution (`Unif(U)`)}}
+A probability distribution is uniform on a set $U$ if every point or element in $U$ has an equal probability of being chosen. For a continuous domain like the unit disk, this means the probability density function is constant everywhere inside the disk and zero outside. It represents a state of "no preference" for any particular location within the domain.
+\vspace{1em}
+
+\hypertarget{rejection}{\textbf{[2] Rejection Sampling}}
+This is a general algorithm used to generate samples from a target distribution (or a geometric region) that is difficult to sample from directly. It works by sampling from a simpler, larger distribution (the "proposal") that contains the target, and then "rejecting" any samples that fall outside the target region. The remaining "accepted" samples follow the desired target distribution.
+\vspace{1em}
+
+\hypertarget{lln}{\textbf{[3] Law of Large Numbers (LLN)}}
+A fundamental theorem in probability that describes the long-term stability of the mean of a random variable. It states that if you repeat an experiment a large number of times, the average of the results will be increasingly likely to be close to the true expected value. The script details the \textbf{Weak LLN (Theorem 2.61)} and the \textbf{Strong LLN (Theorem 2.62)}.
+\vspace{1em}
+
+\hypertarget{iid}{\textbf{[4] iid (independent and identically distributed)}}
+This is a standard assumption for a collection of random variables.
+\begin{itemize}
+    \item \textbf{Identically Distributed:} Each random variable in the collection is drawn from the exact same probability distribution.
+    \item \textbf{Independent:} The outcome of one random variable does not influence the outcome of any other (see script, Definition 1.72).
+\end{itemize}
+In our exercise, each sample point $x_i$ is drawn from the same uniform distribution over the disk, and the location of one point has no bearing on the location of the next. Thus, they are iid. (See script, Definition 1.74).
+
+\end{document}

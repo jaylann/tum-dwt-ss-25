@@ -1,0 +1,195 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry} % Set page margins
+\usepackage{amsmath, amssymb} % For advanced math typesetting
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc} % Input encoding
+\usepackage{hyperref} % For clickable links
+
+% --- HYPERLINK SETUP ---
+% This makes the links look nice and clean
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=red,
+    pdftitle={Exercise Walkthrough: The Derangement Problem},
+    pdfpagemode=FullScreen,
+}
+
+% --- DOCUMENT METADATA ---
+\title{Exercise Walkthrough: The Derangement Problem}
+\author{Justin Lanfermann}
+\date{25. June 2025}
+
+% --- BEGIN DOCUMENT ---
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This document provides a detailed, step-by-step solution to the "derangement problem," often phrased as the hat-check problem or, in this case, the anonymous sheet redistribution problem. We will rigorously define the probabilistic model, apply the Principle of Inclusion-Exclusion as hinted, and analyze the asymptotic behavior of the resulting probability. Each step is explained with reference to the concepts from the "Discrete Probability Theory" script.
+\end{abstract}
+
+\section{The Problem Statement}
+We are given the following exercise:
+\begin{quote}
+    \textit{Angelika supervises an exercise group with n sheets being submitted anonymously. After grading, Angelika randomly redistributes the sheets. What is the probability that no one gets their original sheet back? How does this probability behave as n $\to \infty$?}
+\end{quote}
+This is a classic problem in combinatorics. A permutation of elements where no element appears in its original position is called a \textbf{derangement}. We are asked to find the probability of a random permutation being a derangement.
+
+\section{Step-by-Step Solution}
+
+\subsection{Step 1: Modeling the Random Process}
+First, we need to translate the problem into a formal probabilistic framework. This involves defining the sample space $\Omega$, the event space $\mathcal{A}$, and the probability measure $P$.
+
+\paragraph{Sample Space $\Omega$:}
+The process is the redistribution of $n$ unique sheets to $n$ unique students. We can label the students and their original sheets from $1$ to $n$. A single outcome of this experiment is a complete assignment of sheets to students. We can represent an outcome $\omega$ as a tuple $(\omega_1, \omega_2, \dots, \omega_n)$, where $\omega_i$ is the original sheet number that student $i$ receives. Since each student receives exactly one sheet and all sheets are distinct, this is a \textbf{permutation}\hyperlink{note:permutation}{\textsuperscript{[1]}} of the numbers $\{1, 2, \dots, n\}$.
+
+The problem states this is equivalent to drawing $n$ distinct balls without replacement from an urn, which corresponds to \textbf{Lemma 1.33 (ii)} (classical urn models) for ordered draws without replacement.
+The sample space $\Omega$ is the set of all permutations of $[n] := \{1, \dots, n\}$.
+\[
+    \Omega = \{\omega = (\omega_1, \dots, \omega_n) \mid \omega_i \in [n] \text{ for all } i, \text{ and } \omega_i \neq \omega_j \text{ for } i \neq j\}
+\]
+The total number of such permutations is $|\Omega| = n!$.
+
+\paragraph{Probability Measure $P$:}
+The sheets are redistributed "randomly". This is a key word that tells us to assume that every possible permutation is equally likely. This describes a \textbf{Laplace probability space}\hyperlink{note:laplace}{\textsuperscript{[2]}}.
+Following \textbf{Example 1.36 (i)} (uniform distribution), the probability of any single outcome $\omega \in \Omega$ is:
+\[
+    P(\{\omega\}) = \frac{1}{|\Omega|} = \frac{1}{n!}
+\]
+For any event $E \subseteq \Omega$, its probability is $P(E) = \frac{|E|}{|\Omega|}$.
+
+\paragraph{Event Space $\mathcal{A}$:}
+For a finite sample space like ours, we can consider any subset of $\Omega$ to be an event. Therefore, the event space $\mathcal{A}$ is the power set of $\Omega$, i.e., $\mathcal{A} = \mathcal{P}(\Omega)$.
+
+\subsection{Step 2: Defining the Events of Interest}
+The question asks for the probability that \textit{no one} gets their original sheet back. Calculating this directly can be tricky. It's often easier to first calculate the probability of the complementary event: \textbf{at least one person gets their original sheet back}.
+
+Let's define $A_i$ as the event that student $i$ gets their own sheet back.
+\[
+    A_i = \{\omega \in \Omega \mid \omega_i = i\} \quad \text{for } i = 1, \dots, n
+\]
+The event that "at least one person gets their sheet back" is the union of all these events:
+\[
+    A_{total} = A_1 \cup A_2 \cup \dots \cup A_n = \bigcup_{i=1}^n A_i
+\]
+The probability we are ultimately looking for is $P(A_{total}^c) = 1 - P(A_{total})$.
+
+\subsection{Step 3: Applying the Principle of Inclusion-Exclusion}
+To find $P(A_{total})$, we use the \textbf{Principle of Inclusion-Exclusion}\hyperlink{note:pie}{\textsuperscript{[3]}} from \textbf{Theorem 1.20}. For $n$ events, the formula is:
+\[
+    P\left(\bigcup_{i=1}^n A_i\right) = \sum_{k=1}^n (-1)^{k+1} \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k})
+\]
+This formula looks daunting, but it simplifies nicely due to the symmetry of our problem. Let's break it down by calculating the probability of the intersection terms.
+
+\subsection{Step 4: Calculating the Intersection Probabilities}
+Let's compute $P(A_{i_1} \cap \dots \cap A_{i_k})$ for some distinct indices $i_1, \dots, i_k$.
+This intersection represents the event that students $i_1, i_2, \dots, i_k$ all get their own sheets back.
+
+To find the size of this event, $|A_{i_1} \cap \dots \cap A_{i_k}|$, we count the number of permutations where $\omega_{i_1}=i_1, \omega_{i_2}=i_2, \dots, \omega_{i_k}=i_k$.
+If these $k$ positions are fixed, the remaining $n-k$ sheets must be distributed among the remaining $n-k$ students. There are $(n-k)!$ ways to arrange these remaining sheets.
+So, $|A_{i_1} \cap \dots \cap A_{i_k}| = (n-k)!$.
+
+The probability is therefore:
+\[
+    P(A_{i_1} \cap \dots \cap A_{i_k}) = \frac{|A_{i_1} \cap \dots \cap A_{i_k}|}{|\Omega|} = \frac{(n-k)!}{n!}
+\]
+Crucially, notice that this probability only depends on the \textit{number} of events in the intersection ($k$), not on which specific students we chose.
+
+\subsection{Step 5: Simplifying the Inclusion-Exclusion Sum}
+Now we can simplify the inner sum in the inclusion-exclusion formula for a fixed $k$:
+\[
+    S_k = \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k})
+\]
+This is a sum over all possible combinations of $k$ students. The number of terms in this sum is the number of ways to choose $k$ indices from $n$, which is given by the \textbf{binomial coefficient}\hyperlink{note:binomial}{\textsuperscript{[4]}} $\binom{n}{k}$.
+Since every term in the sum is equal to $\frac{(n-k)!}{n!}$, we have:
+\[
+    S_k = \binom{n}{k} \cdot \frac{(n-k)!}{n!} = \frac{n!}{k!(n-k)!} \cdot \frac{(n-k)!}{n!} = \frac{1}{k!}
+\]
+This is a wonderful simplification! Now we can write the full probability for $P(A_{total})$:
+\[
+    P(A_{total}) = P\left(\bigcup_{i=1}^n A_i\right) = \sum_{k=1}^n (-1)^{k+1} S_k = \sum_{k=1}^n (-1)^{k+1} \frac{1}{k!}
+\]
+
+\subsection{Step 6: Finding the Probability of No Matches}
+We are looking for the probability that \textit{no one} gets their sheet back, which is $P(A_{total}^c)$.
+\[
+    P(A_{total}^c) = 1 - P(A_{total}) = 1 - \sum_{k=1}^n (-1)^{k+1} \frac{1}{k!}
+\]
+Let's expand the sum to see what this looks like:
+\begin{align*}
+    P(A_{total}^c) &= 1 - \left( \frac{(-1)^2}{1!} + \frac{(-1)^3}{2!} + \frac{(-1)^4}{3!} + \dots + \frac{(-1)^{n+1}}{n!} \right) \\
+    &= 1 - \left( \frac{1}{1!} - \frac{1}{2!} + \frac{1}{3!} - \dots + \frac{(-1)^{n+1}}{n!} \right) \\
+    &= 1 - \frac{1}{1!} + \frac{1}{2!} - \frac{1}{3!} + \dots - \frac{(-1)^{n+1}}{n!}
+\end{align*}
+We can write $1$ as $\frac{1}{0!}$. And the last term is $(-1) \cdot \frac{(-1)^{n+1}}{n!} = \frac{(-1)^{n+2}}{n!} = \frac{(-1)^n}{n!}$ if we are careful with the signs. A cleaner way is:
+\[
+    P(A_{total}^c) = 1 - \sum_{k=1}^n \frac{(-1)^{k+1}}{k!} = 1 + \sum_{k=1}^n \frac{(-1)^{k}}{k!} = \frac{(-1)^0}{0!} + \sum_{k=1}^n \frac{(-1)^{k}}{k!} = \sum_{k=0}^n \frac{(-1)^{k}}{k!}
+\]
+So, the probability that no one gets their original sheet back is:
+\[
+    \mathbf{P(\text{no one gets their sheet back})} = \sum_{k=0}^n \frac{(-1)^k}{k!} = \frac{1}{0!} - \frac{1}{1!} + \frac{1}{2!} - \dots + \frac{(-1)^n}{n!}
+\]
+
+\subsection{Step 7: The Asymptotic Behavior (n $\to \infty$)}
+The final part of the question asks what happens to this probability as $n$ becomes very large. We need to evaluate:
+\[
+    \lim_{n\to\infty} \sum_{k=0}^n \frac{(-1)^k}{k!}
+\]
+This sum is the partial sum of the infinite series $\sum_{k=0}^\infty \frac{(-1)^k}{k!}$. As the hint suggests, this is directly related to the \textbf{Taylor series expansion of the exponential function}\hyperlink{note:taylor}{\textsuperscript{[5]}}, $e^x = \sum_{k=0}^\infty \frac{x^k}{k!}$.
+By setting $x = -1$, we get:
+\[
+    e^{-1} = \sum_{k=0}^\infty \frac{(-1)^k}{k!}
+\]
+Therefore, the limit of our probability is:
+\[
+    \lim_{n\to\infty} P(\text{no one gets their sheet back}) = \sum_{k=0}^\infty \frac{(-1)^k}{k!} = e^{-1} = \frac{1}{e} \approx 0.36788
+\]
+
+\section{Summary and Takeaways}
+\begin{itemize}
+    \item The probability that no student gets their own sheet back in a random redistribution among $n$ students is $\sum_{k=0}^n \frac{(-1)^k}{k!}$.
+    \item This problem is a classic example of derangements.
+    \item The solution beautifully showcases the power of the Principle of Inclusion-Exclusion, where a complex counting problem is solved by systematically adding and subtracting probabilities of simpler events.
+    \item As the number of students $n$ grows, this probability surprisingly converges to a constant value, $1/e$. The convergence is very fast; for $n=8$, the probability is already $\approx 0.367881$, which is very close to $1/e$. This means that in a large class, there's about a 36.8\% chance that nobody gets their own graded sheet back.
+\end{itemize}
+
+\newpage
+\section{Further Explanations}
+
+Here are more in-depth explanations of the key concepts used in the solution.
+
+\subsection{Permutations \label{note:permutation}}
+A permutation of a set of objects is an arrangement of those objects into a particular sequence or order. For a set with $n$ distinct objects, the number of different permutations is given by $n!$ (n-factorial), which is the product of all positive integers up to $n$:
+\[ n! = n \times (n-1) \times (n-2) \times \dots \times 2 \times 1 \]
+\textbf{Reasoning:} For the first position in the sequence, we have $n$ choices. For the second, we have $n-1$ remaining choices. This continues until the last position, where we only have 1 choice left. The total number of arrangements is the product of these choices. In our exercise, a redistribution of sheets is a permutation of the original sheet numbers, which is why $|\Omega| = n!$. This corresponds to the urn model of ordered draws without replacement in \textbf{Lemma 1.33}.
+
+\subsection{Laplace Probability Space \label{note:laplace}}
+A Laplace probability space is a model used when all outcomes of an experiment are equally likely. It is named after Pierre-Simon Laplace. If the sample space $\Omega$ is finite and all elementary outcomes $\{\omega\}$ have the same probability, then for any event $E \subseteq \Omega$, its probability is defined as:
+\[ P(E) = \frac{\text{Number of favorable outcomes}}{\text{Total number of possible outcomes}} = \frac{|E|}{|\Omega|} \]
+This is the most fundamental model for problems involving things like fair dice, shuffled cards, or "random" choices from a set, as described in \textbf{Example 1.36 (i)}.
+
+\subsection{Principle of Inclusion-Exclusion (PIE) \label{note:pie}}
+The Principle of Inclusion-Exclusion (\textbf{Theorem 1.20}) is a counting technique to find the size (or probability) of the union of multiple sets. The main idea is to avoid double-counting. For three events $A, B, C$, it states:
+\begin{align*}
+P(A \cup B \cup C) = & P(A) + P(B) + P(C) \\
+& - [P(A \cap B) + P(A \cap C) + P(B \cap C)] \\
+& + P(A \cap B \cap C)
+\end{align*}
+We \textit{include} the probabilities of the individual events, \textit{exclude} the probabilities of pairwise intersections (which were counted twice), and then \textit{include} back the probability of the three-way intersection (which was added three times and removed three times). This generalizes to any number of sets, leading to the alternating sum formula we used.
+
+\subsection{Binomial Coefficient \label{note:binomial}}
+The binomial coefficient, written as $\binom{n}{k}$ and read "n choose k," counts the number of ways to choose a subset of $k$ elements from a larger set of $n$ elements, where the order of selection does not matter. The formula is:
+\[ \binom{n}{k} = \frac{n!}{k!(n-k)!} \]
+In our solution, we needed to know how many intersection terms of size $k$ there were (i.e., how many ways to choose $k$ students out of $n$ who get their own sheets back). This is precisely what $\binom{n}{k}$ calculates.
+
+\subsection{Taylor Series for the Exponential Function \label{note:taylor}}
+A Taylor series is a representation of a function as an infinite sum of terms, calculated from the values of the function's derivatives at a single point. For many well-behaved functions (like $e^x$), this series converges to the function itself. The Taylor series for $e^x$ expanded around $x=0$ (also called a Maclaurin series) is:
+\[ e^x = \sum_{k=0}^\infty \frac{x^k}{k!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots \]
+This series is valid for all real numbers $x$. By substituting $x=-1$, we get the specific series used in our limit calculation, which is a fundamental result from analysis.
+
+\end{document}
