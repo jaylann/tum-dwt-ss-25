@@ -91,7 +91,7 @@ This property follows directly from the first two axioms of a $\sigma$-algebra.
 \paragraph{Reasoning:}
 To prove this, we first express the set difference using operations we know $\mathcal{A}$ is closed under (or will prove it is closed under).
 \begin{enumerate}
-    \item The set difference $A_0 \setminus A_1$ can be written as the intersection of $A_0$ and the complement of $A_1$ (see Note \ref{note:set_difference} for an explanation):
+    \item The set difference $A_0 \setminus A_1$ can be written as the intersection of $A_0$ and the complement of $A_1$ (see \hyperlink{note:set_difference}{[3]} for an explanation):
     \[ A_0 \setminus A_1 = A_0 \cap A_1^c \]
     \item We are given that $A_0 \in \mathcal{A}$ and $A_1 \in \mathcal{A}$.
     \item By axiom (ii) of a $\sigma$-algebra, since $A_1 \in \mathcal{A}$, its complement $A_1^c$ must also be in $\mathcal{A}$.
@@ -108,7 +108,7 @@ To prove this, we first express the set difference using operations we know $\ma
 The axioms guarantee closure under \textit{countable} unions. A finite union is just a special case of a countable union. We can show this formally by constructing a countable sequence of sets from our finite collection.
 \begin{enumerate}
     \item We are given a finite collection of sets $A_0, A_1, \dots, A_m$, all in $\mathcal{A}$.
-    \item Let's define a new, \textit{infinite} sequence of sets $(B_i)_{i \in \mathbb{N}}$ as follows (see Note \ref{note:padding} for this technique):
+    \item Let's define a new, \textit{infinite} sequence of sets $(B_i)_{i \in \mathbb{N}}$ as follows (see \hyperlink{note:padding}{[4]} for this technique):
     \[ B_i := \begin{cases} A_i & \text{if } i \le m \\ \emptyset & \text{if } i > m \end{cases} \]
     \item Is every set $B_i$ in our new sequence in $\mathcal{A}$? Yes. For $i \le m$, $B_i = A_i$, which is in $\mathcal{A}$ by our premise. For $i > m$, $B_i = \emptyset$, which is in $\mathcal{A}$ by axiom (i). So, $(B_i)_{i \in \mathbb{N}}$ is a countable collection of sets in $\mathcal{A}$.
     \item Now, we can take the countable union of this new sequence. Since taking the union with an empty set doesn't add any elements ($A \cup \emptyset = A$), this union is equivalent to our original finite union:
@@ -129,7 +129,7 @@ This proof cleverly combines the closure under complements (axiom ii), the closu
     \[ A_0^c, A_1^c, \dots, A_m^c \in \mathcal{A} \]
     \item From Part (iii), we know that $\mathcal{A}$ is closed under finite unions. So, the union of these complements must be in $\mathcal{A}$:
     \[ \bigcup_{i=0}^{m} A_i^c \in \mathcal{A} \]
-    \item Now we use one of De Morgan's Laws (see Note \ref{note:demorgan}), which states that the complement of an intersection is the union of the complements:
+    \item Now we use one of De Morgan's Laws (see \hyperlink{note:demorgan}{[2]}), which states that the complement of an intersection is the union of the complements:
     \[ \bigcap_{i=0}^{m} A_i = \left( \bigcup_{i=0}^{m} A_i^c \right)^c \]
     \item We already established that the set $\left( \bigcup_{i=0}^{m} A_i^c \right)$ is in $\mathcal{A}$. By axiom (ii), its complement must also be in $\mathcal{A}$.
     \item Therefore, $\left( \bigcup_{i=0}^{m} A_i^c \right)^c \in \mathcal{A}$, which means $\bigcap_{i=0}^{m} A_i \in \mathcal{A}$.
@@ -147,7 +147,7 @@ The logic is identical to the finite case in Part (iv), but we use the axiom for
     \[ (A_i^c)_{i \in \mathbb{N}} \text{ are all in } \mathcal{A} \]
     \item By axiom (iii), the countable union of these complements is in $\mathcal{A}$:
     \[ \bigcup_{i \in \mathbb{N}} A_i^c \in \mathcal{A} \]
-    \item We apply De Morgan's Law for countable sets (see Note \ref{note:demorgan}):
+    \item We apply De Morgan's Law for countable sets (see \hyperlink{note:demorgan}{[2]}):
     \[ \bigcap_{i \in \mathbb{N}} A_i = \left( \bigcup_{i \in \mathbb{N}} A_i^c \right)^c \]
     \item Since $\left( \bigcup_{i \in \mathbb{N}} A_i^c \right)$ is in $\mathcal{A}$, its complement must also be in $\mathcal{A}$ by axiom (ii).
     \item Therefore, $\bigcap_{i \in \mathbb{N}} A_i \in \mathcal{A}$.
