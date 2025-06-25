@@ -10,6 +10,15 @@
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
 \usepackage{xcolor}
 
+% --- FIX: EXPLICITLY DEFINE DICE COMMANDS ---
+% This ensures the commands exist, even if there are package loading issues.
+\providecommand{\dicei}{\wasyfamily\char"30}
+\providecommand{\diceii}{\wasyfamily\char"31}
+\providecommand{\diceiii}{\wasyfamily\char"32}
+\providecommand{\diceiv}{\wasyfamily\char"33}
+\providecommand{\dicev}{\wasyfamily\char"34}
+\providecommand{\dicevi}{\wasyfamily\char"35}
+
 % Redefine link color to be less intrusive
 \hypersetup{
     colorlinks,
@@ -31,26 +40,27 @@ This document provides a step-by-step solution to the problem of calculating the
 
 \section{Step 1: Defining the Probability Space}
 
-Before we can calculate any probabilities, we must formally define the probability space $(\Omega', \mathcal{A}', P)$, as per \textbf{Definition 1.18} from the script. This space consists of three components: the sample space $\Omega'$, the event space $\mathcal{A}'$, and the probability measure $P$.
+Before we can calculate any probabilities, we must formally define the probability space $(\Omega', \mathcal{A}', P)$, according to \textbf{Definition 1.18} from the script. This space consists of three components: the sample space $\Omega'$, the event space $\mathcal{A}'$, and the probability measure $P$.
 
 \paragraph{The Sample Space $\Omega'$}
 The sample space is the set of all possible outcomes of our experiment. Our experiment consists of rolling six fair dice. Let the set of outcomes for a single die roll be $\Omega = \{\dicei, \diceii, \diceiii, \diceiv, \dicev, \dicevi\}$.
 Since we roll six dice, a single outcome of the experiment is a sequence of 6 results, for example $(\dicei, \dicev, \diceii, \dicei, \dicevi, \diceiii)$.
 
-The total sample space $\Omega'$ is therefore the set of all such 6-tuples. We can define this as the Cartesian product of the single-die outcome set with itself six times:
+The total sample space $\Omega'$ is therefore the set of all such 6-tuples. This can be defined as the Cartesian product of the single-die outcome set with itself six times:
 \[
 \Omega' = \Omega^6 = \{ (\omega_1, \omega_2, \omega_3, \omega_4, \omega_5, \omega_6) \mid \omega_j \in \Omega \text{ for } j=1,\dots,6 \}
 \]
-The total number of possible outcomes, $|\Omega'|$, is $|\Omega|^6 = 6^6 = 46,656$. This setup corresponds to drawing with replacement in an ordered manner, as described in \textbf{Lemma 1.33 (i)}.
+The size of the sample space, $|\Omega'|$, is $|\Omega|^6 = 6^6 = 46,656$. This setup corresponds to drawing with replacement in an ordered manner, as described in \textbf{Lemma 1.33 (i)}.
 
-\paragraph{The Event Space (σ-algebra) $\mathcal{A}'$}
-The event space is a collection of subsets of $\Omega'$ for which we can assign probabilities. Since our sample space $\Omega'$ is finite, we can choose the most comprehensive σ-algebra: the power set \hyperlink{note:powerset}{[1]} of $\Omega'$, denoted $\mathcal{P}(\Omega')$. The power set contains all possible subsets of $\Omega'$, meaning we can assign a probability to any conceivable event. This is the standard choice for finite sample spaces (\textbf{Convention 1.15}).
+% --- FIX: Changed σ-algebra to $\sigma$-algebra ---
+\paragraph{The Event Space (\texorpdfstring{$\sigma$}{sigma}-algebra) $\mathcal{A}'$}
+The event space is a collection of subsets of $\Omega'$ to which we can assign probabilities. Since our sample space $\Omega'$ is finite, we can choose the most comprehensive $\sigma$-algebra: the power set \hyperlink{note:powerset}{[1]} of $\Omega'$, denoted $\mathcal{P}(\Omega')$. The power set contains all possible subsets of $\Omega'$, meaning we can assign a probability to any conceivable event. This is the standard choice for finite sample spaces (\textbf{Convention 1.15}).
 \[
 \mathcal{A}' = \mathcal{P}(\Omega')
 \]
 
 \paragraph{The Probability Measure $P$}
-The problem states that the dice are "fair" and we assume a "uniform distribution". This means every elementary outcome $\omega \in \Omega'$ is equally likely. This scenario is described by the \textbf{Laplace model} (\textbf{Example 1.36 (i)}). The probability of any event $E \in \mathcal{A}'$ is the ratio of the number of favorable outcomes (the size of the event set $E$) to the total number of possible outcomes (the size of the sample space $\Omega'$). \hyperlink{note:laplace}{[2]}
+The problem states that the dice are "fair" and we assume a "uniform distribution". This means every elementary outcome $\omega \in \Omega'$ is equally likely. This scenario is described by the \textbf{Laplace model} (\textbf{Example 1.36 (i)}). The probability of any event $E \in \mathcal{A}'$ is the ratio of the number of favorable outcomes (the size of $E$) to the total number of possible outcomes (the size of $\Omega'$). \hyperlink{note:laplace}{[2]}
 \[
 P(E) = \frac{|E|}{|\Omega'|} = \frac{|E|}{6^6}
 \]
@@ -62,7 +72,7 @@ We are interested in the event of "obtaining at least one \dicei". Let's call th
 \[
 A = \{ \omega \in \Omega' \mid \exists j \in \{1, \dots, 6\} \text{ such that } \omega_j = \dicei \}
 \]
-Calculating $|A|$ directly would be complicated. We would need to use the Principle of Inclusion-Exclusion (\textbf{Theorem 1.20}) to sum the cases with exactly one \dicei, exactly two \dicei s, and so on, which is tedious. A much more elegant approach is to use the complement rule.
+Calculating $|A|$ directly would be complicated. We would need to use the Principle of Inclusion-Exclusion (\textbf{Theorem 1.20}) to sum the cases with exactly one \dicei, exactly two, and so on, which is tedious. A much more elegant approach is to use the complement rule.
 
 \section{Step 3: Using the Complement Rule}
 The complement of event $A$, denoted $A^c$, is the event that $A$ does not occur. In our case, $A^c$ is the event that "we obtain \textbf{no} \dicei s". \hyperlink{note:complement}{[3]}
@@ -117,7 +127,7 @@ The next logical step would be to look at problems involving non-uniform discret
 \section*{In-Depth Explanations}
 \hypertarget{note:powerset}{\label{note:powerset}}
 \paragraph{[1] Power Set (Definition A.3)}
-The power set of a set $\Omega$, denoted $\mathcal{P}(\Omega)$ or $2^\Omega$, is the collection of all possible subsets of $\Omega$, including the empty set $\emptyset$ and the set $\Omega$ itself. For a finite set with $n$ elements, its power set has $2^n$ elements. For example, if $\Omega = \{a, b\}$, then $\mathcal{P}(\Omega) = \{\emptyset, \{a\}, \{b\}, \{a, b\}\}$. In probability theory, when the sample space $\Omega$ is finite or countably infinite, we can often use the power set as our σ-algebra, allowing us to assign a probability to any subset of outcomes.
+The power set of a set $\Omega$, denoted $\mathcal{P}(\Omega)$ or $2^\Omega$, is the collection of all possible subsets of $\Omega$, including the empty set $\emptyset$ and the set $\Omega$ itself. For a finite set with $n$ elements, its power set has $2^n$ elements. For example, if $\Omega = \{a, b\}$, then $\mathcal{P}(\Omega) = \{\emptyset, \{a\}, \{b\}, \{a, b\}\}$. In probability theory, when the sample space $\Omega$ is finite or countably infinite, we can often use the power set as our $\sigma$-algebra, allowing us to assign a probability to any subset of outcomes.
 
 \vspace{1cm}
 \hypertarget{note:laplace}{\label{note:laplace}}
@@ -135,7 +145,7 @@ For any set $A$ in a sample space $\Omega$, its complement $A^c$ is defined as a
 From the axioms of a probability measure (\textbf{Definition 1.18}), we know:
 \begin{itemize}
     \item $P(\Omega) = 1$
-    \item For disjoint sets, $P(A \cup A^c) = P(A) + P(A^c)$ (from σ-additivity)
+    \item For disjoint sets, $P(A \cup A^c) = P(A) + P(A^c)$ (from $\sigma$-additivity)
 \end{itemize}
 Combining these, we get $P(A) + P(A^c) = P(A \cup A^c) = P(\Omega) = 1$. Rearranging this gives the powerful and convenient complement rule:
 \[

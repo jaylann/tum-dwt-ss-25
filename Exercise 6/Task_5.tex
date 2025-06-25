@@ -15,6 +15,7 @@
     linkcolor=blue,
     filecolor=magenta,
     urlcolor=cyan,
+    citecolor=blue!60!black, % Matched color for consistency
     pdftitle={Exercise Walkthrough},
     pdfpagemode=FullScreen,
 }
@@ -36,19 +37,19 @@
 \maketitle
 
 \begin{abstract}
-    This document provides a detailed, step-by-step walkthrough for an exercise on sampling from a multivariate Gaussian distribution using the inverse transform sampling method. It covers the derivation of a method to sample from a standard one-dimensional Gaussian, and extends this to the two-dimensional case using an affine transformation based on the Cholesky decomposition. All steps are justified with references to concepts from the "Discrete Probability Theory" script.
+    This document provides a detailed, step-by-step walkthrough for an exercise on sampling from a multivariate Gaussian distribution. It covers the derivation of a method to sample from a standard one-dimensional Gaussian, and extends this to the two-dimensional case using an affine transformation based on the Cholesky decomposition. All steps are justified with references to concepts from the "Discrete Probability Theory" script.
 \end{abstract}
 
 \section{Overview of the Problem}
 
 The goal of this exercise is to generate samples from a specific 2-dimensional Gaussian distribution:
 \[ X \sim \N\left(\mu = \begin{pmatrix} 1 \\ 2 \end{pmatrix}, \Sigma = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}\right) \]
-The method we are asked to use is \textbf{inverse transform sampling} \hyperref[concept:its]{[1]}. This technique, formalized in Proposition 2.23 of the script, provides a general way to turn samples from a uniform distribution $U(0,1)$ into samples from any other distribution, provided we can compute the inverse of its cumulative distribution function (CDF), also known as the quantile function.
+The method we are asked to use is \textbf{inverse transform sampling} \hyperlink{concept:its}{[1]}. This technique, formalized in Proposition 2.23 of the script, provides a general way to turn samples from a uniform distribution $U(0,1)$ into samples from any other distribution, provided we can compute the inverse of its cumulative distribution function (CDF), also known as the quantile function.
 
 Our approach will be:
 \begin{enumerate}
     \item First, figure out how to generate samples from the simplest Gaussian, the standard normal distribution $\N(0,1)$.
-    \item Then, use an \textbf{affine transformation} \hyperref[concept:affine]{[2]} to convert these standard normal samples into samples from our target 2D Gaussian distribution. This step will involve the \textbf{Cholesky decomposition} \hyperref[concept:cholesky]{[3]} of the covariance matrix $\Sigma$.
+    \item Then, use an \textbf{affine transformation} \hyperlink{concept:affine}{[2]} to convert these standard normal samples into samples from our target 2D Gaussian distribution. This step will involve the \textbf{Cholesky decomposition} \hyperlink{concept:cholesky}{[3]} of the covariance matrix $\Sigma$.
 \end{enumerate}
 
 \section{Part (i): Sampling from a 1D Standard Normal}
@@ -61,7 +62,7 @@ For a standard normal distribution $Z \sim \N(0,1)$, the CDF is often denoted by
 Unfortunately, this integral does not have a closed-form elementary solution, and neither does its inverse, $\Phi^{-1}(u)$ (the quantile function, also called the probit function). Therefore, we cannot directly apply the inverse transform sampling formula in a simple analytical way.
 
 \subsection{A Practical Solution: The Box-Muller Transform}
-To overcome this, a clever technique called the \textbf{Box-Muller transform} \hyperref[concept:boxmuller]{[4]} is used. It's a beautiful piece of statistics that allows us to generate two independent standard normal samples from two independent uniform samples.
+To overcome this, a clever technique called the \textbf{Box-Muller transform} \hyperlink{concept:boxmuller}{[4]} is used. It's a beautiful piece of statistics that allows us to generate two independent standard normal samples from two independent uniform samples.
 
 \paragraph{Derivation and Transformation:}
 Let $U_1, U_2$ be two independent random variables drawn from $U(0,1)$. The Box-Muller transformation defines two new random variables, $Z_1$ and $Z_2$, as follows:
@@ -73,7 +74,8 @@ It can be proven that $Z_1$ and $Z_2$ are independent random variables, and both
 
 This provides the required transformation: to get one standard normal sample, we can generate two uniform samples and apply, for instance, the formula for $Z_1$. To be efficient, we typically generate pairs of standard normal samples at a time.
 
-\section{Part (ii): Sampling from N(\textmu, \Sigma)}
+% --- FIX: Corrected section title with \texorpdfstring for math content ---
+\section{Part (ii): Sampling from \texorpdfstring{$\mathcal{N}(\mu, \Sigma)$}{N(mu, Sigma)}}
 
 Now that we can generate samples from a standard normal distribution, we need to transform them to fit our target distribution $\N(\mu, \Sigma)$.
 
@@ -129,20 +131,21 @@ Repeating these steps will generate a set of samples that are distributed accord
 \vspace{1cm}
 \section*{Further Explanations}
 
-\phantomsection
-\subsection*{[1] Inverse Transform Sampling} \label{concept:its}
+% --- FIX: Changed from \label to the more robust \hypertarget for unnumbered sections ---
+\hypertarget{concept:its}{}%
+\subsection*{[1] Inverse Transform Sampling}
 This is a fundamental method for generating random numbers from a given probability distribution, provided its cumulative distribution function (CDF) can be inverted. As stated in Proposition 2.23 and Remark 2.24 of the script, if a random variable $X$ has a continuous and strictly increasing CDF, $F_X$, then the random variable $U = F_X(X)$ is uniformly distributed on $[0,1]$. By inverting this relationship, we get $X = F_X^{-1}(U)$. This gives a practical way to sample $X$: first, draw a sample $u$ from $U(0,1)$, then compute $x = F_X^{-1}(u)$. The set of such $x$'s will be distributed according to $F_X$.
 
-\phantomsection
-\subsection*{[2] Affine Transformation of Gaussians} \label{concept:affine}
+\hypertarget{concept:affine}{}%
+\subsection*{[2] Affine Transformation of Gaussians}
 This property, highlighted in Lemma 2.53 (ii), is a cornerstone of working with multivariate Gaussian distributions. It states that if you take a Gaussian random vector and apply a linear transformation (matrix multiplication) and a shift (vector addition), the result is another Gaussian random vector. This makes Gaussians incredibly tractable, as many complex operations reduce to simple linear algebra on their mean vectors and covariance matrices.
 
-\phantomsection
-\subsection*{[3] Cholesky Decomposition} \label{concept:cholesky}
+\hypertarget{concept:cholesky}{}%
+\subsection*{[3] Cholesky Decomposition}
 The Cholesky decomposition is a numerical analysis technique for decomposing a symmetric, positive-definite matrix into the product of a lower-triangular matrix and its transpose ($\Sigma = \mat{L}\mat{L}^\T$). It is essentially a "matrix square root". In statistics, it is widely used to find a linear transformation that can turn uncorrelated random variables into correlated ones with a specific covariance structure, which is exactly what was needed in this exercise.
 
-\phantomsection
-\subsection*{[4] The Box-Muller Transform} \label{concept:boxmuller}
+\hypertarget{concept:boxmuller}{}%
+\subsection*{[4] The Box-Muller Transform}
 The Box-Muller transform is a pseudo-random number sampling method for generating pairs of independent, standard normally distributed random numbers from a single pair of independent, uniformly distributed random numbers. The method is a direct consequence of a change of variables in a two-dimensional Cartesian system to a polar coordinate system. It elegantly bypasses the problem that the standard normal CDF cannot be inverted in a simple closed form.
 
 \end{document}

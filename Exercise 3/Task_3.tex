@@ -1,13 +1,15 @@
 \documentclass[11pt,a4paper]{article}
 
 % --- PACKAGES ---
-\usepackage[a4paper, margin=1in]{geometry}
-\usepackage{amsmath, amssymb, amsthm}
-\usepackage{graphicx}
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue!50!black, citecolor=blue!50!black]{hyperref}
+% enumitem is great for customizing lists
 \usepackage{enumitem}
+% hyperref should generally be loaded last
+\usepackage[colorlinks=true, urlcolor=cyan, linkcolor=blue, citecolor=green]{hyperref}
 
 % --- DOCUMENT INFORMATION ---
 \title{Exercise Walkthrough: Russian Roulette and The Card Game}
@@ -15,21 +17,24 @@
 \date{25. June 2025}
 
 % --- THEOREM STYLES & COMMANDS ---
+% This defines a custom style for our theorem-like environments
 \newtheoremstyle{tutorstyle}
-  {\topsep} % Space above
-  {\topsep} % Space below
-  {\itshape} % Body font
-  {} % Indent amount
+  {\topsep}   % Space above
+  {\topsep}   % Space below
+  {\itshape}  % Body font
+  {}          % Indent amount
   {\bfseries} % Theorem head font
-  {.} % Punctuation after theorem head
-  {.5em} % Space after theorem head
-  {} % Theorem head spec (can be left empty, meaning `normal')
+  {.}         % Punctuation after theorem head
+  {.5em}      % Space after theorem head
+  {}          % Theorem head spec (empty = normal)
 
 \theoremstyle{tutorstyle}
 \newtheorem*{solution}{Solution}
 \newtheorem*{takeaway}{Key Takeaway}
 
-\newcommand{\concept}[2]{\hyperlink{#1}{#2}}
+% --- CUSTOM COMMANDS ---
+% CORRECTED: This now uses \hyperref to link to a \label, which is more robust.
+\newcommand{\concept}[2]{\hyperref[#1]{#2}}
 
 % --- BEGIN DOCUMENT ---
 \begin{document}
@@ -187,7 +192,8 @@ This problem is a classic illustration of how conditional probability works. The
 
 Here are more detailed explanations of the key concepts used in this walkthrough, hyperlinked from the main text.
 
-\subsection{\hypertarget{concept_space}{Sample Space, Events, and Probability Measure}}
+% CORRECTED: \label is placed after the section command.
+\subsection{Sample Space, Events, and Probability Measure}\label{concept_space}
 The foundation of modern probability theory, as formalized by Kolmogorov, is the \textbf{probability space}, a triplet $(\Omega, \mathcal{A}, P)$ (\textit{Definition 1.18}).
 \begin{itemize}
     \item $\Omega$ is the \textbf{sample space}, the set of all possible elementary outcomes of an experiment. In our roulette problem, $\Omega = \{1,2,3,4,5,6\}$.
@@ -195,21 +201,21 @@ The foundation of modern probability theory, as formalized by Kolmogorov, is the
     \item $P$ is the \textbf{probability measure}, a function that assigns a probability (a number in $[0,1]$) to every event in $\mathcal{A}$. It must satisfy certain axioms, most notably that $P(\Omega)=1$ and $\sigma$-additivity.
 \end{itemize}
 
-\subsection{\hypertarget{concept_condprob}{Conditional Probability}}
+\subsection{Conditional Probability}\label{concept_condprob}
 Conditional probability, as given in \textit{Definition 1.64}, answers the question: "What is the probability of event A happening, given that we know event B has already happened?" It re-scales the probabilities to a new "universe" where B is the entire sample space. The formula is:
 \[
 P(A | B) = \frac{P(A \cap B)}{P(B)}
 \]
 This is defined only if $P(B) > 0$. It represents the probability of the outcomes that are in both A and B, divided by the probability of the new universe B. In the roulette problem, we calculated the probability of survival on the second turn given the knowledge that the first turn resulted in survival.
 
-\subsection{\hypertarget{concept_totalprob}{Law of Total Probability}}
+\subsection{Law of Total Probability}\label{concept_totalprob}
 This law, stated in \textit{Theorem 1.65(ii)}, is a method to find the probability of an event by breaking down the sample space into smaller, disjoint pieces. If $B_1, B_2, \dots, B_n$ form a partition of the sample space $\Omega$ (they are disjoint and their union is $\Omega$), then for any event $A$:
 \[
 P(A) = \sum_{i=1}^{n} P(A | B_i) P(B_i)
 \]
 This formula essentially says "the total probability of A is the weighted average of its probabilities within each piece of the partition, where the weights are the probabilities of those pieces themselves." We used this in the card game to find the total probability of seeing a red face up, by considering the two partitions: "chose RR card" and "chose RB card".
 
-\subsection{\hypertarget{concept_bayes}{Bayes' Theorem}}
+\subsection{Bayes' Theorem}\label{concept_bayes}
 Bayes' Theorem, from \textit{Theorem 1.65(iii)}, is derived directly from the definition of conditional probability and is one of the most important results in probability theory. It tells us how to formally update our beliefs in light of new evidence. In its most common form for two events, it states:
 \[
 P(H | E) = \frac{P(E | H) P(H)}{P(E)}

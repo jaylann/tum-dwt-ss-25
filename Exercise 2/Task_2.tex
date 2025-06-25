@@ -1,11 +1,14 @@
 \documentclass[11pt,a4paper]{article}
 
+% --- PREAMBLE ---
 % Preamble: Loading necessary packages
+\usepackage[utf8]{inputenc}
 \usepackage[a4paper, margin=1in]{geometry}
 \usepackage{amsmath, amssymb, amsfonts}
-\usepackage{hyperref}
-\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+
+% CORRECTED: hyperref package is generally best loaded last
+\usepackage{hyperref}
 
 % Hyperlink setup for clickable notes
 \hypersetup{
@@ -60,9 +63,10 @@ To follow the proof, we need to be crystal clear on a few definitions, most of w
     \mathcal{E}|_A := \{E \cap A \mid E \in \mathcal{E}\}.
 \]
 This is analogous to the \textbf{induced $\sigma$-algebra} from Lemma 1.14 in the script, which uses the notation $\mathcal{A}|_B = \{A \cap B \mid A \in \mathcal{A}\}$ for an existing $\sigma$-algebra $\mathcal{A}$. The principle is the same: intersect every set in the collection with the subspace.
-\hypertarget{note3}{}
 
-\paragraph{The Natural Injection Map. \hyperlink{exp3}{[1]}} The solution's key insight is to rephrase the "restriction" operation (set intersection) in terms of an inverse map. We define the \textbf{natural injection} (or inclusion) map from $A$ into $\Omega$ as:
+% CORRECTED: The unused hypertarget was here. I removed it.
+
+\paragraph{The Natural Injection Map. \hyperref[exp3]{[1]}} The solution's key insight is to rephrase the "restriction" operation (set intersection) in terms of an inverse map. We define the \textbf{natural injection} (or inclusion) map from $A$ into $\Omega$ as:
 \[
     \iota_A: A \to \Omega, \quad \text{where} \quad \iota_A(a) = a \quad \text{for all } a \in A.
 \]
@@ -96,7 +100,7 @@ This step uses the crucial property of the natural injection map $\iota_A$. As w
 \paragraph{Step \eqref{step3}: Simplifying notation.}
 This is a purely notational change. The set $\{\iota_A^{-1}(E) \mid E \in \mathcal{E}\}$ is more compactly written as $\iota_A^{-1}(\mathcal{E})$, which means "the collection of all inverse images of sets in $\mathcal{E}$".
 
-\paragraph{Step \eqref{step4}: The core argument. \hyperlink{exp2}{[2]}}
+\paragraph{Step \eqref{step4}: The core argument. \hyperref[exp2]{[2]}}
 This is the most important step of the proof. It states that generating a $\sigma$-algebra from a collection of inverse images is the same as taking the inverse image of the $\sigma$-algebra generated from the original collection. Formally, for a map $f: X \to Y$ and a generator system $\mathcal{E} \subseteq \mathcal{P}(Y)$, it holds that $\sigma(f^{-1}(\mathcal{E})) = f^{-1}(\sigma(\mathcal{E}))$.
 The exercise hint says to "use the result from Exercise 1", which is precisely this property. This result is a standard theorem in measure theory because the inverse image operation preserves all the necessary set operations (unions, intersections, complements) required to build a $\sigma$-algebra.
 
@@ -139,8 +143,10 @@ This result is a building block for more advanced topics, like understanding the
 
 \newpage
 \section*{In-Depth Explanations}
-\hypertarget{exp3}{}
-\subsection*{[1] The Natural Injection Map}
+
+% CORRECTED: Using \phantomsection to create an anchor for the unnumbered subsection
+\phantomsection
+\subsection*{[1] The Natural Injection Map}\label{exp3}
 The natural injection map is a simple but powerful concept. When we have a subset $A \subseteq \Omega$, the map $\iota_A: A \to \Omega$ defined by $\iota_A(a) = a$ formalizes the idea that $A$ is "sitting inside" $\Omega$.
 
 The real utility comes from its inverse image, $\iota_A^{-1}$. For any subset $B \subseteq \Omega$, the inverse image $\iota_A^{-1}(B)$ asks: "Which elements \emph{in the domain A} are mapped into the set $B$?"
@@ -148,9 +154,8 @@ Since the mapping rule is just identity ($\iota_A(a) = a$), an element $a \in A$
 
 This turns a set operation ($A \cap \cdot$) into a map operation ($\iota_A^{-1}(\cdot)$), allowing us to use powerful theorems about maps.
 
-\hypertarget{exp2}{}
-\subsection*{[2] Commutativity of Inverse Image and $\sigma$-Algebra Generation}
-
+\phantomsection
+\subsection*{[2] Commutativity of Inverse Image and $\sigma$-Algebra Generation}\label{exp2}
 The property $\sigma(f^{-1}(\mathcal{E})) = f^{-1}(\sigma(\mathcal{E}))$ is the cornerstone of the proof. Let's briefly sketch why it's true for a general map $f: X \to Y$ and a generator $\mathcal{E} \subseteq \mathcal{P}(Y)$.
 
 The proof is a classic "show two sets are equal by showing each is a subset of the other" argument.

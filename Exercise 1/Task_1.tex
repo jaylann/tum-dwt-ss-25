@@ -1,243 +1,300 @@
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[T1]{fontenc}
+% --- PACKAGES ---
+\usepackage[a4paper, margin=2.5cm]{geometry}
 \usepackage{amsmath, amssymb, amsthm}
-\usepackage{geometry}
-\geometry{a4paper, margin=1in}
-\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
-\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
 
+% --- HYPERREF SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+    pdftitle={Exercise Walkthrough},
+    pdfpagemode=FullScreen,
+}
+
+% --- TITLE, AUTHOR, DATE ---
+\title{\textbf{Exercise Walkthrough: Basic Properties of Probability and Measure}}
 \author{Justin Lanfermann}
-\title{Exercise Walkthrough: Properties of Measures and CDFs}
-\date{25. June 2025}
+\date{25. June of 2025}
 
+% --- DOCUMENT ---
 \begin{document}
 
 \maketitle
+\begin{abstract}
+    This document provides a detailed, step-by-step walkthrough for an exercise on the fundamental properties of probability and measure spaces. Each part of the exercise is analyzed, with justifications based on definitions and theorems from the "Discrete Probability Theory" script. The goal is to build understanding from the ground up, clarifying the reasoning behind each conclusion. For key concepts, clickable references are provided for more in-depth explanations at the end of the document.
+\end{abstract}
 
-This document provides a detailed, step-by-step walkthrough for the exercises. The goal is to explain the reasoning behind each answer, citing relevant definitions and theorems from the course script "Discrete Probability Theory" by Niki Kilbertus.
+\section{Introduction}
+We will now go through each statement of the exercise, determine if it is true or false, and provide a clear, step-by-step justification. The reasoning for each step will be explained, and we will reference the relevant definitions from the course script to ensure our arguments are rigorous.
 
-\subsection*{(i) For a probability space $(\Omega, \mathcal{A}, P)$ we have $P(\Omega \setminus A) = 1 - P(A)$ for all $A \in \mathcal{A}$.}
+\subsection*{Exercise (i)}
+\textbf{Statement:} For a probability space $(\Omega, \mathcal{A}, P)$ we have $P(\Omega \setminus A) = 1 - P(A)$ for all $A \in \mathcal{A}$.
 
-\textbf{True.}
+\vspace{1em}
 
-\paragraph{Reasoning:}
-This statement is a direct consequence of the axioms of a probability space \hyperlink{note1}{[1]}. Let's break it down based on the definitions in the script.
+\textbf{Verdict:} True.
+
+\textbf{Justification:}
+This statement deals with the probability of the complement of an event. Let's break down the proof using the fundamental axioms of a probability space \hyperlink{note1}{[1]}.
 
 \begin{enumerate}
-    \item \textbf{Decomposition of the Sample Space:} For any event $A \in \mathcal{A}$, the sample space $\Omega$ can be expressed as the union of $A$ and its complement, $A^c = \Omega \setminus A$. So, we have $\Omega = A \cup (\Omega \setminus A)$.
+    \item \textbf{Decomposition of the Sample Space:} The sample space $\Omega$ can always be partitioned into two \hyperlink{note4}{disjoint sets}: any event $A$ and its complement, $A^c = \Omega \setminus A$. By definition, their union is the entire sample space: $A \cup (\Omega \setminus A) = \Omega$. Also, their intersection is the empty set: $A \cap (\Omega \setminus A) = \emptyset$.
 
-    \item \textbf{Disjoint Sets:} By definition, an event $A$ and its complement $\Omega \setminus A$ are disjoint, meaning their intersection is the empty set: $A \cap (\Omega \setminus A) = \emptyset$.
-
-    \item \textbf{Additivity of the Probability Measure:} A probability measure $P$ is a special case of a measure (Definition 1.18), which must be $\sigma$-additive (Definition 1.16 (iii)). For a finite number of disjoint sets, this implies finite additivity. Therefore, for the two disjoint sets $A$ and $\Omega \setminus A$, we can write:
+    \item \textbf{Using Additivity:} A probability measure $P$ is a specific type of measure. According to Definition 1.16(iii) from the script, a measure must be $\sigma$-additive \hyperlink{note3}{[3]}. This property implies that for any finite collection of pairwise disjoint sets, the measure of their union is the sum of their measures. Since $A$ and $\Omega \setminus A$ are disjoint, we can write:
     \[
         P(\Omega) = P(A \cup (\Omega \setminus A)) = P(A) + P(\Omega \setminus A)
     \]
 
-    \item \textbf{Total Probability:} According to the definition of a probability measure (Definition 1.18), the probability of the entire sample space is 1, i.e., $P(\Omega) = 1$.
-
-    \item \textbf{Conclusion:} Substituting $P(\Omega) = 1$ into our equation from step 3, we get:
+    \item \textbf{Using the Axiom $P(\Omega) = 1$:} According to Definition 1.18 (probability measure), the measure of the entire sample space must be 1, i.e., $P(\Omega) = 1$. Substituting this into our equation gives:
     \[
         1 = P(A) + P(\Omega \setminus A)
     \]
-    Rearranging this equation by subtracting $P(A)$ from both sides gives the desired result:
+
+    \item \textbf{Conclusion:} By rearranging the terms, we arrive at the desired statement:
     \[
         P(\Omega \setminus A) = 1 - P(A)
     \]
+    This confirms that the probability of an event not happening is one minus the probability that it does.
 \end{enumerate}
 
-\subsection*{(ii) Let $(\Omega, \mathcal{A}, \mu)$ be a measure space, $A, B \in \mathcal{A}$ such that $\mu(A \cap B) < \infty$. Then $\mu(B \setminus A) = \mu(B) - \mu(A \cap B)$.}
+\subsection*{Exercise (ii)}
+\textbf{Statement:} Let $(\Omega, \mathcal{A}, \mu)$ be a measure space, $A, B \in \mathcal{A}$ such that $\mu(A \cap B) < \infty$. Then $\mu(B \setminus A) = \mu(B) - \mu(A \cap B)$.
 
-\textbf{True.}
+\vspace{1em}
 
-\paragraph{Reasoning:}
-This property, sometimes called the difference rule, also stems from the additivity of a measure \hyperlink{note2}{[2]}. The proof is very similar to the one above.
+\textbf{Verdict:} True.
+
+\textbf{Justification:}
+This property is sometimes called the "difference rule" for measures.
 
 \begin{enumerate}
-    \item \textbf{Decomposition of the Set B:} The set $B$ can be partitioned into two disjoint parts: the part of $B$ that is also in $A$, and the part of $B$ that is not in $A$. In set notation, this is:
+    \item \textbf{Decomposition of B:} Let's consider the set $B$. We can split it into two disjoint parts: the part of $B$ that also lies in $A$, and the part of $B$ that does not lie in $A$.
+    \begin{itemize}
+        \item The part of $B$ in $A$ is the intersection $A \cap B$.
+        \item The part of $B$ not in $A$ is the set difference $B \setminus A$.
+    \end{itemize}
+    These two sets are disjoint and their union reconstructs $B$. We can write this formally as:
     \[
-        B = (B \cap A) \cup (B \setminus A)
+        B = (B \setminus A) \cup (A \cap B)
     \]
-    These two sets, $(B \cap A)$ and $(B \setminus A)$, are disjoint by definition.
 
-    \item \textbf{Additivity of the Measure:} Since $\mu$ is a measure, it is additive over disjoint sets (Definition 1.16). Applying this to our decomposition of $B$:
+    \item \textbf{Additivity of the Measure:} Since $(\Omega, \mathcal{A}, \mu)$ is a measure space \hyperlink{note2}{[2]}, the measure $\mu$ is additive for disjoint sets. Applying this to our decomposition of $B$:
     \[
-        \mu(B) = \mu((B \cap A) \cup (B \setminus A)) = \mu(B \cap A) + \mu(B \setminus A)
+        \mu(B) = \mu(B \setminus A) + \mu(A \cap B)
     \]
 
-    \item \textbf{The Crucial Condition:} The exercise states that $\mu(A \cap B) < \infty$. This is essential because it allows us to subtract this value from both sides of the equation. If $\mu(A \cap B)$ were infinite, we couldn't perform this algebraic step (e.g., $\infty - \infty$ is undefined).
+    \item \textbf{The Role of the Finiteness Condition:} The problem states that $\mu(A \cap B) < \infty$. This is a crucial condition. It ensures that $\mu(A \cap B)$ is a real number that can be subtracted. If $\mu(A \cap B)$ were $\infty$, an expression like $\mu(B) - \infty$ could be undefined (e.g., if $\mu(B)$ were also $\infty$).
 
-    \item \textbf{Conclusion:} Since $\mu(A \cap B)$ is a finite number, we can subtract it from both sides of the equation in step 2:
+    \item \textbf{Conclusion:} Since $\mu(A \cap B)$ is finite, we can subtract it from both sides of the equation:
     \[
         \mu(B) - \mu(A \cap B) = \mu(B \setminus A)
     \]
-    This proves the statement. This is a generalization of what is shown in Proposition 1.17 (ii) of the script.
+    This proves the statement. This rule is listed in Proposition 1.17(ii) of the script.
 \end{enumerate}
 
-\subsection*{(iii) For a probability space $(\Omega, \mathcal{A}, P)$ and a sequence $(A_i)_{i \in \mathbb{N}}$ in $\mathcal{A}$, we have $P\left(\bigcup_{i \in \mathbb{N}} A_i\right) = \sup_{i \in \mathbb{N}} P(A_i)$.}
+\subsection*{Exercise (iii)}
+\textbf{Statement:} For a probability space $(\Omega, \mathcal{A}, P)$ and a sequence $(A_i)_{i \in \mathbb{N}}$ in $\mathcal{A}$, we have $P\left(\bigcup_{i \in \mathbb{N}} A_i\right) = \sup_{i \in \mathbb{N}} P(A_i)$.
 
-\textbf{False.}
+\vspace{1em}
 
-\paragraph{Reasoning:}
-This statement is generally not true. It only holds under the specific condition that the sequence of sets $(A_i)$ is increasing (i.e., $A_1 \subseteq A_2 \subseteq A_3 \subseteq \dots$), a property known as continuity from below \hyperlink{note3}{[3]} (Proposition 1.17 (iv)). Without this condition, we can easily construct a counterexample.
+\textbf{Verdict:} False.
 
-\paragraph{Counterexample:}
+\textbf{Justification:}
+The statement claims that the probability of a union of events is the \hyperlink{note5}{supremum} of their individual probabilities. This is not generally true. A simple counterexample can demonstrate this. This property, known as continuity from below (Proposition 1.17(iv)), holds only if the sequence of sets is increasing (i.e., $A_1 \subseteq A_2 \subseteq A_3 \subseteq \dots$).
+
 \begin{enumerate}
-    \item \textbf{The Probability Space:} Let's consider a single fair coin flip. The sample space is $\Omega = \{H, T\}$ (or $\{0, 1\}$ as in the solution). The event space $\mathcal{A}$ is the power set $\mathcal{P}(\Omega)$. The probability measure $P$ is defined by $P(\{H\}) = P(\{T\}) = 1/2$.
-
-    \item \textbf{The Sequence of Events:} Let's define a sequence of events $(A_i)_{i \in \mathbb{N}}$ as follows:
+    \item \textbf{Construct a Counterexample:} Let's use a simple probability space. Consider a single fair coin toss, where the outcomes can be heads (H) or tails (T).
     \begin{itemize}
-        \item $A_0 = \{H\}$
-        \item $A_i = \{T\}$ for all $i \geq 1$
+        \item Sample Space: $\Omega = \{H, T\}$
+        \item Event Space: $\mathcal{A} = \mathcal{P}(\Omega) = \{\emptyset, \{H\}, \{T\}, \{H, T\}\}$
+        \item Probability Measure: $P(\{H\}) = 1/2$, $P(\{T\}) = 1/2$
     \end{itemize}
-    This sequence is clearly not increasing.
 
-    \item \textbf{Calculating the Left-Hand Side (LHS):} We compute the probability of the union of all these events.
+    \item \textbf{Define a Sequence of Events:} Let's define a sequence of events $(A_i)_{i \ge 1}$ that are \emph{not} increasing:
     \[
-        \bigcup_{i \in \mathbb{N}} A_i = A_0 \cup A_1 \cup A_2 \cup \dots = \{H\} \cup \{T\} \cup \{T\} \cup \dots = \{H, T\} = \Omega
+        A_1 = \{H\}, \quad A_2 = \{T\}, \quad A_n = \emptyset \text{ for } n \ge 3
+    \]
+
+    \item \textbf{Calculate the Left-Hand Side (LHS):}
+    The LHS is the probability of the union of all events in the sequence:
+    \[
+        \bigcup_{i=1}^{\infty} A_i = A_1 \cup A_2 \cup A_3 \cup \dots = \{H\} \cup \{T\} \cup \emptyset \cup \dots = \{H, T\} = \Omega
     \]
     Therefore, the probability is:
     \[
-        P\left(\bigcup_{i \in \mathbb{N}} A_i\right) = P(\Omega) = 1
+        P\left(\bigcup_{i=1}^{\infty} A_i\right) = P(\Omega) = 1
     \]
 
-    \item \textbf{Calculating the Right-Hand Side (RHS):} Now we compute the supremum of the probabilities of the individual events.
+    \item \textbf{Calculate the Right-Hand Side (RHS):}
+    The RHS is the supremum of the probabilities of the individual events. Let's find the set of these probabilities:
+    \[
+        \{P(A_1), P(A_2), P(A_3), \dots \} = \{P(\{H\}), P(\{T\}), P(\emptyset), \dots \} = \{1/2, 1/2, 0, 0, \dots\}
+    \]
+    The supremum (least upper bound) of this set of values is $1/2$.
+    \[
+        \sup_{i \in \mathbb{N}} P(A_i) = \sup\{1/2, 1/2, 0, 0, \dots\} = 1/2
+    \]
+
+    \item \textbf{Compare and Conclude:} We found that LHS = 1 and RHS = 1/2. Since $1 \neq 1/2$, the original statement is false.
+\end{enumerate}
+
+\subsection*{Exercise (iv)}
+\textbf{Statement:} Let $(\Omega, \mathcal{A}, P)$ be a probability space and $A, B, C \in \mathcal{A}$. Then
+$P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C)$.
+
+\vspace{1em}
+
+\textbf{Verdict:} True.
+
+\textbf{Justification:}
+This formula is a direct application of the Principle of Inclusion-Exclusion for $n=3$ events, as stated in Theorem 1.20 of the script.
+
+\begin{enumerate}
+    \item \textbf{Principle of Inclusion-Exclusion:} Theorem 1.20 provides the general formula for $n$ events:
+    \[
+        P\left(\bigcup_{i=1}^n A_i\right) = \sum_{k=1}^n (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k})
+    \]
+
+    \item \textbf{Applying for n=3:} Let's expand this formula for our case with $A_1=A, A_2=B, A_3=C$.
     \begin{itemize}
-        \item $P(A_0) = P(\{H\}) = 1/2$
-        \item $P(A_i) = P(\{T\}) = 1/2$ for all $i \geq 1$
-    \end{itemize}
-    The set of probabilities is $\{1/2, 1/2, 1/2, \dots\}$. The supremum (least upper bound) of this set is:
-    \[
-        \sup_{i \in \mathbb{N}} P(A_i) = \sup\{1/2, 1/2, \dots\} = 1/2
-    \]
-
-    \item \textbf{Conclusion:} We have LHS = 1 and RHS = 1/2. Since $1 \neq 1/2$, the original statement is false.
-\end{enumerate}
-
-
-\subsection*{(iv) Let $(\Omega, \mathcal{A}, P)$ be a probability space and $A, B, C \in \mathcal{A}$. Then $P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C)$.}
-
-\textbf{True.}
-
-\paragraph{Reasoning:}
-This is a standard result known as the Principle of Inclusion-Exclusion \hyperlink{note4}{[4]}. The script states the general formula in Theorem 1.20. This exercise is simply the special case for $n=3$ events.
-
-The intuition behind it is to avoid double-counting.
-\begin{enumerate}
-    \item We start by adding the probabilities of the three events: $P(A) + P(B) + P(C)$.
-    \item However, any elements in the intersections (e.g., $A \cap B$) have been counted twice. So we subtract the probabilities of the pairwise intersections: $-P(A \cap B) - P(A \cap C) - P(B \cap C)$.
-    \item But now, consider the elements in the triple intersection, $A \cap B \cap C$. They were initially added three times (once for each set), then subtracted three times (once for each pairwise intersection). This means they haven't been counted at all! So, we must add their probability back in: $+P(A \cap B \cap C)$.
-\end{enumerate}
-This process correctly counts the probability of each part of the union exactly once.
-
-\subsection*{(v) The triple consisting of $\mathbb{N}$, $\mathcal{P}(\mathbb{N})$, and the set function $\mu: \mathcal{P}(\mathbb{N}) \to [0, \infty]$, $A \mapsto \begin{cases} 0 & A \text{ finite} \\ \infty & A \text{ infinite} \end{cases}$ form a measure space.}
-
-\textbf{False.}
-
-\paragraph{Reasoning:}
-To be a measure space, the triple $(\Omega, \mathcal{A}, \mu)$ must satisfy the conditions for a measure $\mu$ given in Definition 1.16. Let's check them for $\Omega=\mathbb{N}$, $\mathcal{A}=\mathcal{P}(\mathbb{N})$ and the given function $\mu$.
-\begin{enumerate}
-    \item \textbf{Measure of the Empty Set:} $\mu(\emptyset) = 0$? The empty set $\emptyset$ is finite, so by the definition of $\mu$, $\mu(\emptyset) = 0$. This condition holds.
-    \item \textbf{Non-negativity:} $\mu(A) \geq 0$ for all $A$? The function $\mu$ only returns values from $\{0, \infty\}$, both of which are non-negative. This condition holds.
-    \item \textbf{$\sigma$-additivity:} For any countable collection of \emph{pairwise disjoint} sets $(A_n)_{n \in \mathbb{N}}$, does $\mu(\bigcup_{n \in \mathbb{N}} A_n) = \sum_{n \in \mathbb{N}} \mu(A_n)$ hold? Let's test this with a specific collection of disjoint sets.
-\end{enumerate}
-
-\paragraph{Counterexample for $\sigma$-additivity:}
-\begin{enumerate}
-    \item \textbf{The Disjoint Sets:} Consider the sequence of singleton sets $A_n = \{n\}$ for $n \in \mathbb{N} = \{0, 1, 2, \dots\}$. These sets are clearly pairwise disjoint.
-
-    \item \textbf{Calculating the LHS:} We look at the union of these sets.
-    \[
-        \bigcup_{n=0}^{\infty} A_n = \{0\} \cup \{1\} \cup \{2\} \cup \dots = \mathbb{N}
-    \]
-    The set $\mathbb{N}$ is infinite. According to the definition of $\mu$, this means:
-    \[
-        \mu\left(\bigcup_{n=0}^{\infty} A_n\right) = \mu(\mathbb{N}) = \infty
-    \]
-
-    \item \textbf{Calculating the RHS:} Now we look at the sum of the measures of the individual sets. For each $n$, the set $A_n = \{n\}$ is finite (it contains only one element). Therefore, $\mu(A_n) = 0$ for all $n$. The sum is:
-    \[
-        \sum_{n=0}^{\infty} \mu(A_n) = \sum_{n=0}^{\infty} 0 = 0
-    \]
-
-    \item \textbf{Conclusion:} We have LHS = $\infty$ and RHS = 0. Since $\infty \neq 0$, the property of $\sigma$-additivity \hyperlink{note2}{[2]} is violated. Therefore, $\mu$ is not a measure, and the triple is not a measure space.
-\end{enumerate}
-
-
-\subsection*{(vi) We consider the two-time fair coin flip, where we interpret the two sides to count as 0 or 1. We are only interested in the sum of the two outcomes. Then the cdf is given by $F(x) = \dots$}
-
-\textbf{True.}
-
-\paragraph{Reasoning:}
-To verify this, we must first model the experiment, determine the probability mass function (pmf) for the sum of the outcomes, and then derive the cumulative distribution function (CDF) \hyperlink{note5}{[5]} from the pmf.
-
-\begin{enumerate}
-    \item \textbf{Modeling the Experiment:} Let the outcome of two fair coin flips be represented by a pair $(c_1, c_2)$, where $c_i \in \{0, 1\}$. The sample space of the underlying experiment is $\Omega_{\text{flips}} = \{(0,0), (0,1), (1,0), (1,1)\}$. Since the flips are fair and independent, each of these four outcomes has a probability of $1/4$.
-
-    \item \textbf{Defining the Random Variable:} We are interested in the sum of the outcomes. Let's call this random variable $S$. The possible values for $S$ are $0, 1, 2$.
-
-    \item \textbf{Calculating the Probability Mass Function (pmf):} We find the probability for each possible value of $S$.
-    \begin{itemize}
-        \item $S=0$: This happens only if the outcome is $(0,0)$. So, $P(S=0) = P(\{(0,0)\}) = 1/4$.
-        \item $S=1$: This happens for outcomes $(0,1)$ and $(1,0)$. So, $P(S=1) = P(\{(0,1)\}) + P(\{(1,0)\}) = 1/4 + 1/4 = 1/2$.
-        \item $S=2$: This happens only if the outcome is $(1,1)$. So, $P(S=2) = P(\{(1,1)\}) = 1/4$.
-    \end{itemize}
-    The pmf is $p_S(0)=1/4$, $p_S(1)=1/2$, $p_S(2)=1/4$, and $p_S(k)=0$ for any other $k$.
-
-    \item \textbf{Deriving the Cumulative Distribution Function (CDF):} The CDF is defined as $F(x) = P(S \leq x)$. We compute this for different ranges of $x$.
-    \begin{itemize}
-        \item For $x < 0$: There are no outcomes $\leq x$. So, $F(x) = 0$.
-        \item For $0 \leq x < 1$: The only outcome $\leq x$ is $S=0$. So, $F(x) = P(S=0) = 1/4$.
-        \item For $1 \leq x < 2$: The outcomes $\leq x$ are $S=0$ and $S=1$. So, $F(x) = P(S=0) + P(S=1) = 1/4 + 1/2 = 3/4$.
-        \item For $x \geq 2$: All outcomes are $\leq x$. So, $F(x) = P(S=0) + P(S=1) + P(S=2) = 1/4 + 1/2 + 1/4 = 1$.
+        \item For $k=1$: We sum the probabilities of single events. The term is $(-1)^{1-1} [P(A) + P(B) + P(C)] = P(A) + P(B) + P(C)$.
+        \item For $k=2$: We subtract the probabilities of all pairwise intersections. The term is $(-1)^{2-1} [P(A \cap B) + P(A \cap C) + P(B \cap C)] = -[P(A \cap B) + P(A \cap C) + P(B \cap C)]$.
+        \item For $k=3$: We add the probability of the three-way intersection. The term is $(-1)^{3-1} [P(A \cap B \cap C)] = P(A \cap B \cap C)$.
     \end{itemize}
 
-    \item \textbf{Conclusion:} The derived CDF exactly matches the function given in the exercise statement. Therefore, the statement is true.
+    \item \textbf{Conclusion:} Combining these terms gives the exact formula stated in the exercise:
+    \[
+        P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C)
+    \]
+    This confirms the statement is a special case of the general \hyperlink{note6}{Inclusion-Exclusion Principle} \hyperlink{note6}{[6]}.
+\end{enumerate}
+
+\subsection*{Exercise (v)}
+\textbf{Statement:} The triple consisting of $\mathbb{N}$, $\mathcal{P}(\mathbb{N})$, and the set function $\mu: \mathcal{P}(\mathbb{N}) \to [0, \infty]$, $A \mapsto \begin{cases} 0 & \text{A finite} \\ \infty & \text{A infinite} \end{cases}$ form a measure space.
+
+\vspace{1em}
+
+\textbf{Verdict:} False.
+
+\textbf{Justification:}
+For $(\mathbb{N}, \mathcal{P}(\mathbb{N}), \mu)$ to be a measure space, $\mu$ must satisfy the properties of a measure from Definition 1.16, most importantly $\sigma$-additivity. We can show that this property is violated.
+
+\begin{enumerate}
+    \item \textbf{The $\sigma$-additivity Requirement:} A function $\mu$ is $\sigma$-additive if for any \emph{countable sequence of pairwise disjoint sets} $(A_n)_{n \in \mathbb{N}}$, the following equality holds:
+    \[
+        \mu\left(\bigcup_{n=1}^\infty A_n\right) = \sum_{n=1}^\infty \mu(A_n)
+    \]
+
+    \item \textbf{Construct a Disjoint Sequence:} Let's choose a sequence of disjoint sets whose union is $\mathbb{N}$. The simplest choice is to let each set contain a single natural number:
+    \[
+        A_n = \{n\} \quad \text{for each } n \in \mathbb{N} = \{1, 2, 3, \dots\}
+    \]
+    These sets are pairwise disjoint (e.g., $A_1 \cap A_2 = \{1\} \cap \{2\} = \emptyset$).
+
+    \item \textbf{Calculate the LHS:} First, we find the measure of the union.
+    \[
+        \bigcup_{n=1}^\infty A_n = \{1\} \cup \{2\} \cup \{3\} \cup \dots = \mathbb{N}
+    \]
+    The set $\mathbb{N}$ is infinite. According to the definition of our function $\mu$, its measure is:
+    \[
+        \mu\left(\bigcup_{n=1}^\infty A_n\right) = \mu(\mathbb{N}) = \infty
+    \]
+
+    \item \textbf{Calculate the RHS:} Next, we find the sum of the measures of the individual sets.
+    For each $n \in \mathbb{N}$, the set $A_n = \{n\}$ is finite (it contains only one element). Therefore, according to the definition of $\mu$:
+    \[
+        \mu(A_n) = \mu(\{n\}) = 0 \quad \text{for all } n
+    \]
+    The sum is therefore:
+    \[
+        \sum_{n=1}^\infty \mu(A_n) = \sum_{n=1}^\infty 0 = 0 + 0 + 0 + \dots = 0
+    \]
+
+    \item \textbf{Conclusion:} We have LHS = $\infty$ and RHS = 0. Since $\infty \neq 0$, the $\sigma$-additivity property fails. Therefore, $\mu$ is not a measure, and the triple is not a measure space.
+\end{enumerate}
+
+\subsection*{Exercise (vi)}
+\textbf{Statement:} We consider the two-time fair coin flip, where we interpret the two sides to count as 0 or 1. We are only interested in the sum of the two outcomes. Then the cdf is given by
+\[
+    F(x) = \begin{cases}
+      0 & x < 0 \\
+      1/4 & x \in [0, 1) \\
+      3/4 & x \in [1, 2) \\
+      1 & x \ge 2
+   \end{cases}
+\]
+
+\vspace{1em}
+
+\textbf{Verdict:} True.
+
+\textbf{Justification:}
+Let's derive the Cumulative Distribution Function (CDF) \hyperlink{note7}{[7]} from scratch and compare it to the given function.
+
+\begin{enumerate}
+    \item \textbf{Model the Experiment:}
+    The experiment is two fair coin flips. Let's denote the outcomes as (flip1, flip2). The sample space is $\Omega = \{(0,0), (0,1), (1,0), (1,1)\}$. Since the flips are fair and independent, each of these four elementary outcomes has a probability of $1/4$.
+
+    \item \textbf{Define the Random Variable:} We are interested in the sum of the outcomes. Let $S$ be this random variable. The possible values for $S$ are:
+    \begin{itemize}
+        \item $S=0$ for outcome $(0,0)$.
+        \item $S=1$ for outcomes $(0,1)$ and $(1,0)$.
+        \item $S=2$ for outcome $(1,1)$.
+    \end{itemize}
+    The set of possible values for $S$ is $\Omega_S = \{0, 1, 2\}$.
+
+    \item \textbf{Determine the Probability Mass Function (pmf) of S:}
+    We calculate the probability for each possible value of $S$.
+    \begin{itemize}
+        \item $P(S=0) = P(\{(0,0)\}) = 1/4$.
+        \item $P(S=1) = P(\{(0,1), (1,0)\}) = P(\{(0,1)\}) + P(\{(1,0)\}) = 1/4 + 1/4 = 1/2$.
+        \item $P(S=2) = P(\{(1,1)\}) = 1/4$.
+    \end{itemize}
+    (Check: $1/4 + 1/2 + 1/4 = 1$. The pmf is valid.)
+
+    \item \textbf{Derive the CDF $F(x) = P(S \le x)$:} We build the CDF by considering different ranges for $x$.
+    \begin{itemize}
+        \item \textbf{For $x < 0$}: There are no values $s \in \Omega_S$ such that $s \le x$. So, $P(S \le x) = P(\emptyset) = 0$.
+        \item \textbf{For $0 \le x < 1$}: The only value $s \in \Omega_S$ that satisfies $s \le x$ is $s=0$. So, $F(x) = P(S \le x) = P(S=0) = 1/4$.
+        \item \textbf{For $1 \le x < 2$}: The values $s \in \Omega_S$ satisfying $s \le x$ are $s=0$ and $s=1$. So, $F(x) = P(S \le 1) = P(S=0) + P(S=1) = 1/4 + 1/2 = 3/4$.
+        \item \textbf{For $x \ge 2$}: All possible values of $S$ satisfy $s \le x$. So, $F(x) = P(S \le 2) = P(S=0) + P(S=1) + P(S=2) = 1/4 + 1/2 + 1/4 = 1$.
+    \end{itemize}
+
+    \item \textbf{Conclusion:} The derived CDF is identical to the one given in the statement. Thus, the statement is true.
 \end{enumerate}
 
 \newpage
-\section*{In-depth Explanations}
+\section*{In-Depth Explanations}
+\begin{description}
+    \item[\hypertarget{note1}{[1] Probability Space (Def 1.18):}] A probability space is the mathematical foundation for modeling a random process. It is a triple $(\Omega, \mathcal{A}, P)$ where:
+    \begin{itemize}
+        \item $\Omega$ is the \textbf{sample space}, the set of all possible outcomes of an experiment (e.g., for a die roll, $\Omega = \{1, 2, 3, 4, 5, 6\}$).
+        \item $\mathcal{A}$ is the \textbf{event space} (a $\sigma$-algebra on $\Omega$), which is a collection of subsets of $\Omega$. These subsets are called "events". It must contain $\Omega$ itself and be closed under complement and countable unions. For discrete spaces, we often use the power set $\mathcal{P}(\Omega)$, which is the set of all possible subsets.
+        \item $P$ is a \textbf{probability measure}, a function that assigns a probability (a number in $[0,1]$) to every event in $\mathcal{A}$. It must satisfy $P(\Omega) = 1$ and be \hyperlink{note3}{$\sigma$-additive}.
+    \end{itemize}
 
-\hypertarget{note1}{\textbf{[1] Probability Space (Definition 1.18)}}
-A probability space is the fundamental mathematical structure for modeling a random process. It is a triple $(\Omega, \mathcal{A}, P)$ where:
-\begin{itemize}
-    \item $\Omega$ is the \textbf{sample space}, the set of all possible outcomes of an experiment.
-    \item $\mathcal{A}$ is a \textbf{$\sigma$-algebra} (or event space) on $\Omega$. It's a collection of subsets of $\Omega$ (called events) that is closed under complement, countable union, and countable intersection. It represents all the events we can assign a probability to.
-    \item $P$ is a \textbf{probability measure}, a function $P: \mathcal{A} \to [0,1]$ that assigns a probability to each event. It must satisfy two key properties:
-    \begin{enumerate}
-        \item $P(\Omega)=1$ (the total probability of all outcomes is 1).
-        \item $P$ is \textbf{$\sigma$-additive}: for any countable sequence of pairwise disjoint events $A_1, A_2, \dots$ in $\mathcal{A}$, we have $P(\cup_{i=1}^\infty A_i) = \sum_{i=1}^\infty P(A_i)$.
-    \end{enumerate}
-\end{itemize}
-\vspace{1cm}
+    \item[\hypertarget{note2}{[2] Measure Space (Def 1.16):}] A measure space is a more general concept than a probability space. It's a triple $(\Omega, \mathcal{A}, \mu)$ where $\Omega$ and $\mathcal{A}$ are the same as above, but $\mu$ is a \textbf{measure}. A measure is a function $\mu: \mathcal{A} \to [0, \infty]$ that assigns a non-negative "size" to each set in $\mathcal{A}$. It must satisfy $\mu(\emptyset)=0$ and be \hyperlink{note3}{$\sigma$-additive}. Probability is just a special case where the total "size" of the space is 1.
 
-\hypertarget{note2}{\textbf{[2] Measure and $\sigma$-additivity (Definition 1.16)}}
-A measure is a function that assigns a non-negative number or $\infty$ to certain subsets of a set, generalizing notions like length, area, or volume. For a set $\Omega$ and a $\sigma$-algebra $\mathcal{A}$ on it, a function $\mu: \mathcal{A} \to [0, \infty]$ is a measure if:
-\begin{enumerate}
-    \item $\mu(\emptyset)=0$.
-    \item $\mu$ is \textbf{$\sigma$-additive}: For any countable sequence of \emph{pairwise disjoint} sets $A_1, A_2, \dots$ in $\mathcal{A}$, the measure of their union is the sum of their measures:
-    \[ \mu\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} \mu(A_i) \]
-\end{enumerate}
-This property is the cornerstone of measure theory. It ensures that we can break down complex sets into simpler, disjoint pieces and sum their measures, which is highly intuitive. The failure to satisfy this property in exercise (v) was the reason the given function was not a measure.
-\vspace{1cm}
+    \item[\hypertarget{note3}{[3] $\sigma$-additivity (Def 1.16(iii)):}] This is a crucial property of any measure (including probability measures). It states that if you have a \emph{countable} sequence of \emph{pairwise disjoint} events $A_1, A_2, A_3, \dots$ (meaning $A_i \cap A_j = \emptyset$ for $i \neq j$), then the measure of their union is equal to the sum of their individual measures:
+    \[ \mu\left(\bigcup_{i=1}^\infty A_i\right) = \sum_{i=1}^\infty \mu(A_i) \]
+    This property is what allows us to break down complex events into simpler, disjoint pieces and sum their probabilities.
 
-\hypertarget{note3}{\textbf{[3] Continuity from Below (Proposition 1.17 (iv))}}
-This is a key property of any measure (including probability measures). It states that for a sequence of sets $(A_n)$ that is \textbf{increasing} (meaning $A_1 \subseteq A_2 \subseteq A_3 \subseteq \dots$), the measure of the limit (the union) is the limit of the measures:
-\[ \mu\left(\bigcup_{i=1}^{\infty} A_i\right) = \lim_{n \to \infty} \mu(A_n) = \sup_{n \in \mathbb{N}} \mu(A_n) \]
-The statement in exercise (iii) omitted the crucial requirement that the sequence of sets must be increasing, which is why it is false in general.
-\vspace{1cm}
+    \item[\hypertarget{note4}{[4] Disjoint Sets:}] Two sets are disjoint if they have no elements in common. Their intersection is the empty set, $\emptyset$. For example, the set of even numbers and the set of odd numbers are disjoint.
 
-\hypertarget{note4}{\textbf{[4] Inclusion-Exclusion Principle (Theorem 1.20)}}
-This principle provides a general formula for the probability of the union of multiple events, which may not be disjoint. For $n$ events $A_1, \dots, A_n$, the formula is:
-\[
-P\left(\bigcup_{i=1}^{n} A_i\right) = \sum_{k=1}^{n} (-1)^{k-1} \sum_{1 \le i_1 < \dots < i_k \le n} P(A_{i_1} \cap \dots \cap A_{i_k})
-\]
-This looks complicated, but it's just the generalization of the logic from exercise (iv): sum the singles, subtract the pairs, add the triples, subtract the quadruples, and so on.
-\vspace{1cm}
+    \item[\hypertarget{note5}{[5] Supremum (sup):}] The supremum of a set of real numbers $S$ is its \textbf{least upper bound}. It's the smallest number that is greater than or equal to every number in $S$. For the set $\{0.9, 0.99, 0.999, \dots\}$, the supremum is 1. For a finite set like $\{1, 5, 2\}$, the supremum is simply the maximum, 5.
 
-\hypertarget{note5}{\textbf{[5] Cumulative Distribution Function (CDF) (Definition 1.21)}}
-The CDF of a real-valued random variable $X$ is a function $F_X: \mathbb{R} \to [0,1]$ that gives the probability that $X$ will take a value less than or equal to $x$. It's defined as:
-\[ F_X(x) = P(X \leq x) \]
-The CDF completely characterizes the distribution of a random variable. For a discrete variable, the CDF is a right-continuous step function, where the jumps occur at the possible values of the variable and the height of each jump corresponds to the probability of that value. This is exactly what we saw in exercise (vi).
+    \item[\hypertarget{note6}{[6] Inclusion-Exclusion Principle (Thm 1.20):}] This principle provides a way to calculate the probability of the union of several events. The basic idea for two events is $P(A \cup B) = P(A) + P(B) - P(A \cap B)$. We subtract $P(A \cap B)$ because it was counted twice (once in $P(A)$ and once in $P(B)$). The formula for three or more events extends this logic, alternately adding and subtracting the probabilities of intersections of increasing size.
+
+    \item[\hypertarget{note7}{[7] Cumulative Distribution Function (CDF) (Def 1.21):}] The CDF of a random variable $X$, denoted $F_X(x)$, gives the probability that $X$ will take a value less than or equal to $x$. Formally, $F_X(x) = P(X \le x)$. The CDF completely describes the distribution of a random variable. For a discrete variable, the CDF is a step function that jumps at each possible value of the variable. The height of each jump corresponds to the probability of that specific value.
+\end{description}
 
 \end{document}

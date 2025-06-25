@@ -34,7 +34,7 @@
 \maketitle
 
 \begin{abstract}
-    This document provides a detailed, step-by-step walkthrough for an exercise on $\sigma$-algebras, based on the script "Discrete Probability Theory" (Summersemester 2025, N. Kilbertus). Each part of the exercise is analyzed, with justifications provided through proofs or counterexamples. Key concepts are explained in detail to ensure clarity.
+    This document provides a detailed walkthrough for an exercise on $\sigma$-algebras, based on the script "Discrete Probability Theory" (Summersemester 2025, N. Kilbertus). Each part of the exercise is analyzed, with justifications provided through proofs or counterexamples. Key concepts are explained in detail to ensure clarity.
 \end{abstract}
 
 \section{Introduction}
@@ -207,7 +207,12 @@ We will prove this by contraposition. (See note \hyperlink{note3}{[3]} for a ref
 \section{Deeper Concepts}
 Here are some more detailed explanations of the concepts used in this exercise.
 
-\subsection{What is a \texorpdfstring{$\sigma$}{sigma}-algebra, really? (\hypertarget{note1}{Note [1]}) }
+% --- THE CORRECTED SECTION ---
+% The \hypertarget is placed BEFORE the \subsection command.
+% The {} gives it an empty text argument.
+% The % prevents an extra space.
+\hypertarget{note1}{}%
+\subsection{What is a \texorpdfstring{$\sigma$}{sigma}-algebra, really? (Note [1])}
 At first glance, the definition of a $\sigma$-algebra can seem a bit abstract. The core motivation comes from dealing with \textit{infinite} sample spaces, particularly uncountable ones like the interval $[0,1]$.
 
 In simple cases (like rolling a die or flipping a coin), our sample space $\Omega$ is finite. We can assign a probability to every single outcome, and the set of all possible events is simply the power set $\mathcal{P}(\Omega)$. Everything works perfectly.
@@ -221,7 +226,8 @@ The $\sigma$-algebra is our way out. Instead of trying to assign a probability t
 \end{itemize}
 The $\sigma$-algebra gives us a solid foundation to build probability theory without running into logical contradictions.
 
-\subsection{Countable vs. Uncountable Sets (\hypertarget{note2}{Note [2]}) }
+\hypertarget{note2}{}%
+\subsection{Countable vs. Uncountable Sets (Note [2])}
 This concept is fundamental to understanding when probability theory gets complicated.
 \begin{itemize}
     \item \textbf{Finite:} A set is finite if you can count its elements and the counting stops. E.g., $\{1,2,3,4\}$.
@@ -235,7 +241,8 @@ The hints in the exercise state two key properties used in the proof:
     \item Any subset of a countable set is countable.
 \end{enumerate}
 
-\subsection{Proof by Contraposition (\hypertarget{note3}{Note [3]}) }
+\hypertarget{note3}{}%
+\subsection{Proof by Contraposition (Note [3])}
 This is a standard and powerful proof technique. To prove a statement of the form "If P, then Q" ($P \implies Q$), we can instead prove its contrapositive: "If not Q, then not P" ($\neg Q \implies \neg P$). The two statements are logically equivalent.
 
 In part (iv), we wanted to prove:

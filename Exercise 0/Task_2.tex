@@ -2,199 +2,193 @@
 
 % --- PACKAGES ---
 \usepackage[a4paper, margin=2.5cm]{geometry} % Set page margins
-\usepackage{amsmath, amssymb, amsfonts}     % For advanced math typesetting
-\usepackage[T1]{fontenc}                        % Font encoding
-\usepackage{libertine}                          % A nice, clean font
-\usepackage{hyperref}                           % For clickable links
-\usepackage{xcolor}                             % For colors
+\usepackage{amsmath, amssymb, amsthm} % Math packages
+\usepackage[utf8]{inputenc} % Input encoding
+\usepackage[T1]{fontenc} % Font encoding
+\usepackage{hyperref} % For clickable links
 
-% --- HYPERLINK SETUP ---
-% Defines colors for the links
+% --- HYPERREF SETUP ---
+% Nicer link colors
 \hypersetup{
     colorlinks=true,
-    linkcolor=blue!70!black,
-    urlcolor=blue!70!black,
-    citecolor=green!60!black,
-    pdftitle={Exercise Walkthrough: Properties of Inverse Images},
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+    pdftitle={Exercise Walkthrough},
     pdfauthor={Justin Lanfermann},
 }
 
-% --- CUSTOM COMMANDS ---
-% This command creates a clickable reference number [x] that links to an explanation
-\newcommand{\myref}[2]{\hyperlink{#1}{\color{red!80!black}[#2]}}
+% --- THEOREM ENVIRONMENTS ---
+% For styling the exercise and proof
+\newtheorem{theorem}{Exercise}
+\newtheorem{lemma}{Claim}
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
 
 % --- DOCUMENT METADATA ---
-\title{Exercise Walkthrough: Properties of Inverse Images under Mappings}
+\title{Exercise Walkthrough: Properties of Inverse Images}
 \author{Justin Lanfermann}
 \date{25. June 2025}
 
+% --- BEGIN DOCUMENT ---
 \begin{document}
 
 \maketitle
 
 \section*{Overview}
 
-This document provides a detailed walkthrough for an exercise on the properties of inverse images of a function. These properties are fundamental in measure theory and probability, especially for understanding the definition of a random variable (see \textbf{Definition 1.45} in the script). The exercise asks us to prove three key behaviors of the inverse image (or preimage) operation with respect to set-theoretic operations: subset inclusion, unions, and complements.
+This document provides a step-by-step walkthrough of a fundamental exercise on the properties of inverse images. These properties are crucial in measure theory and probability. They form the logical foundation for the definition of a measurable function and, consequently, a random variable (as seen in \textbf{Definition 1.45} of the script). We will prove that the inverse image operation, $f^{-1}$, interacts predictably with basic set operations like subsets, unions, and complements. This ensures that structure is preserved when mapping from one space to another.
 
-We will prove each statement using a standard technique called "element-chasing" \myref{ref:element_chasing}{2}, where we take an arbitrary element from one set and show it must belong to another.
+\begin{theorem}
+Let $\Omega_1, \Omega_2$ be non-empty sets, $f : \Omega_1 \to \Omega_2$ an arbitrary mapping, and $\mathcal{C} \subseteq \mathcal{P}(\Omega_2)$ an arbitrary collection of subsets of $\Omega_2$. Then the following statements hold.
+\begin{enumerate}
+    \item[(i)] If $A, B \subseteq \Omega_2$ and $A \subseteq B$, then $f^{-1}(A) \subseteq f^{-1}(B)$.
+    \item[(ii)] The inverse image of the union is equal to the union of the inverse images, meaning
+    \[ f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right) = \bigcup_{A \in \mathcal{C}} f^{-1}(A). \]
+    \item[(iii)] Given a subset $A \subseteq \Omega_2$, the inverse image of the complement is equal to the complement of the inverse image, meaning
+    \[ f^{-1}(A^c) = (f^{-1}(A))^c. \]
+\end{enumerate}
+\end{theorem}
 
-\subsection*{Recap of Core Concepts}
+\hrulefill
+\vspace{1cm}
 
-Before we begin, let's quickly recall the most important definition for this exercise.
+\section*{Step-by-Step Solution}
 
-\paragraph{The Inverse Image (Preimage) \myref{ref:inverse_image}{1}}
-Given a function $f: \Omega_1 \to \Omega_2$ and a subset $A \subseteq \Omega_2$, the \textbf{inverse image} of $A$ under $f$, denoted $f^{-1}(A)$, is the set of all elements in the domain $\Omega_1$ that map to an element in $A$. Formally:
-\[
-f^{-1}(A) := \{ \omega \in \Omega_1 \mid f(\omega) \in A \}
-\]
-It's crucial to remember that $f^{-1}$ here is \textit{not} an inverse function; it is an operation on \textit{subsets} of the codomain $\Omega_2$. The function $f$ does not need to be invertible.
+We will tackle each part of the exercise individually, explaining the reasoning for each step.
 
-\section{The Proofs in Detail}
-
-Let's tackle each part of the exercise step-by-step.
-The setup is: $\Omega_1, \Omega_2$ are non-empty sets, $f : \Omega_1 \to \Omega_2$ is a mapping, and $C \subseteq \mathcal{P}(\Omega_2)$ is a collection of subsets of $\Omega_2$.
-
+% -------------------- PART (i) --------------------
 \subsection*{(i) Monotonicity of the Inverse Image}
 
-\textbf{Statement:} If $A, B \subseteq \Omega_2$ and $A \subseteq B$, then $f^{-1}(A) \subseteq f^{-1}(B)$.
+\begin{lemma}
+If $A \subseteq B$, then $f^{-1}(A) \subseteq f^{-1}(B)$.
+\end{lemma}
 
-\paragraph{Reasoning and Proof:}
-This property is called monotonicity because the inverse image operation preserves the subset relationship. If a set $A$ is "smaller than or equal to" a set $B$, its preimage will also be "smaller than or equal to" the preimage of $B$.
-
-To prove this, we will use the element-chasing method \myref{ref:element_chasing}{2}. We need to show that any element that belongs to $f^{-1}(A)$ must also belong to $f^{-1}(B)$.
-
+\begin{solution}
+% I removed the problematic \paragraph command from here.
 \begin{enumerate}
-    \item \textbf{Let $\omega$ be an arbitrary element of $f^{-1}(A)$.}
-    Our goal is to show that this $\omega$ must also be in $f^{-1}(B)$.
+    \item \textbf{Goal:} We want to prove the set inclusion $f^{-1}(A) \subseteq f^{-1}(B)$.
 
-    \item \textbf{Unpack the definition of $f^{-1}(A)$.}
-    By the definition of the inverse image \myref{ref:inverse_image}{1}, if $\omega \in f^{-1}(A)$, it means that its image, $f(\omega)$, must be an element of $A$. So, $f(\omega) \in A$.
+    \item \textbf{Strategy:} To prove this, we will use the standard method for proving set inclusion \hyperlink{note2}{[2]}. We must show that any arbitrary element of the set on the left-hand side is also an element of the set on the right-hand side.
 
-    \item \textbf{Use the given condition.}
-    The exercise states that $A \subseteq B$. This means every element of $A$ is also an element of $B$.
+    \item Let $\omega$ be an arbitrary element in $f^{-1}(A)$. So, $\omega \in f^{-1}(A)$.
 
-    \item \textbf{Connect the steps.}
-    Since we know $f(\omega) \in A$ (from step 2) and we know $A \subseteq B$ (from step 3), it logically follows that $f(\omega)$ must also be in $B$. So, $f(\omega) \in B$.
+    \item By the definition of the inverse image \hyperlink{note1}{[1]}, if $\omega \in f^{-1}(A)$, then its image $f(\omega)$ must be an element of $A$. So, $f(\omega) \in A$.
 
-    \item \textbf{Repack the definition for $f^{-1}(B)$.}
-    Now, if $f(\omega) \in B$, this is precisely the condition for $\omega$ to be an element of the inverse image of $B$. Therefore, $\omega \in f^{-1}(B)$.
+    \item We are given the condition that $A \subseteq B$. By the definition of a subset, since $f(\omega) \in A$, it must also be true that $f(\omega) \in B$.
+
+    \item Now, since $f(\omega) \in B$, we can again use the definition of the inverse image \hyperlink{note1}{[1]} to conclude that $\omega$ must be in the inverse image of $B$. So, $\omega \in f^{-1}(B)$.
+
+    \item \textbf{Conclusion:} We started with an arbitrary element $\omega \in f^{-1}(A)$ and showed that it must also be in $f^{-1}(B)$. Therefore, we have proven that $f^{-1}(A) \subseteq f^{-1}(B)$.
 \end{enumerate}
-Since we started with an arbitrary element $\omega \in f^{-1}(A)$ and showed that it must also be in $f^{-1}(B)$, we have proven that $f^{-1}(A) \subseteq f^{-1}(B)$.
-\hfill $\blacksquare$
+\end{solution}
 
-\subsection*{(ii) Inverse Image of a Union}
+% -------------------- PART (ii) --------------------
+\subsection*{(ii) Preservation of Unions}
 
-\textbf{Statement:} The inverse image of the union is equal to the union of the inverse images:
-\[ f^{-1}\left(\bigcup_{A \in C} A\right) = \bigcup_{A \in C} f^{-1}(A) \]
+\begin{lemma}
+$f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right) = \bigcup_{A \in \mathcal{C}} f^{-1}(A)$.
+\end{lemma}
 
-\paragraph{Reasoning and Proof:}
-To prove this set equality, we must show inclusion in both directions:
+\begin{solution}
+% I removed the problematic \paragraph command from here.
 \begin{enumerate}
-    \item[a)] $f^{-1}\left(\bigcup_{A \in C} A\right) \subseteq \bigcup_{A \in C} f^{-1}(A)$
-    \item[b)] $\bigcup_{A \in C} f^{-1}(A) \subseteq f^{-1}\left(\bigcup_{A \in C} A\right)$
-\end{enumerate}
+    \item \textbf{Goal:} We want to prove the set equality $f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right) = \bigcup_{A \in \mathcal{C}} f^{-1}(A)$.
 
-\textbf{Proof of a) ($\subseteq$):}
+    \item \textbf{Strategy:} To prove this, we use the standard method of double inclusion \hyperlink{note3}{[3]}. We will prove the inclusion in both directions.
+
+    \item \textbf{Part 1: Show $f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right) \subseteq \bigcup_{A \in \mathcal{C}} f^{-1}(A)$.}
+    \begin{itemize}
+        \item Let $\omega \in f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right)$.
+        \item By definition of the inverse image \hyperlink{note1}{[1]}, this means $f(\omega) \in \bigcup_{A \in \mathcal{C}} A$.
+        \item By definition of a union of a collection of sets \hyperlink{note5}{[5]}, there must exist at least one set, let's call it $A'$, in the collection $\mathcal{C}$ such that $f(\omega) \in A'$.
+        \item Since $f(\omega) \in A'$, the definition of the inverse image \hyperlink{note1}{[1]} tells us that $\omega \in f^{-1}(A')$.
+        \item Since $\omega$ is in one of the sets of the collection $\{f^{-1}(A) \mid A \in \mathcal{C}\}$, it must also be in the union of this collection. Therefore, $\omega \in \bigcup_{A \in \mathcal{C}} f^{-1}(A)$.
+    \end{itemize}
+
+    \item \textbf{Part 2: Show $\bigcup_{A \in \mathcal{C}} f^{-1}(A) \subseteq f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right)$.}
+    \begin{itemize}
+        \item Let $\omega \in \bigcup_{A \in \mathcal{C}} f^{-1}(A)$.
+        \item By definition of union \hyperlink{note5}{[5]}, this means there exists at least one set, let's call it $A''$, in the collection $\mathcal{C}$ such that $\omega \in f^{-1}(A'')$.
+        \item By definition of the inverse image \hyperlink{note1}{[1]}, this implies that $f(\omega) \in A''$.
+        \item Since $f(\omega)$ is in one of the sets of the collection $\mathcal{C}$, it must also be in the union of all sets in that collection. Therefore, $f(\omega) \in \bigcup_{A \in \mathcal{C}} A$.
+        \item Finally, by definition of the inverse image \hyperlink{note1}{[1]}, this means that $\omega \in f^{-1}\left(\bigcup_{A \in \mathcal{C}} A\right)$.
+    \end{itemize}
+
+    \item \textbf{Conclusion:} Since we have shown inclusion in both directions, the two sets must be equal.
+\end{enumerate}
+\end{solution}
+
+% -------------------- PART (iii) --------------------
+\subsection*{(iii) Preservation of Complements}
+
+\begin{lemma}
+$f^{-1}(A^c) = (f^{-1}(A))^c$.
+\end{lemma}
+
+\begin{solution}
+% I removed the problematic \paragraph command from here.
 \begin{enumerate}
-    \item Let $\omega$ be an arbitrary element in $f^{-1}\left(\bigcup_{A \in C} A\right)$.
-    \item By definition, this means $f(\omega) \in \bigcup_{A \in C} A$.
-    \item The definition of a union of sets tells us that if an element is in the union, it must be in at least one of the sets in the collection. So, there exists some set $A_0 \in C$ such that $f(\omega) \in A_0$.
-    \item But if $f(\omega) \in A_0$, then by the definition of the inverse image, $\omega \in f^{-1}(A_0)$.
-    \item Since $\omega$ belongs to at least one set in the collection $\{f^{-1}(A) \mid A \in C\}$, it must belong to their union. Therefore, $\omega \in \bigcup_{A \in C} f^{-1}(A)$.
+    \item \textbf{Goal:} We want to prove the set equality $f^{-1}(A^c) = (f^{-1}(A))^c$.
+
+    \item \textbf{Strategy:} For this proof, we can use a more direct chain of logical equivalences ("if and only if", denoted by $\iff$). This is often more elegant than double inclusion when it's possible. An element $\omega$ is in the left set if and only if it is in the right set.
+
+    \item Let $\omega$ be an arbitrary element in $\Omega_1$. Then:
+    \begin{align*}
+        \omega \in f^{-1}(A^c)
+        &\iff f(\omega) \in A^c && \text{(by definition of inverse image \hyperlink{note1}{[1]})} \\
+        &\iff f(\omega) \notin A && \text{(by definition of complement \hyperlink{note4}{[4]})} \\
+        &\iff \omega \notin f^{-1}(A) && \text{(by definition of inverse image \hyperlink{note1}{[1]})} \\
+        &\iff \omega \in (f^{-1}(A))^c && \text{(by definition of complement \hyperlink{note4}{[4]})}
+    \end{align*}
+
+    \item \textbf{Conclusion:} Since we have established a chain of equivalences from an element being in $f^{-1}(A^c)$ to it being in $(f^{-1}(A))^c$, the two sets must contain exactly the same elements and are therefore equal.
 \end{enumerate}
-
-\textbf{Proof of b) ($\supseteq$):}
-\begin{enumerate}
-    \item Let $\omega$ be an arbitrary element in $\bigcup_{A \in C} f^{-1}(A)$.
-    \item By definition of union, this means there exists some set $A_0 \in C$ such that $\omega \in f^{-1}(A_0)$.
-    \item By definition of inverse image, this means $f(\omega) \in A_0$.
-    \item Since $f(\omega)$ belongs to at least one set in the collection $C$ (namely $A_0$), it must belong to their union. Therefore, $f(\omega) \in \bigcup_{A \in C} A$.
-    \item Finally, if $f(\omega)$ is in this union, then by definition, $\omega$ must be in the inverse image of this union. So, $\omega \in f^{-1}\left(\bigcup_{A \in C} A\right)$.
-\end{enumerate}
-Since we have shown inclusion in both directions, the equality is proven.
-\hfill $\blacksquare$
-
-\subsection*{(iii) Inverse Image of a Complement}
-
-\textbf{Statement:} The inverse image of the complement is the complement of the inverse image:
-\[ f^{-1}(A^c) = (f^{-1}(A))^c \]
-Note that $A^c = \Omega_2 \setminus A$ and $(f^{-1}(A))^c = \Omega_1 \setminus f^{-1}(A)$.
-
-\paragraph{Reasoning and Proof:}
-This is another set equality, so we prove it by showing inclusion in both directions. This property is crucial for showing that preimages preserve the structure of a $\sigma$-algebra \myref{ref:sigma_algebra}{3}.
-
-\textbf{Proof of a) ($\subseteq$):}
-\begin{enumerate}
-    \item Let $\omega \in f^{-1}(A^c)$.
-    \item By definition, this means $f(\omega) \in A^c$.
-    \item The definition of a complement means $f(\omega) \notin A$.
-    \item If $f(\omega)$ is not in $A$, then $\omega$ cannot be in the set of elements that map to $A$. In other words, $\omega \notin f^{-1}(A)$.
-    \item If $\omega \notin f^{-1}(A)$, it must, by definition, be in the complement of that set. So, $\omega \in (f^{-1}(A))^c$.
-\end{enumerate}
-
-\textbf{Proof of b) ($\supseteq$):}
-\begin{enumerate}
-    \item Let $\omega \in (f^{-1}(A))^c$.
-    \item By definition, this means $\omega \notin f^{-1}(A)$.
-    \item The statement $\omega \notin f^{-1}(A)$ means that the image of $\omega$ is not in $A$. That is, $f(\omega) \notin A$.
-    \item If $f(\omega)$ is not in $A$, it must be in the complement of $A$. So, $f(\omega) \in A^c$.
-    \item By definition of the inverse image, if $f(\omega) \in A^c$, then $\omega \in f^{-1}(A^c)$.
-\end{enumerate}
-Having shown both directions, the equality holds.
-\hfill $\blacksquare$
-
-
-\section*{Summary and Next Steps}
-
-\paragraph{Key Takeaways}
-We have formally proven three fundamental properties:
-\begin{itemize}
-    \item The inverse image operation $f^{-1}$ is \textbf{monotone} with respect to subset inclusion.
-    \item $f^{-1}$ \textbf{distributes over unions} (it also distributes over intersections, as a good follow-up exercise).
-    \item $f^{-1}$ \textbf{commutes with the complement} operation.
-\end{itemize}
-In simple terms, the inverse image operation $f^{-1}$ "plays very nicely" with all the basic set operations. This well-behaved nature is precisely why it is used to define the crucial concept of a random variable. A function $X: \Omega \to \mathbb{R}$ is a random variable if the inverse image of any "nice" set in $\mathbb{R}$ (a Borel set) is a "nice" set in $\Omega$ (an event in the $\sigma$-algebra $\mathcal{A}$). The properties we just proved ensure this structure is preserved \myref{ref:sigma_algebra}{3}.
-
-\paragraph{Check Your Understanding}
-The proof for intersections is very similar to the one for unions. Try to prove it yourself:
-\begin{center}
-    Show that \quad $f^{-1}\left(\bigcap_{A \in C} A\right) = \bigcap_{A \in C} f^{-1}(A)$.
-\end{center}
-(Hint: The logic is nearly identical, just replace "there exists" with "for all" where appropriate when dealing with the definitions of union and intersection.)
-
-\paragraph{Further Reading}
-It is very instructive to compare the behavior of the inverse image $f^{-1}(A)$ with the \textit{forward image}, defined as $f(S) := \{f(\omega) \mid \omega \in S\}$ for $S \subseteq \Omega_1$. You will find that the forward image does \textit{not} behave as nicely. For example, in general, $f(A \cap B) \neq f(A) \cap f(B)$. Thinking about a counterexample for this can really solidify your understanding of why the inverse image is so special.
+\end{solution}
 
 \newpage
-\section*{In-depth Explanations}
+\section*{Summary and Further Explanations}
+
+\subsection*{Summary}
+
+We have formally proven three key properties of the inverse image operation:
 \begin{itemize}
-    \item \hypertarget{ref:inverse_image}{\textbf{[1] The Inverse Image (Preimage):}}
-    As stated, the inverse image $f^{-1}(A)$ is the set of all inputs that produce an output that lies within set $A$.
-    \begin{itemize}
-        \item \textbf{Analogy:} Think of $f$ as a recipe function that takes an ingredient $\omega \in \Omega_1$ and produces a dish $f(\omega) \in \Omega_2$. If $A$ is the set of all "spicy dishes," then $f^{-1}(A)$ is the set of all ingredients (like chili peppers, cayenne, etc.) that result in a spicy dish.
-        \item \textbf{Concrete Example:} Let $f: \mathbb{R} \to \mathbb{R}$ be defined by $f(x) = x^2$. Let $A = [1, 4]$. The inverse image $f^{-1}(A)$ is the set of all $x$ such that $1 \le x^2 \le 4$. This corresponds to $x \in [-2, -1] \cup [1, 2]$. Notice that $f$ is not invertible as a function on $\mathbb{R}$, but the inverse image operation on its subsets is perfectly well-defined.
-    \end{itemize}
-
-    \item \hypertarget{ref:element_chasing}{\textbf{[2] Element-Chasing Proofs:}}
-    This is the workhorse technique for proving relationships between sets. The logic is:
-    \begin{itemize}
-        \item To prove \textbf{subset inclusion} ($S \subseteq T$), you must show that any element of $S$ is also an element of $T$. The argument structure is: "Let $x$ be an arbitrary element in $S$. [...logical steps...] Therefore, $x$ must be in $T$."
-        \item To prove \textbf{set equality} ($S = T$), you must show inclusion in both directions: $S \subseteq T$ and $T \subseteq S$. You do this by performing two separate element-chasing proofs.
-    \end{itemize}
-    This method breaks down abstract set statements into concrete logical steps about their elements.
-
-    \item \hypertarget{ref:sigma_algebra}{\textbf{[3] Connection to $\sigma$-Algebras and Random Variables:}}
-    From the script, a \textbf{$\sigma$-algebra} $\mathcal{A}$ on a set $\Omega$ is a collection of subsets of $\Omega$ that (i) contains $\Omega$, (ii) is closed under complements, and (iii) is closed under countable unions (\textbf{Definition 1.5}).
-
-    A function $X: \Omega_1 \to \Omega_2$ is called a \textbf{random variable} (or more generally, a measurable map) if for every set $A_2$ in the $\sigma$-algebra on $\Omega_2$ (let's call it $\mathcal{A}_2$), its inverse image $X^{-1}(A_2)$ is in the $\sigma$-algebra on $\Omega_1$ (let's call it $\mathcal{A}_1$) (\textbf{Definition 1.45}).
-
-    The properties you just proved are exactly the closure properties of a $\sigma$-algebra, but for the inverse image operation!
-    \begin{itemize}
-        \item $f^{-1}(\Omega_2) = \Omega_1 \in \mathcal{A}_1$ (Property (i) of $\mathcal{A}_1$)
-        \item If $A_2 \in \mathcal{A}_2$, is $f^{-1}(A_2^c) \in \mathcal{A}_1$? Yes, because $f^{-1}(A_2^c) = (f^{-1}(A_2))^c$. If $f^{-1}(A_2) \in \mathcal{A}_1$, then its complement is too. (This is your proof (iii)).
-        \item If $A_2, A_3, \dots \in \mathcal{A}_2$, is $f^{-1}(\bigcup A_i) \in \mathcal{A}_1$? Yes, because $f^{-1}(\bigcup A_i) = \bigcup f^{-1}(A_i)$. If all the $f^{-1}(A_i)$ are in $\mathcal{A}_1$, then so is their countable union. (This is your proof (ii)).
-    \end{itemize}
-    This shows that the inverse image operation perfectly preserves the structure of a $\sigma$-algebra. This is a profound and incredibly useful result.
+    \item It preserves subset relations: $A \subseteq B \implies f^{-1}(A) \subseteq f^{-1}(B)$.
+    \item It distributes over arbitrary unions: $f^{-1}(\cup A_i) = \cup f^{-1}(A_i)$.
+    \item It commutes with the complement operation: $f^{-1}(A^c) = (f^{-1}(A))^c$.
 \end{itemize}
+
+These results are essential for probability theory. When we define a random variable $X$ as a measurable function from a probability space $(\Omega, \mathcal{A}, P)$ to a measurable space $(\Omega', \mathcal{A}')$, we require that for any measurable event $A' \in \mathcal{A}'$, its inverse image $X^{-1}(A')$ is also a measurable event in $\mathcal{A}$. The properties we just proved are exactly what you need to show that the collection of all such inverse images, $\{X^{-1}(A') \mid A' \in \mathcal{A}'\}$, itself forms a $\sigma$-algebra. This allows us to "pull back" the event structure from the output space to the original sample space, which is how we assign probabilities to outcomes of random variables.
+
+\subsection*{Explanations of Key Concepts}
+
+Here are more detailed explanations of the concepts referenced in the proofs.
+
+\begin{description}
+    \item[\hypertarget{note1}{[1] Inverse Image (Preimage):}] For a function $f: \Omega_1 \to \Omega_2$ and a subset $S \subseteq \Omega_2$, the inverse image (or preimage) of $S$ under $f$ is the set of all elements in the domain $\Omega_1$ that map into $S$. It is defined as:
+    \[ f^{-1}(S) := \{\omega \in \Omega_1 \mid f(\omega) \in S\} \]
+    Note that $f^{-1}$ here does not imply that $f$ has an inverse function; it is notation for an operation on sets. This is central to \textbf{Definition 1.45 (random variable)}.
+
+    \item[\hypertarget{note2}{[2] Proving Set Inclusion ($\subseteq$):}] To prove that a set $X$ is a subset of a set $Y$, denoted $X \subseteq Y$, you must show that every element of $X$ is also an element of $Y$. The standard proof structure is:
+    \begin{enumerate}
+        \item "Let $x$ be an arbitrary element of $X$."
+        \item Use definitions and given properties to show that $x$ must also be an element of $Y$.
+        \item Conclude that since $x$ was arbitrary, the inclusion $X \subseteq Y$ holds.
+    \end{enumerate}
+
+    \item[\hypertarget{note3}{[3] Proving Set Equality (=):}] To prove that two sets, $X$ and $Y$, are equal, you must show they contain exactly the same elements. The most common method is \textbf{double inclusion}:
+    \begin{enumerate}
+        \item Prove $X \subseteq Y$.
+        \item Prove $Y \subseteq X$.
+    \end{enumerate}
+    If both inclusions hold, it must be that $X = Y$.
+
+    \item[\hypertarget{note4}{[4] Set Complement ($A^c$):}] Given a universe set $\Omega$ and a subset $A \subseteq \Omega$, the complement of $A$, denoted $A^c$, is the set of all elements in $\Omega$ that are not in $A$.
+    \[ A^c := \Omega \setminus A = \{\omega \in \Omega \mid \omega \notin A\} \]
+    In our exercise, for $A \subseteq \Omega_2$, $A^c = \Omega_2 \setminus A$, and for $f^{-1}(A) \subseteq \Omega_1$, $(f^{-1}(A))^c = \Omega_1 \setminus f^{-1}(A)$.
+
+    \item[\hypertarget{note5}{[5] Arbitrary Union of Sets ($\cup$):}] For a collection of sets $\mathcal{C} = \{A_i \mid i \in I\}$, where $I$ is an index set, their union contains all elements that are in at least one of the sets in the collection.
+    \[ \omega \in \bigcup_{i \in I} A_i \iff \exists i \in I \text{ such that } \omega \in A_i \]
+\end{description}
 
 \end{document}

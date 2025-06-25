@@ -5,16 +5,13 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage{hyperref}
 \usepackage{listings}
 \usepackage{textcomp} % For \textquotesingle
-
-% --- DOCUMENT INFO ---
-\title{Exercise Walkthrough: Treatment Efficacy and Simpson's Paradox}
-\author{Justin Lanfermann}
-\date{25. June 2025}
+\usepackage{float}    % CORRECTED: Added this package for the [H] figure placement
 
 % --- HYPERREF SETUP ---
+% CORRECTED: hyperref is generally best loaded last
+\usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -53,6 +50,11 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{remark}{Remark}
+
+% --- DOCUMENT INFO ---
+\title{Exercise Walkthrough: Treatment Efficacy and Simpson's Paradox}
+\author{Justin Lanfermann}
+\date{25. June 2025}
 
 \begin{document}
 
@@ -121,7 +123,9 @@ In this part, the third column `P` represents a pre-existing condition. A plausi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{example_causal_graph_P.png}
+    % CORRECTED: Using a placeholder image to ensure compilation.
+    % Replace 'example-image-a' with your actual image file 'example_causal_graph_P.png'
+    \includegraphics[width=0.4\textwidth]{example-image-a}
     \caption{Causal graph with Precondition (P) as a confounder.}
     \label{fig:confounder_graph}
 \end{figure}
@@ -217,7 +221,9 @@ The causal structure is now different. A complication cannot cause the treatment
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{example_causal_graph_C.png}
+    % CORRECTED: Using a placeholder image.
+    % Replace 'example-image-b' with your actual image file 'example_causal_graph_C.png'
+    \includegraphics[width=0.4\textwidth]{example-image-b}
     \caption{Causal graph with Complication (C) as a mediator.}
     \label{fig:mediator_graph}
 \end{figure}
@@ -255,7 +261,8 @@ This exercise is a powerful illustration of a fundamental principle in data anal
 \section{Further Explanations}
 Here are more detailed explanations of the key concepts used in this walkthrough.
 
-\subsection{\hypertarget{sec:confounding}{[1] Confounding}}
+% CORRECTED: Replaced \hypertarget with \label
+\subsection{[1] Confounding}\label{sec:confounding}
 A variable $P$ is a \textbf{confounder} for the relationship between a treatment $T$ and an outcome $S$ if it is a common cause of both $T$ and $S$.
 \begin{center}
     $T \leftarrow P \to S$
@@ -267,7 +274,7 @@ In our example, a `Precondition` is a confounder because:
 \end{enumerate}
 If we just compare the groups $T=1$ and $T=0$, we are not making a fair comparison. The $T=1$ group has more sick people ($P=1$) than the $T=0$ group. This difference in the makeup of the groups confounds our ability to see the true effect of $T$. The statistical remedy is to \textbf{condition} on the confounder, which means comparing $T=1$ and $T=0$ within subgroups where $P$ is held constant.
 
-\subsection{\hypertarget{sec:mediation}{[2] Mediation}}
+\subsection{[2] Mediation}\label{sec:mediation}
 A variable $C$ is a \textbf{mediator} if it lies on the causal pathway between the treatment $T$ and the outcome $S$.
 \begin{center}
     $T \to C \to S$
@@ -276,10 +283,10 @@ In our example, a `Complication` is a mediator because the treatment can cause t
 
 If we condition on a mediator, we block the flow of causality along the indirect path. This is generally a mistake if we want to know the total effect of the treatment. The total effect is correctly estimated by the overall, un-stratified comparison between the $T=1$ and $T=0$ groups.
 
-\subsection{\hypertarget{sec:simpson_paradox}{[3] Simpson's Paradox}}
+\subsection{[3] Simpson's Paradox}\label{sec:simpson_paradox}
 Simpson's Paradox is a phenomenon in probability and statistics in which a trend appears in several different groups of data but disappears or reverses when these groups are combined. In our exercise, the treatment was beneficial in both the $P=0$ and $P=1$ groups, but appeared harmful when the groups were combined. This paradox occurs when a confounding variable is present and the groups are of unequal size. Resolving the paradox depends on identifying the causal structure and choosing the appropriate analysis (stratified or aggregated).
 
-\subsection{\hypertarget{sec:exp_bern}{[4] Expectation of Bernoulli Variables}}
+\subsection{[4] Expectation of Bernoulli Variables}\label{sec:exp_bern}
 The exercise note correctly states that for a Bernoulli random variable $X \sim \text{Ber}(p)$, its expectation is $E[X] = p$.
 A Bernoulli variable takes value 1 (often called "success") with probability $p$ and value 0 ("failure") with probability $1-p$.
 From \textbf{Definition 2.1 (expectation)}, for a discrete variable, we have:
