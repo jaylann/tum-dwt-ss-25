@@ -1,6 +1,6 @@
 # 📚 TUM DWT Exercises
 
-Welcome! This repository contains my personal solutions and notes for the **Data Warehousing Tools (DWT)** course at the Technical University of Munich. 🏫 I'm just a student, so everything here reflects my own understanding.
+Welcome! This repository contains some explanations I created for the **Discrete Probability Theory (DWT)** course at the Technical University of Munich. 🏫 Please be aware that these explanations might be incorrect and should be treated with some healthy scepticism.
 
 ## What's inside?
 
@@ -9,7 +9,7 @@ Welcome! This repository contains my personal solutions and notes for the **Data
 
 ## No guarantees
 
-These documents are provided **as is** with no warranties or guarantees. I can't promise they're correct or complete, so please use them carefully. 😅
+These documents are provided **as is** with no warranties or guarantees. I can't promise they're correct or complete, so please use them carefully.
 
 ## Found a mistake?
 
@@ -20,3 +20,6 @@ These documents are provided **as is** with no warranties or guarantees. I can't
 Contributions are always welcome! ✨
 
 Happy learning!
+
+---
+Made with ❤️ by Justin Lanfermann
