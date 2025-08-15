@@ -22,4 +22,6 @@ Contributions are always welcome! ✨
 Happy learning!
 
 ---
-Made with ❤️ by Justin Lanfermann
+<p align="center">
+  Made with ❤️ by <a href="https://lanfermann.dev">Justin Lanfermann</a>
+</p>
